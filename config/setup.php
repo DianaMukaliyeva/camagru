@@ -26,7 +26,6 @@ try {
             `first_name` varchar(45) NOT NULL,
             `last_name`  varchar(45) NOT NULL,
             `password`   varchar(1000) NOT NULL,
-            `gender`     varchar(10) NOT NULL,
             `email`      varchar(45) NOT NULL,
             `notify`     tinyint DEFAULT 1,
             `activated`  tinyint DEFAULT 0,
