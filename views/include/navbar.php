@@ -1,35 +1,38 @@
 <nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">
-        <img src="assets/img/images/logo5.png" alt="Logo" style="height:40px;">
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+    <div class="container">
+        <a class="navbar-brand" href="<?php echo URLROOT; ?>">
+            <img src="<?php echo URLROOT; ?>/assets/img/images/logo5.png" alt="Logo" style="height:40px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <form class="form-inline my-2 mx-5 my-lg-0 ml-auto">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
-        </form>
-        <ul class="navbar-nav">
-            <?php if (isset($_SESSION['user_id'])) : ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Add photo</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?php echo URLROOT; ?>/users/logout">Logout</a>
-                </li>
-            <?php else : ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Sign in</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Sign up</a>
-                </li>
-            <?php endif; ?>
-        </ul>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="form-inline my-2 mx-5 my-lg-0 ml-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <ul class="navbar-nav">
+                <?php if (isset($_SESSION['user_id'])) : ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Add photo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo URLROOT; ?>/users/logout">Logout</a>
+                    </li>
+                <?php else : ?>
+                    <li class="nav-item">
+                        <!-- <a class="nav-link btn" data-target="loginModal" id="loginModalButton" href="<?php echo URLROOT; ?>/user/login">Sign in</a> -->
+                        <a class="nav-link" href="<?php echo URLROOT; ?>/users/login">Sign in</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo URLROOT; ?>/users/signup">Sign up</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
     </div>
 </nav>
