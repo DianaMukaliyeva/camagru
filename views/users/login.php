@@ -1,12 +1,5 @@
 <?php require 'views/include/header.php' ?>
 
-<!-- The Modal -->
-<!-- <div class="modal" id="loginModal"> -->
-<!-- Vertically centered scrollable modal -->
-<!-- <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"> -->
-<!-- Login -->
-<!-- </div> -->
-<!-- </div> -->
 <div class="col-md-6 m-auto">
     <div class="card card-body bg-light mt-5">
         <h2>Login</h2>
