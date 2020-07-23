@@ -3,13 +3,14 @@ class Router {
     // Current controller
     protected $controller = 'ImagesController';
     // Current method of controller
-    protected $method = 'index';
+    protected $method = 'gallery';
     // Parameters
     protected $params = [];
 
     // Renders given url and calls Controller class
     public function render($url) {
         $urlParts = explode('/', $url);
+
         // Look if our root folder is an array's first element, delete it
         if (isset($urlParts[0]) && $urlParts[0] == APPROOT) {
             array_shift($urlParts);
@@ -44,7 +45,11 @@ class Router {
         // Get params
         $this->params = $urlParts ? array_values($urlParts) : [];
 
-        // Call a callback with array of params
-        call_user_func_array([$this->controller, $this->method], $this->params);
+        if (method_exists($this->controller, $this->method)) {
+            // Call a callback with array of params
+            call_user_func_array([$this->controller, $this->method], $this->params);
+        } else {
+            $this->controller->redirect('images/gallery');
+        }
     }
 }
