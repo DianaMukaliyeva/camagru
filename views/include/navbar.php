@@ -13,19 +13,18 @@
                 <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
             </form>
             <ul class="navbar-nav">
-                <?php if (isset($_SESSION['user_id'])) : ?>
+                <?php if (isset($_SESSION['user'])) : ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Add photo</a>
+                        <a class="nav-link" href="<?php echo URLROOT; ?>/images/add">Add photo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profile</a>
+                        <a class="nav-link" href="<?php echo URLROOT; ?>/users/profile">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo URLROOT; ?>/users/logout">Logout</a>
                     </li>
                 <?php else : ?>
                     <li class="nav-item">
-                        <!-- <a class="nav-link btn" data-target="loginModal" id="loginModalButton" href="<?php echo URLROOT; ?>/user/login">Sign in</a> -->
                         <a class="nav-link" href="<?php echo URLROOT; ?>/users/login">Sign in</a>
                     </li>
                     <li class="nav-item">
