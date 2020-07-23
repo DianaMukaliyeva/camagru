@@ -26,6 +26,7 @@ try {
             `first_name` varchar(45) NOT NULL,
             `last_name`  varchar(45) NOT NULL,
             `password`   varchar(1000) NOT NULL,
+            `token`      varchar(1000),
             `email`      varchar(45) NOT NULL,
             `notify`     tinyint DEFAULT 1,
             `activated`  tinyint DEFAULT 0,
