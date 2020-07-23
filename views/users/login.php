@@ -23,10 +23,11 @@
                     <input type="submit" value="Login" class="btn btn-success btn-block">
                 </div>
                 <div class="col">
-                    <a href="<?php echo URLROOT; ?>/users/signup" class="btn btn-light btn-block">No account? Register</a>
+                    <a href="<?php echo URLROOT; ?>/users/resetPassword" class="btn btn-light btn-block">Forgot password? Reset</a>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
 <?php require 'views/include/footer.php' ?>

@@ -46,4 +46,5 @@
         </form>
     </div>
 </div>
+
 <?php require 'views/include/footer.php' ?>
