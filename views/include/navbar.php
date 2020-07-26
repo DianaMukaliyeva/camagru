@@ -1,7 +1,7 @@
 <nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="<?php echo URLROOT; ?>">
-            <img src="<?php echo URLROOT; ?>/assets/img/images/logo5.png" alt="Logo" style="height:40px;">
+            <img src="<?php echo URLROOT; ?>/assets/img/images/logo1.png" alt="Logo" style="height:40px;">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -28,7 +28,7 @@
                         <a class="nav-link" href="<?php echo URLROOT; ?>/users/login">Sign in</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo URLROOT; ?>/users/signup">Sign up</a>
+                        <a class="nav-link" href="<?php echo URLROOT; ?>/users/register">Sign up</a>
                     </li>
                 <?php endif; ?>
             </ul>

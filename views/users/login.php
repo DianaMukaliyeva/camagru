@@ -1,7 +1,7 @@
 <?php require 'views/include/header.php' ?>
 
 <div class="col-md-6 m-auto">
-    <?php if (isset($data['message'])) : ?>
+    <?php if (isset($data['message']['class']) && isset($data['message']['content'])) : ?>
         <div class="mt-5 alert <?= $data['message']['class'] ?>"><?= $data['message']['content'] ?></div>
     <?php endif ?>
     <div class="card card-body bg-light mt-5">

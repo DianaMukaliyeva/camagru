@@ -7,10 +7,10 @@
     <div class="card card-body bg-light mt-5">
         <h2>Create an account</h2>
         <p>Please fill out this form to sign up</p>
-        <form action="<?= URLROOT ?>/users/signup" method="post">
+        <form action="<?= URLROOT ?>/users/register" method="post">
             <div class="form-group">
                 <label for="first_name">First name: </label>
-                <input type="text" name="first_name" class="form-control form-control-lg <?= isset($data['first_name_err']) ? 'is-invalid' : '' ?>" value="<?= isset($data['first_name']) ?: '' ?>">
+                <input type="text" name="first_name" class="form-control form-control-lg <?= isset($data['first_name_err']) ? 'is-invalid' : '' ?>" value="<?= isset($data['first_name']) ? $data['first_name'] : '' ?>">
                 <span class="invalid-feedback"><?= isset($data['first_name_err']) ? $data['first_name_err'] : '' ?></span>
             </div>
             <div class="form-group">
