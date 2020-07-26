@@ -6,16 +6,23 @@ class Controller {
         exit;
     }
 
+    public function addMessage($success, $content, $data = []) {
+        if ($success)
+            $data['message']['class'] = 'alert-success';
+        else
+            $data['message']['class'] = 'alert-danger';
+        $data['message']['content'] = $content;
+        return $data;
+    }
+
     public function getModel($model) {
+        // Check model exists
         if (file_exists('models/' . $model . '.php')) {
-            // Require model file
             require_once 'models/' . $model . '.php';
         } else {
-            // Model does not exist
-            echo "something went wrong";
+            echo "could not find model";
             return null;
         }
-        // Instatiate model
         return new $model();
     }
 
