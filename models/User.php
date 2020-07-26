@@ -1,11 +1,6 @@
 <?php
 class User {
 
-    public function findUserByEmail($email) {
-        $row = Db::queryOne('SELECT * FROM `users` WHERE `email` = ?', [$email]);
-        return $row;
-    }
-
     private function validatePassword($password, $confirm_password, $errors = []) {
         if (!$password || empty($password)) {
             $errors['password_err'] = 'Please enter password';
@@ -18,6 +13,7 @@ class User {
         } else if ($password != $confirm_password) {
             $errors['confirm_password_err'] = 'Passwords do not match';
         }
+
         return $errors;
     }
 
@@ -64,15 +60,40 @@ class User {
         return $errors;
     }
 
+    private function updateToken($token, $email) {
+        $row = Db::query('UPDATE `users` SET `token` = ? WHERE `email` = ?', [$token, $email]);
+        return $row;
+    }
+
+    private function validateExistingEmail($email, $user) {
+        $errors = [];
+
+        if (empty($email)) {
+            $errors['email_err'] = 'Please enter email';
+        } else if (!$user) {
+            $errors['email_err'] = 'User with this email doesn\'t exists';
+        } else if ($user['activated'] == 0) {
+            $errors['email_err'] = 'Your account has not been activated yet.';
+        }
+
+        return $errors;
+    }
+
+    public function findUserByEmail($email) {
+        return (Db::queryOne('SELECT * FROM `users` WHERE `email` = ?', [$email]));
+    }
+
     public function register($data) {
         $errors = $this->validateRegisterData($data);
+
         if (!$errors) {
             $row = Db::query(
                 'INSERT INTO `users` (`login`, `first_name`, `last_name`, `password`, `email`) VALUES (?, ?, ?, ?, ?)',
                 [$data['login'], $data['first_name'], $data['last_name'], hash('whirlpool', $data['password']), $data['email']]
             );
-            $this->createToken([$data['email']]);
+            $this->createToken($data['email']);
         }
+
         return ['errors' => $errors];
     }
 
@@ -95,6 +116,7 @@ class User {
 
     public function activateAccountByEmail($email) {
         $row = Db::query('UPDATE `users` SET `activated` = 1 WHERE email = ?', [$email]);
+        $this->updateToken(null, $email);
         return $row;
     }
 
@@ -105,39 +127,21 @@ class User {
         return '';
     }
 
-    public function createToken($data) {
-        $row = Db::queryOne('SELECT `password` from `users` WHERE `email` = ?', $data);
+    public function createToken($email) {
+        $row = Db::queryOne('SELECT `password` from `users` WHERE `email` = ?', [$email]);
         $password = $row['password'];
         $token = bin2hex(random_bytes(strlen($password)));
-        $this->updateToken($token, $data[0]);
+        $this->updateToken($token, $email);
         return $token;
     }
 
-    public function updateToken($token, $email) {
-        $row = Db::query('UPDATE `users` SET `token` = ? WHERE `email` = ?', [$token, $email]);
-        return $row;
-    }
-
-    private function validateExistingEmail($email, $user) {
-        $errors = [];
-
-        if (empty($email)) {
-            $errors['email_err'] = 'Please enter email';
-        } else if (!$user) {
-            $errors['email_err'] = 'User with this email doesn\'t exists';
-        } else if ($user['activated'] == 0) {
-            $errors['email_err'] = 'Your account has not been activated yet.';
-        }
-
-        return $errors;
-    }
 
     public function updatePassword($email, $reset = false, $password = '', $confirm_password = '') {
         if (!$reset) {
             $user = $this->findUserByEmail($email);
             $errors = $this->validateExistingEmail($email, $user);
             if (!$errors) {
-                $this->createToken([$email]);
+                $this->createToken($email);
             }
             return $errors ? ['errors' => $errors] : ['user' => $user];
         }

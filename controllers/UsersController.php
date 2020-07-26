@@ -6,20 +6,26 @@ class UsersController extends Controller {
         $this->model = $this->getModel('User');
     }
 
-    private function sendPasswordResetEmail($data) {
-        $data['token'] = $data['login'];
-        $data['token'] .= "/token=" . $this->model->getToken($data['email']);
-
+    private function sendEmail($login, $email, $purpose) {
+        $token = $login . "/token=" . $this->model->getToken($email);
         $header = "Content-type: text/html; charset=utf-8 \r\n";
-        $subject = "Camagru reset password";
+        $subject = "Camagru";
 
         $message = "<div style=\"background-color:pink;\">";
-        $message .= "<h2>Hello, " . $data['login'] . "!</h2>";
-        $message .= "<p>To reset your password click ";
-        $message .= "<a href=\"" . URLROOT . "/email/resetPassword/" . $data['token'] . "\">here</a></p>";
+        $message .= "<h2 style=\"text-align:center;\">Hello, " . $login . "!</h2>";
+
+        if ($purpose == 'confirmation_email') {
+            $message .= "<p style=\"text-align:center;\">Thank you for joining Camagru</p>";
+            $message .= "<p style=\"text-align:center;\">To activate your account click ";
+            $message .= "<a href=\"" . URLROOT . "/email/activateAccount/" . $token . "\">here</a></p>";
+            $message .= "<p><small>If you have any questions do not hesitate to contact us.</p>";
+        } else if ($purpose == 'reset_password') {
+            $message .= "<p style=\"text-align:center;\">To reset your password click ";
+            $message .= "<a href=\"" . URLROOT . "/email/resetPassword/" . $token . "\">here</a></p>";
+        }
         $message .= "<p><small>Camagru</p></div>";
 
-        return (mail($data['email'], $subject, $message, $header));
+        return (mail($email, $subject, $message, $header));
     }
 
     private function createUserSession($user) {
@@ -29,10 +35,10 @@ class UsersController extends Controller {
 
     public function login() {
         $data = [];
+
         if (isset($_SESSION['user'])) {
             $data = $this->addMessage(false, 'You need logout first!');
         } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
             $email = trim($_POST['email']);
             $password = hash('whirlpool', $_POST['password']);
 
@@ -44,26 +50,10 @@ class UsersController extends Controller {
                 $this->createUserSession($response['user']);
             }
         }
+
         $this->renderView('users/login', $data);
     }
 
-    private function sendConfirmationEmail($data) {
-        $data['token'] = $data['login'];
-        $data['token'] .= '/token=' . $this->model->getToken($data['email']);
-
-        $header = "Content-type: text/html; charset=utf-8 \r\n";
-        $subject = "Camagru confirmation email";
-
-        $message = "<div style=\"background-color:pink;\">";
-        $message .= "<h2>Hello, " . $data['login'] . "!</h2>";
-        $message .= "<p>Thank you for joining Camagru</p>";
-        $message .= "<p>To activate your account click ";
-        $message .= "<a href=\"" . URLROOT . "/email/activateAccount/" . $data['token'] . "\">here</a></p>";
-        $message .= "<p><small>If you have any questions do not hesitate to contact us.</p>";
-        $message .= "<p><small>Camagru</p></div>";
-
-        return (mail($data['email'], $subject, $message, $header));
-    }
 
     public function register() {
         $data = [];
@@ -80,29 +70,31 @@ class UsersController extends Controller {
             $data['confirm_password'] = $_POST['confirm_password'];
 
             $response = $this->model->register($data);
+            unset($data['password'], $data['confirm_password']);
             if ($response['errors']) {
-                unset($data['password'], $data['confirm_password']);
                 $data = array_merge($data, $response['errors']);
             } else {
                 $dataToSend = $this->addMessage(false, 'Could not sent an email to ' . $data['email']);
-                if ($this->sendConfirmationEmail($data)) {
+                if ($this->sendEmail($data['login'], $data['email'], 'confirmation_email')) {
                     $dataToSend = $this->addMessage(true, 'Confirmation email sent to ' . $data['email']);
                 }
                 $this->renderView('users/login', $dataToSend);
             }
         }
+
         $this->renderView('users/register', $data);
     }
 
     public function resetPassword() {
         $data = [];
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($_POST['email']) && !isset($_POST['password'])) {
                 $data['email'] = trim($_POST['email']);
                 $response = $this->model->updatePassword($data['email']);
 
                 if (!$response['errors'] && $response['user']) {
-                    $this->sendPasswordResetEmail($response['user']);
+                    $this->sendEmail($response['user']['login'], $response['user']['email'], 'reset_password');
                     $data = $this->addMessage(true, 'An email was sent to ' . $data['email']);
                     $this->renderView('users/login', $data);
                 }
