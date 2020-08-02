@@ -7,7 +7,7 @@ class UsersController extends Controller {
     }
 
     private function sendEmail($login, $email, $purpose) {
-        $token = $login . "/token=" . $this->model->getToken($email);
+        $token = str_replace('camagru_token', '', $this->model->getToken($email));
         $header = "Content-type: text/html; charset=utf-8 \r\n";
         $subject = "Camagru";
 
@@ -81,7 +81,6 @@ class UsersController extends Controller {
                 $this->renderView('users/login', $dataToSend);
             }
         }
-
         $this->renderView('users/register', $data);
     }
 
@@ -114,8 +113,11 @@ class UsersController extends Controller {
         $this->renderView('users/resetPassword', $data);
     }
 
-    public function profile() {
-        $this->renderView('users/profile');
+    public function account() {
+        if (isset($_SESSION['user'])) {
+            $this->renderView('users/account');
+        }
+        $this->renderView('images/index');
     }
 
     public function logout($url = '') {

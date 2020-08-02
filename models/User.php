@@ -61,6 +61,9 @@ class User {
     }
 
     private function updateToken($token, $email) {
+        if ($token) {
+            $token = "camagru_token" . $token;
+        }
         $row = Db::query('UPDATE `users` SET `token` = ? WHERE `email` = ?', [$token, $email]);
         return $row;
     }
@@ -83,6 +86,10 @@ class User {
         return (Db::queryOne('SELECT * FROM `users` WHERE `email` = ?', [$email]));
     }
 
+    public function findUserByLogin($login) {
+        return (Db::queryOne('SELECT * FROM `users` WHERE `login` = ?', [$login]));
+    }
+
     public function register($data) {
         $errors = $this->validateRegisterData($data);
 
@@ -91,7 +98,7 @@ class User {
                 'INSERT INTO `users` (`login`, `first_name`, `last_name`, `password`, `email`) VALUES (?, ?, ?, ?, ?)',
                 [$data['login'], $data['first_name'], $data['last_name'], hash('whirlpool', $data['password']), $data['email']]
             );
-            $this->createToken($data['email']);
+            $this->updateToken(bin2hex(random_bytes(50)), $data['email']);
         }
 
         return ['errors' => $errors];
@@ -108,14 +115,21 @@ class User {
     }
 
     public function getEmailByLogin($login) {
-        $row = Db::queryOne('SELECT `email` FROM `users` WHERE login = ?', [$login]);
+        $row = Db::queryOne('SELECT `email` FROM `users` WHERE `login` = ?', [$login]);
+        if (isset($row['email']))
+            return $row['email'];
+        return $row;
+    }
+
+    public function getEmailByToken($token) {
+        $row = Db::queryOne('SELECT `email` FROM `users` WHERE `token` = ?', [$token]);
         if (isset($row['email']))
             return $row['email'];
         return $row;
     }
 
     public function activateAccountByEmail($email) {
-        $row = Db::query('UPDATE `users` SET `activated` = 1 WHERE email = ?', [$email]);
+        $row = Db::query('UPDATE `users` SET `activated` = 1 WHERE `email` = ?', [$email]);
         $this->updateToken(null, $email);
         return $row;
     }
@@ -127,21 +141,12 @@ class User {
         return '';
     }
 
-    public function createToken($email) {
-        $row = Db::queryOne('SELECT `password` from `users` WHERE `email` = ?', [$email]);
-        $password = $row['password'];
-        $token = bin2hex(random_bytes(strlen($password)));
-        $this->updateToken($token, $email);
-        return $token;
-    }
-
-
     public function updatePassword($email, $reset = false, $password = '', $confirm_password = '') {
         if (!$reset) {
             $user = $this->findUserByEmail($email);
             $errors = $this->validateExistingEmail($email, $user);
             if (!$errors) {
-                $this->createToken($email);
+                $this->updateToken(bin2hex(random_bytes(50)), $email);
             }
             return $errors ? ['errors' => $errors] : ['user' => $user];
         }

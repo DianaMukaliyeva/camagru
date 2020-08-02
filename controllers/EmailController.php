@@ -6,40 +6,30 @@ class EmailController extends Controller {
         $this->model = $this->getModel('User');
     }
 
-    public function resetPassword($login = '', $token = '') {
+    public function resetPassword($token = '') {
         $data = [];
 
-        if (!empty($login) && !empty($token)) {
-            $data['email'] = $this->model->getEmailByLogin($login);
+        if (!empty($token)) {
+            $data['email'] = $this->model->getEmailByToken("camagru_token" . $token);
             if ($data['email']) {
-                $generatedToken = "token=" . $this->model->getToken($data['email']);
-                if ($token == $generatedToken) {
-                    $data['reset'] = true;
-                } else {
-                    $data = $this->addMessage(false, 'Your token is invalid!', $data);
-                }
+                $data['reset'] = true;
             } else {
-                $data = $this->addMessage(false, 'User does not exists!');
+                $data = $this->addMessage(false, 'Your token is invalid!', $data);
             }
         }
 
         $this->renderView('users/resetPassword', $data);
     }
 
-    public function activateAccount($login = '', $token = '') {
+    public function activateAccount($token = '') {
         $data = [];
 
-        if (!empty($login) && !empty($token)) {
-            $data['email'] = $this->model->getEmailByLogin($login);
-            if ($data['email']) {
-                $generatedToken = "token=" . $this->model->getToken($data['email']);
-                if ($token == $generatedToken && $this->model->activateAccountByEmail($data['email'])) {
-                    $data = $this->addMessage(true, 'Your account has been successfully activated.', $data);
-                } else {
-                    $data = $this->addMessage(false, 'Your token is invalid!');
-                }
+        if (!empty($token)) {
+            $data['email'] = $this->model->getEmailByToken("camagru_token" . $token);
+            if ($data['email'] && $this->model->activateAccountByEmail($data['email'])) {
+                $data = $this->addMessage(true, 'Your account has been successfully activated.', $data);
             } else {
-                $data = $this->addMessage(false, 'User does not exists!', $data);
+                $data = $this->addMessage(false, 'Your token is invalid!');
             }
         }
 

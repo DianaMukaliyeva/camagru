@@ -9,15 +9,29 @@ class ImagesController extends Controller {
     }
 
     public function gallery($sort = '') {
-        // $images = $this->imageModel->getImages();
+        $images = $this->imageModel->getImages();
         if ($this->isAjaxRequest()) {
             if ($sort == 'newest') {
-                $this->renderView('images/gallery', ['images' => 'newest here']);
+                echo json_encode($images);
+                // $this->renderView('images/gallery', ['images' => $images]);
             } else {
-                $this->renderView('images/gallery', ['images' => 'popular there']);
+                echo json_encode(null);
+                // $this->renderView('images/gallery', ['images' => null]);
             }
         } else {
             $this->renderView('images/index');
+        }
+    }
+
+    public function download() {
+        if ($this->isAjaxRequest()) {
+            // $i = json_decode($_POST['images']);
+            // foreach($i as $a) {
+            //     print_r($a);
+            // }
+            $this->renderView('images/gallery', ['images' => json_decode($_POST['images'], true)]);
+        } else {
+            $this->renderView('');
         }
     }
 

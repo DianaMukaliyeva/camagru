@@ -18,7 +18,7 @@
                         <a class="nav-link" href="<?php echo URLROOT; ?>/images/add">Add photo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo URLROOT; ?>/users/profile">Profile</a>
+                        <a class="nav-link" href="<?php echo URLROOT; ?>/users/account">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo URLROOT; ?>/users/logout">Logout</a>

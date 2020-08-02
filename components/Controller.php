@@ -35,6 +35,7 @@ class Controller {
             // View does not exist
             echo "something went wrong";
         }
+        exit;
     }
 
     public function isAjaxRequest() {

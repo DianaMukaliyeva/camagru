@@ -10,17 +10,17 @@ try {
     Db::query("SET time_zone = \"+03:00\"");
 
     // Drop database if it already exists
-    Db::query("DROP DATABASE IF EXISTS $DB_NAME;");
+    // Db::query("DROP DATABASE IF EXISTS $DB_NAME;");
 
     // Create database
-    Db::query("CREATE DATABASE $DB_NAME");
+    Db::query("CREATE DATABASE IF NOT EXISTS $DB_NAME");
 
     // Use database
     Db::query("USE $DB_NAME");
 
     // Create table users
     $query = <<<SQL
-        CREATE TABLE `users` (
+        CREATE TABLE IF NOT EXISTS `users` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
             `login`      varchar(20) NOT NULL,
             `first_name` varchar(45) NOT NULL,
@@ -38,7 +38,7 @@ try {
 
     // Create table images
     $query = <<<SQL
-        CREATE TABLE `images` (
+        CREATE TABLE IF NOT EXISTS `images` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
             `image_path` varchar(45) NOT NULL,
             `title`      varchar(45),
@@ -54,7 +54,7 @@ try {
 
     // Create table likes
     $query = <<<SQL
-        CREATE TABLE `likes` (
+        CREATE TABLE IF NOT EXISTS `likes` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
             `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
             `user_id`    int NOT NULL,
@@ -70,7 +70,7 @@ try {
 
     // Create table comments
     $query = <<<SQL
-        CREATE TABLE `comments` (
+        CREATE TABLE IF NOT EXISTS `comments` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
             `comment`    varchar(100) NOT NULL,
             `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -87,7 +87,7 @@ try {
 
     // Create table followers
     $query = <<<SQL
-        CREATE TABLE `followers` (
+        CREATE TABLE IF NOT EXISTS `followers` (
             `id`               int AUTO_INCREMENT PRIMARY KEY,
             `created_at`       datetime DEFAULT CURRENT_TIMESTAMP,
             `user_id_followed`    int NOT NULL,
@@ -103,7 +103,7 @@ try {
 
     // Create table tags
     $query = <<<SQL
-        CREATE TABLE `tags` (
+        CREATE TABLE IF NOT EXISTS `tags` (
             `id`       int AUTO_INCREMENT PRIMARY KEY,
             `title`    varchar(45) NOT NULL,
             `image_id`    int NOT NULL,
@@ -116,7 +116,7 @@ try {
 
     // Create table filters
     $query = <<<SQL
-        CREATE TABLE `filters` (
+        CREATE TABLE IF NOT EXISTS `filters` (
         `id`   int AUTO_INCREMENT PRIMARY KEY,
         `name` varchar(45) NOT NULL,
         `path` varchar(45) NOT NULL
