@@ -8,7 +8,7 @@
 // var login = document.querySelector('#' + loginModalButton.dataset.target);
 
 // loginModalButton.addEventListener('click', function () { login.classList.toggle('modal'); })
-
+/*
 let images = null;
 
 const container = document.getElementById('article-list');
@@ -155,8 +155,10 @@ function sortImages(title) {
                 load_more.setAttribute('data-page', 0);
                 loadMore();
             } else {
+                articleListPagination.innerHTML = '';
+                articleListPagination.classList.add('article-list__pagination--inactive');
                 hideLoadMore();
-                console.log('here');
+                // console.log('here');
                 container.innerHTML = '<div class="mx-auto text-center">No images yet</div>';
             }
             // console.log(window.innerHeight + ' y: ' + window.pageYOffset + ' doc ' + document.body.scrollHeight);
@@ -272,3 +274,4 @@ hideLoadMore();
 //     if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
 //     addPage(++page);
 // };
+*/

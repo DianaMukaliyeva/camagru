@@ -35,7 +35,9 @@ main {
     counter-increment: page;
     padding-bottom: 3em;
     position: relative;
+    margin-top: 1em;
 }
+
 .article-list__page::before {
     background-color: #ddd;
     display: inline-block;
@@ -78,13 +80,12 @@ main {
 }
 
 .article-list__pagination {
-    background-color: #222;
-    box-shadow: 0 0 1em rgba(#000, .25);
+    background-color: #33383d;
     display: block;
     bottom: 0;
     left: 0;
     list-style-type: none;
-    margin: 0;
+    margin-bottom: -1.5em;
     padding: .5em;
     position: relative;
     right: 0;
@@ -95,6 +96,7 @@ main {
 }
 
 .fixed {
+    margin: 0;
     position: fixed;
 }
 
