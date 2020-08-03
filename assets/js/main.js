@@ -25,21 +25,21 @@ function hideLoadMore() {
     load_more.style.display = 'none';
 }
 
-// function addPaginationPage(page) {
-//     const pageLink = document.createElement('a');
-//     pageLink.href = '#' + getPageId(page);
-//     pageLink.innerHTML = page;
+function addPaginationPage(page) {
+    const pageLink = document.createElement('a');
+    pageLink.href = '#' + getPageId(page);
+    pageLink.innerHTML = page;
 
-//     const listItem = document.createElement('li');
-//     listItem.className = 'article-list__pagination__item';
-//     listItem.appendChild(pageLink);
+    const listItem = document.createElement('li');
+    listItem.className = 'article-list__pagination__item';
+    listItem.appendChild(pageLink);
 
-//     articleListPagination.appendChild(listItem);
+    articleListPagination.appendChild(listItem);
 
-//     if (page === 2) {
-//         articleListPagination.classList.remove('article-list__pagination--inactive');
-//     }
-// }
+    if (page === 2) {
+        articleListPagination.classList.remove('article-list__pagination--inactive');
+    }
+}
 
 // function getArticle() {
 //     const div_col = document.createElement('div');
@@ -86,9 +86,9 @@ function hideLoadMore() {
 //     return (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
 // }
 
-// function getPageId(n) {
-//     return 'article-page-' + n;
-// }
+function getPageId(n) {
+    return 'article-page-' + n;
+}
 
 // function getArticleImage() {
 //     const hash = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
@@ -148,9 +148,17 @@ function sortImages(title) {
             // for (image of images) {
             //     console.log(image);
             // }
-            container.innerHTML = '';
-            load_more.setAttribute('data-page', 0);
-            loadMore();
+            if (images) {
+                container.innerHTML = '';
+                articleListPagination.innerHTML = '';
+                articleListPagination.classList.add('article-list__pagination--inactive');
+                load_more.setAttribute('data-page', 0);
+                loadMore();
+            } else {
+                hideLoadMore();
+                console.log('here');
+                container.innerHTML = '<div class="mx-auto text-center">No images yet</div>';
+            }
             // console.log(window.innerHeight + ' y: ' + window.pageYOffset + ' doc ' + document.body.scrollHeight);
             // console.log(JSON.parse(this.responseText));
             // var content_height = container.offsetHeight;
@@ -185,7 +193,7 @@ function appendToDiv(div, new_html) {
 }
 
 function setCurrentPage(page) {
-    console.log('Incrementing page to: ' + page);
+    // console.log('Incrementing page to: ' + page);
     load_more.setAttribute('data-page', page);
 }
 
@@ -201,6 +209,7 @@ function loadMore() {
     var next_page = page + 1;
     // console.log('page = ' + page + ', size = ' + size + ', next page = ' + next_page);
     if (size > page * 9) {
+        addPaginationPage(next_page);
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'images/download', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -231,6 +240,9 @@ function scrollReaction() {
     // console.log(current_y + '/' + content_height);
     if (current_y >= content_height) {
         loadMore();
+        articleListPagination.classList.remove('fixed');
+    } else {
+        articleListPagination.classList.add('fixed');
     }
 }
 

@@ -11,6 +11,6 @@
 <div id="load-more-container">
     <button id="load-more" data-page="0">Load more</button>
 </div>
-<ul class="article-list__pagination article-list__pagination--inactive" id="post-pagination"></ul>
+<ul class="article-list__pagination fixed article-list__pagination--inactive" id="post-pagination"></ul>
 
 <?php require 'views/include/footer.php' ?>
