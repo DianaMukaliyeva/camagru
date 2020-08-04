@@ -1,9 +1,10 @@
 (function () {
-    var burger = document.querySelector('.navbar-toggler');
-    var nav = document.querySelector(burger.dataset.target);
+    let burger = document.querySelector('.navbar-toggler');
+    let nav = document.querySelector(burger.dataset.target);
 
     burger.addEventListener('click', function () { nav.classList.toggle('collapse'); })
 })();
+
 // var loginModalButton = document.querySelector('#loginModalButton');
 // var login = document.querySelector('#' + loginModalButton.dataset.target);
 

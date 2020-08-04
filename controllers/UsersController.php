@@ -8,8 +8,10 @@ class UsersController extends Controller {
 
     private function sendEmail($login, $email, $purpose) {
         $token = str_replace('camagru_token', '', $this->model->getToken($email));
-        $header = "Content-type: text/html; charset=utf-8 \r\n";
-        $subject = "Camagru";
+        $header = "From: Camagru web application\r\n";
+        $header .= "Reply-To: <hive2020hive@gmail.com>\r\n";
+        $header .= "Content-type: text/html; charset=utf-8 \r\n";
+        $subject = "Camagru web application";
 
         $message = "<div style=\"background-color:pink;\">";
         $message .= "<h2 style=\"text-align:center;\">Hello, " . $login . "!</h2>";

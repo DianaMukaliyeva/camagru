@@ -1,9 +1,10 @@
 let images = null;
+let request_in_progress = false;
 
 const img_container = document.getElementById('article-list');
 const pagination = document.getElementById('post-pagination');
 const load_more = document.getElementById('load-more');
-let request_in_progress = false;
+const urlpath = window.location.pathname.split('/')[1];
 
 function showLoadMore() {
     load_more.style.display = 'inline';
@@ -11,6 +12,10 @@ function showLoadMore() {
 
 function hideLoadMore() {
     load_more.style.display = 'none';
+}
+
+function getPageId(n) {
+    return 'article-page-' + n;
 }
 
 function addPaginationPage(page) {
@@ -29,10 +34,6 @@ function addPaginationPage(page) {
     }
 }
 
-function getPageId(n) {
-    return 'article-page-' + n;
-}
-
 function sortImages(title) {
     document.querySelectorAll(".sort_images").forEach(function (item) {
         item.classList.remove('active');
@@ -44,7 +45,7 @@ function sortImages(title) {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             images = JSON.parse(this.responseText);
-            if (images) {
+            if (images != '') {
                 img_container.innerHTML = '';
                 pagination.innerHTML = '';
                 pagination.classList.add('article-list__pagination--inactive');
@@ -59,9 +60,9 @@ function sortImages(title) {
         }
     }
     if (title == 'newest') {
-        xmlhttp.open("GET", "images/gallery/newest", true);
+        xmlhttp.open("GET", "/" + urlpath + "/images/gallery/newest", true);
     } else {
-        xmlhttp.open("GET", "images/gallery/popular", true);
+        xmlhttp.open("GET", "/" + urlpath + "/images/gallery/popular", true);
     }
     xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xmlhttp.send();
@@ -98,8 +99,8 @@ function loadMore() {
     if (request_in_progress) {
         return;
     }
-    request_in_progress = true;
 
+    request_in_progress = true;
     let page = parseInt(load_more.getAttribute('data-page'));
     let size = images ? images.length : 0;
     let next_page = page + 1;
@@ -107,7 +108,7 @@ function loadMore() {
     if (size > page * 9) {
         addPaginationPage(next_page);
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', 'images/download', true);
+        xhr.open('POST', '/' + urlpath + '/images/download', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
         // xhr.setRequestHeader('Content-Type', 'application/json')
@@ -133,7 +134,6 @@ function loadMore() {
 function scrollReaction() {
     let content_height = img_container.offsetHeight;
     let current_y = window.innerHeight + window.pageYOffset;
-    // console.log(current_y + '/' + content_height);
     if (current_y >= content_height) {
         loadMore();
         pagination.classList.remove('fixed');
@@ -142,20 +142,24 @@ function scrollReaction() {
     }
 }
 
-document.querySelectorAll(".sort_images").forEach(function (item) {
-    item.addEventListener('click', function () {
-        sortImages(item.dataset.title);
-    });
-});
-
-window.addEventListener('DOMContentLoaded', (event) => {
+window.addEventListener('DOMContentLoaded', function (event) {
     sortImages('newest');
+
+    document.querySelectorAll(".sort_images").forEach(function (item) {
+        item.addEventListener('click', function () {
+            sortImages(item.dataset.title);
+        });
+    });
+    load_more.addEventListener("click", loadMore);
+    hideLoadMore();
 });
 
-load_more.addEventListener("click", loadMore);
+// for not triggering scroll twice
+let timeout;
 
 window.onscroll = function () {
-    scrollReaction();
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+        scrollReaction();
+    }, 50);
 }
-
-hideLoadMore();

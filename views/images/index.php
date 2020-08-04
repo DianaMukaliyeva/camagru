@@ -10,7 +10,7 @@
 <div class="article-list" id="article-list"></div>
 <!-- <div class="article-list row row-cols-1 row-cols-md-3 pt-5 m-auto px-md-5" id="article-list"></div> -->
 <div id="load-more-container">
-    <button id="load-more" data-page="0">Load more</button>
+    <button id="load-more" data-page="0">Loading</button>
 </div>
 <ul class="article-list__pagination fixed article-list__pagination--inactive" id="post-pagination"></ul>
 <script src="<?php echo URLROOT; ?>/assets/js/gallery.js"></script>

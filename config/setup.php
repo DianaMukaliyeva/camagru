@@ -124,6 +124,20 @@ try {
     SQL;
     Db::query($query);
 
+    // Fill table filters
+    $filters = Db::query('SELECT * FROM filters;');
+    if ($filters == 0) {
+        $query = <<<SQL
+        INSERT INTO `filters` (`name`, `path`) VALUES
+            ("Summer", "/assets/img/filters/summer.png"),
+            ("Wow", "/assets/img/filters/wow.png"),
+            ("Your day", "/assets/img/filters/your_day.png"),
+            ("Drink", "/assets/img/filters/drink.png")
+        ;
+        SQL;
+        Db::query($query);
+    }
+
     echo "db_created.";
 } catch (Exception $e) {
     die($e->getMessage());
