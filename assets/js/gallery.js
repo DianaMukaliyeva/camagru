@@ -1,24 +1,18 @@
 let images = null;
 let request_in_progress = false;
 
+const urlpath = window.location.pathname.split('/')[1];
+
 const img_container = document.getElementById('article-list');
 const pagination = document.getElementById('post-pagination');
 const load_more = document.getElementById('load-more');
-const urlpath = window.location.pathname.split('/')[1];
 
-function showLoadMore() {
-    load_more.style.display = 'inline';
-}
+const getPageId = function (n) { return 'article-page-' + n; }
+const showLoadMore = function () { load_more.style.display = 'inline'; }
+const hideLoadMore = function () { load_more.style.display = 'none'; }
+const setCurrentPage = function (page) { load_more.setAttribute('data-page', page); }
 
-function hideLoadMore() {
-    load_more.style.display = 'none';
-}
-
-function getPageId(n) {
-    return 'article-page-' + n;
-}
-
-function addPaginationPage(page) {
+const addPaginationPage = function (page) {
     const pageLink = document.createElement('a');
     pageLink.href = '#' + getPageId(page);
     pageLink.innerHTML = page;
@@ -34,13 +28,14 @@ function addPaginationPage(page) {
     }
 }
 
-function sortImages(title) {
+const sortImages = function (title) {
     document.querySelectorAll(".sort_images").forEach(function (item) {
         item.classList.remove('active');
         if (item.dataset.title == title) {
             item.classList.add('active');
         }
     });
+
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -68,33 +63,24 @@ function sortImages(title) {
     xmlhttp.send();
 };
 
-function appendToDiv(div, new_html, page) {
-    // Put the new HTML into a temp div
-    // This causes browser to parse it as elements.
-    let page_number = document.createElement('div');
-    let temp = document.createElement('div');
+const appendToDiv = function (div, new_html, page) {
+    const page_number = document.createElement('div');
+    const temp = document.createElement('div');
     page_number.id = getPageId(page);
     page_number.classList.add('article-list__page', 'row', 'row-cols-1', 'row-cols-md-3', 'pt-5', 'px-md-5');
     temp.innerHTML = new_html;
 
-    // Then we can find and work with those elements.
-    // Use firstElementChild b/c of how DOM treats whitespace.
-    let class_name = temp.firstElementChild.className;
-    let items = temp.getElementsByClassName(class_name);
+    const class_name = temp.firstElementChild.className;
+    const items = temp.getElementsByClassName(class_name);
 
-    let len = items.length;
+    const len = items.length;
     for (i = 0; i < len; i++) {
         page_number.appendChild(items[0]);
     }
     div.appendChild(page_number);
 }
 
-function setCurrentPage(page) {
-    // console.log('Incrementing page to: ' + page);
-    load_more.setAttribute('data-page', page);
-}
-
-function loadMore() {
+const loadMore = function () {
 
     if (request_in_progress) {
         return;
@@ -107,6 +93,7 @@ function loadMore() {
     // console.log('page = ' + page + ', size = ' + size + ', next page = ' + next_page);
     if (size > page * 9) {
         addPaginationPage(next_page);
+
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '/' + urlpath + '/images/download', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -131,7 +118,7 @@ function loadMore() {
     request_in_progress = false;
 }
 
-function scrollReaction() {
+const scrollReaction = function () {
     let content_height = img_container.offsetHeight;
     let current_y = window.innerHeight + window.pageYOffset;
     if (current_y >= content_height) {

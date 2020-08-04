@@ -6,5 +6,4 @@ class Image {
         $result = Db::queryAll('SELECT * FROM images');
         return $result;
     }
-
 }
