@@ -129,9 +129,12 @@ try {
     if ($filters == 0) {
         $query = <<<SQL
         INSERT INTO `filters` (`name`, `path`) VALUES
-            ("Summer", "/assets/img/filters/summer.png"),
+            ("Beach", "/assets/img/filters/beach.png"),
+            ("Sun", "/assets/img/filters/sun.png"),
+            ("Hat", "/assets/img/filters/hat.png"),
+            ("Frame", "/assets/img/filters/frame.png"),
+            ("Catty", "/assets/img/filters/catty.png"),
             ("Wow", "/assets/img/filters/wow.png"),
-            ("Your day", "/assets/img/filters/your_day.png"),
             ("Drink", "/assets/img/filters/drink.png")
         ;
         SQL;
