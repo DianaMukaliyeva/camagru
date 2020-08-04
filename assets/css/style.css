@@ -1,9 +1,11 @@
 .content {
     padding: 70px 0 160px;
 }
+
 .navbar-toggler:focus {
     outline: none;
 }
+
 footer {
     position: absolute;
     bottom: 0;
@@ -11,21 +13,26 @@ footer {
     left: 0;
     width: 100%;
 }
+
 .wrapper {
     min-height: 100vh;
     position: relative;
 }
+
 .row {
     margin: 0;
 }
+
 .image {
     height: 100px;
     width: 150px;
 }
+
 .media-img {
     height: 50px;
     width: 50px;
 }
+
 .account-img {
     height: 250px;
     width: 250px;
@@ -39,8 +46,7 @@ footer {
 
 #camera_wrapper {
     margin: 0px auto;
-    /* width: 80%; */
-    /* height: 220px; */
+    margin-bottom: -9px;
 }
 
 #photo_list {

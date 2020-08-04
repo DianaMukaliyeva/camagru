@@ -1,7 +1,7 @@
 <?php require 'views/include/header.php' ?>
 
 <div class="container">
-    <h2 class="text-center py-3">Make your photos</h2>
+    <h2 class="text-center py-4">Make your photos</h2>
 
     <div class="row">
         <!-- camera screen -->
@@ -26,7 +26,7 @@
                 <div class="col pt-3 px-0 d-flex justify-content-center">
                     <button class="btn btn-success btn-block" id="video_stream">Stop video</button>
                 </div>
-                <div class="col pt-3 text-center">
+                <div class="col pt-3 px-1 text-center">
                     <button class="btn btn-block btn-info" id="take_photo"><img src="<?= URLROOT ?>/assets/img/images/camera.png" alt="Take photo"></button>
                 </div>
                 <div class="col pt-3 px-0 d-flex justify-content-center">
