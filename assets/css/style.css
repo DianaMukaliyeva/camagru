@@ -33,14 +33,53 @@ footer {
 }
 
 #video {
-    width: 500px;
-    height: 375px;
+    width: 100%;
     background-color: #666;
 }
 
 #camera_wrapper {
     margin: 0px auto;
-    width: 520px;
-    height: 395px;
-    border: 10px #333 solid;
+    /* width: 80%; */
+    /* height: 220px; */
+}
+
+#photo_list {
+    overflow-y: auto;
+    max-height: 250px;
+    border: 3px solid #333;
+    padding: 10px 0;
+}
+
+#display_list {
+    display: none;
+}
+
+img {
+    max-width: 100%;
+}
+
+#take_photo img {
+    height: 48px;
+}
+
+#filters {
+    height: 100%;
+    border: none;
+    width: 100%;
+    outline: none;
+}
+
+#filters option {
+    padding: 15px 10px;
+    text-align: center;
+}
+
+.filter_container {
+    height: 150px;
+}
+
+@media screen and (min-width: 992px) {
+    .filter_container {
+        height: auto;
+    }
 }
