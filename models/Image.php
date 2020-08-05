@@ -1,7 +1,7 @@
 <?php
 class Image {
 
-    // Find user by email
+    // Get images
     public function getImages() {
         $result = Db::queryAll('SELECT * FROM images');
         return $result;

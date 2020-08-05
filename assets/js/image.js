@@ -1,14 +1,22 @@
-let isVideoLoaded = false;
-let imagesInCapture = 0;
 
 const urlpath = window.location.pathname.split('/')[1];
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
     navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
 
 const video = document.getElementById('video');
-const photo_list = document.getElementById("photo_list");
-const video_stream_button = document.getElementById('video_stream');
+const photoList = document.getElementById("photo_list");
+const videoStreamButton = document.getElementById('video_stream');
 const takePhotoButton = document.getElementById('take_photo');
+
+let isVideoLoaded = false;
+let streaming = false;
+let imagesInCapture = 0;
+
+// standard definition television pic is 640px x 480px (4:3 aspect ratio)
+// hidh-definition 1280px x 720px
+let width = 320; // We will scale the photo width to this
+let height = 0; // This will be computed based on the input stream
+
 
 const deleteImageContainer = function (div) { this.parentElement.remove(); }
 
@@ -24,6 +32,22 @@ const startStream = function () {
                 console.log("Something went wrong!");
             });
     }
+    video.addEventListener('canplay', function (ev) {
+        if (!streaming) {
+            height = video.videoHeight / (video.videoWidth / width);
+
+            // Firefox currently has a bug where the height can't be read from
+            // the video, so we will make assumptions if this happens.
+            if (isNaN(height)) {
+                height = width / (4 / 3);
+            }
+            video.setAttribute('width', width);
+            video.setAttribute('height', height);
+            canvas.setAttribute('width', width);
+            canvas.setAttribute('height', height);
+            streaming = true;
+        }
+    }, false);
 }
 
 const takePhoto = function () {
@@ -31,10 +55,10 @@ const takePhoto = function () {
     let data = {};
     let filters = [];
     canvas = document.createElement("canvas");
-    canvas.width = 270;
-    canvas.height = 200;
-    data.width = 270;
-    data.height = 200;
+    canvas.width = width;
+    canvas.height = height;
+    data.width = width;
+    data.height = height;
     if (isVideoLoaded || document.getElementById('uploaded_photo')) {
         // if (document.getElementById('uploaded_photo') && isVideoLoaded) {
         //     var uploaded_photo = document.getElementById('uploaded_photo');
@@ -46,7 +70,7 @@ const takePhoto = function () {
         //     uploaded_photo.remove();
         // }
         // else
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.getContext('2d').drawImage(video, 0, 0, width, height);
         data.img_data = canvas.toDataURL('image/png');
         for (var i = 0; i < applied_filters.options.length; i++)
             if (applied_filters.options[i].selected && applied_filters.options[i].value != "")
@@ -59,7 +83,7 @@ const takePhoto = function () {
         let xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                photo_list.appendChild(createImageContainer(JSON.parse(this.responseText)));
+                photoList.appendChild(createImageContainer(JSON.parse(this.responseText)));
                 document.getElementById('display_list').style.display = "block";
                 imagesInCapture++;
                 document.getElementById('images_header').innerHTML = "Preview (" + imagesInCapture + ")";
@@ -84,13 +108,13 @@ const toggleStream = function () {
             track.stop();
         }
         video.srcObject = null;
-        video_stream_button.innerHTML = "Start video";
+        videoStreamButton.innerHTML = "Start video";
         takePhotoButton.disabled = true;
     } else {
         if (video.srcObject === null) {
             startStream();
         }
-        video_stream_button.innerHTML = "Stop video";
+        videoStreamButton.innerHTML = "Stop video";
         takePhotoButton.disabled = false;
     }
 }
@@ -105,5 +129,5 @@ const createImageContainer = function (img) {
 }
 
 startStream();
-video_stream_button.addEventListener('click', toggleStream);
+videoStreamButton.addEventListener('click', toggleStream);
 takePhotoButton.addEventListener('click', takePhoto);

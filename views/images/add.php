@@ -6,10 +6,11 @@
     <div class="row">
         <!-- camera screen -->
         <div class="col-md-8">
-            <div class="row video_container">
-                <div class="col-lg-10 px-0" id="camera_wrapper">
-                    <video id="video" autoplay=true></video>
-                    <br />
+            <div class="row border">
+                <div class="col-lg-10 px-0">
+                    <div class="embed-responsive embed-responsive-4by3">
+                        <video class="embed-responsive-item" id="video" autoplay=true></video>
+                    </div>
                 </div>
                 <div class="col-lg-2 filter_container px-0">
                     <select name="filters[]" id="filters" multiple>
@@ -21,6 +22,10 @@
                         <?php endif ?>
                     </select>
                 </div>
+            </div>
+            <div class="row pt-3">
+                <div class="col-md-4 text-center"><label>Tags to image:</label></div>
+                <div class="col-md-8"><input class="w-100" id="tags" placeholder="Separated by space"></div>
             </div>
             <div class="row">
                 <div class="col pt-3 px-0 d-flex justify-content-center">
@@ -36,12 +41,12 @@
         </div>
         <!-- show captured image -->
         <div class="text-center col-md-4 h-70 pt-5">
-            <h4 id="images_header">Preview (0)</h4>
+            <h4 class="py-3" id="images_header">Preview (0)</h4>
             <div id="display_list">
                 <div id="photo_list"></div>
                 <br>
-                <button>Cancel</button>
-                <button>Save</button>
+                <button class="btn btn-success">Cancel</button>
+                <button class="btn btn-success">Save</button>
             </div>
         </div>
     </div>

@@ -16,9 +16,11 @@ a {
     color: #28f;
     text-decoration: none;
 }
+
 a:hover, a:focus {
     color: darken(#28f, 15%);
 }
+
 a:active {
     color: darken(#28f, 30%);
 }
@@ -61,6 +63,7 @@ main {
     transition: opacity .2s, transform .2s;
     width: 15em;
 }
+
 .article-list__item:hover {
     opacity: 1;
     transform: scale(1);
@@ -108,13 +111,16 @@ main {
     display: inline-block;
     margin: 0 1em;
 }
+
 .article-list__pagination__item a {
     color: #888;
     text-decoration: none;
 }
+
 .article-list__pagination__item:hover, .article-list__pagination__item:focus {
     color: lighten(#888, 15%);
 }
+
 .article-list__pagination__item:active {
     color: lighten(#888, 30%);
 }
