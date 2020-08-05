@@ -72,6 +72,7 @@ img {
     border: none;
     width: 100%;
     outline: none;
+    /* padding: 0; */
 }
 
 #filters option {
@@ -80,7 +81,8 @@ img {
 }
 
 .filter_container {
-    height: 150px;
+    height: 125px;
+    /* overflow-y: scroll; */
 }
 
 @media screen and (min-width: 992px) {
@@ -88,3 +90,65 @@ img {
         height: auto;
     }
 }
+
+.video_overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+/*
+#filters input {
+    display: none;
+}
+
+.filter_label {
+    border: 1px solid #fff;
+    padding: 10px;
+    display: block;
+    position: relative;
+    margin: 10px auto;
+    cursor: pointer;
+    background-color: rgb(199, 195, 195);
+}
+
+.filter_label:before {
+    background-color: white;
+    color: white;
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    border: 1px solid grey;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 28px;
+    transition-duration: 0.4s;
+    transform: scale(0);
+}
+
+.filter_label img {
+    height: 100px;
+    width: 100px;
+    transition-duration: 0.2s;
+    transform-origin: 50% 50%;
+}
+
+:checked + .filter_label {
+    border-color: rgb(90, 6, 6);
+}
+
+:checked + .filter_label:before {
+    content: "✓";
+    background-color: grey;
+    transform: scale(1);
+}
+
+:checked + .filter_label img {
+    transform: scale(0.9);
+    box-shadow: 0 0 5px #333;
+    z-index: -1;
+} */

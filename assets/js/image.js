@@ -7,6 +7,8 @@ const video = document.getElementById('video');
 const photoList = document.getElementById("photo_list");
 const videoStreamButton = document.getElementById('video_stream');
 const takePhotoButton = document.getElementById('take_photo');
+const canvas = document.createElement("canvas");
+const applied_filters = document.getElementById('filters');
 
 let isVideoLoaded = false;
 let streaming = false;
@@ -51,10 +53,9 @@ const startStream = function () {
 }
 
 const takePhoto = function () {
-    let applied_filters = document.getElementById('filters');
+    // var applied_filters = document.getElementsByName('filters[]');
     let data = {};
     let filters = [];
-    canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
     data.width = width;
@@ -72,13 +73,18 @@ const takePhoto = function () {
         // else
         canvas.getContext('2d').drawImage(video, 0, 0, width, height);
         data.img_data = canvas.toDataURL('image/png');
+        // for (filter of applied_filters) {
+        //     if (filter.checked) {
+        //         filters.push(filter.dataset.src);
+        //     }
+        // }
         for (var i = 0; i < applied_filters.options.length; i++)
             if (applied_filters.options[i].selected && applied_filters.options[i].value != "")
                 filters.push(applied_filters.options[i].value);
         data.filters = filters;
         // data.description = document.getElementById('description').value;
         canvas.remove();
-        document.getElementById('video').style.opacity = 1;
+        video.style.opacity = 1;
         // console.log(data);
         let xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
@@ -127,6 +133,28 @@ const createImageContainer = function (img) {
     div.childNodes[2].addEventListener('click', deleteImageContainer);
     return div;
 }
+
+
+applied_filters.addEventListener('change', function (e) {
+    const inner_container = document.getElementById('video_container');
+    let elements = inner_container.getElementsByTagName("img");
+    let selected_filter = false;
+    for (let i = elements.length - 1; i >= 0; i--) {
+        if (elements[i].id != "upload_photo")
+           elements[i].remove();
+    }
+    for (i = applied_filters.options.length - 1; i >=0; i--) {
+        if (applied_filters[i].selected) {
+            selected_filter = true;
+            if (applied_filters[i].value != "") {
+                const img = document.createElement('img');
+                img.src = applied_filters[i].value;
+                img.classList.add("video_overlay");
+                inner_container.prepend(img);
+            }
+        }
+    }
+});
 
 startStream();
 videoStreamButton.addEventListener('click', toggleStream);

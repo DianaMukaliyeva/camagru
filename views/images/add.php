@@ -7,20 +7,32 @@
         <!-- camera screen -->
         <div class="col-md-8">
             <div class="row border">
-                <div class="col-lg-10 px-0">
+                <div class="col-lg-10 px-0" id="video_container">
                     <div class="embed-responsive embed-responsive-4by3">
                         <video class="embed-responsive-item" id="video" autoplay=true></video>
                     </div>
                 </div>
                 <div class="col-lg-2 filter_container px-0">
                     <select name="filters[]" id="filters" multiple>
-                        <option value="">No filters</option>
+                        <option value="" selected>No filters</option>
                         <?php if ($data) : ?>
                             <?php foreach ($data as $filter) : ?>
                                 <option value="<?= URLROOT . $filter['path'] ?>"><?= $filter['name'] ?></option>
                             <?php endforeach ?>
                         <?php endif ?>
                     </select>
+                    <!-- <div class="row" id="filters">
+                        <input name="filters[]" type="checkbox" data-src="" id="0" />
+                        <label class="filter_label" for="0"></label>
+                        <?php if ($data) : ?>
+                            <?php foreach ($data as $filter) : ?>
+                                <li>
+                                <input name="filters[]" type="checkbox" data-src="<?= URLROOT . $filter['path'] ?>" id="<?= $filter['id'] ?>" />
+                                <label class="filter_label" for="<?= $filter['id'] ?>"><img src="<?= URLROOT . $filter['path'] ?>" alt="<?= $filter['name'] ?>" /></label>
+                                </li>
+                            <?php endforeach ?>
+                        <?php endif ?>
+                    </div> -->
                 </div>
             </div>
             <div class="row pt-3">
