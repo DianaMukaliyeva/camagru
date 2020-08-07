@@ -18,7 +18,16 @@ let imagesInCapture = 0;
 let width = 320; // We will scale the photo width to this
 let height = 0; // This will be computed based on the input stream
 
-const deleteImageContainer = function (div) { this.parentElement.remove(); }
+const changeImagesInCapture = function () {
+    document.getElementById('images_header').innerHTML = "Preview (" + imagesInCapture + ")";
+    document.getElementById('display_list').style.display = imagesInCapture == 0 ? "none" : "block";
+}
+
+const deleteImageContainer = function (div) {
+    this.parentElement.remove();
+    imagesInCapture--;
+    changeImagesInCapture();
+}
 
 const startStream = function () {
     // ensure that our media-related code only works if getUserMedia is actually supported
@@ -81,9 +90,8 @@ const takePhoto = function () {
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 photoList.appendChild(createImageContainer(JSON.parse(this.responseText)));
-                document.getElementById('display_list').style.display = "block";
                 imagesInCapture++;
-                document.getElementById('images_header').innerHTML = "Preview (" + imagesInCapture + ")";
+                changeImagesInCapture();
                 // console.log(this.responseText + ' response');
             }
         }
@@ -121,15 +129,15 @@ const toggleStream = function (start = true) {
 
 const createImageContainer = function (img) {
     let div = document.createElement("div");
-    div.classList.add("mx-3");
+    div.classList.add("mx-3", "try");
     let tags = '';
     img['tags'].forEach(element => {
-        tags += "#" + element + " ";
+        tags += "#" + element;
     });
     if (tags == '')
         tags = 'No tags';
     div.innerHTML = "<img src='" + img['photo'] + "'></img>\
-                    <a class='delete'></a>\
+                    <a><i class='fas fa-times-circle'></i></a>\
                     <p>"+ tags + "</p>";
     div.childNodes[2].addEventListener('click', deleteImageContainer);
     return div;
@@ -209,6 +217,36 @@ const uploadImage = function () {
     takePhotoButton.disabled = false;
     video.style.opacity = 0;
 }
+
+
+document.getElementById("delete_images").addEventListener('click', function (e) {
+    while (photoList.firstChild) {
+        photoList.removeChild(photoList.firstChild);
+        imagesInCapture--;
+    }
+    changeImagesInCapture();
+});
+
+document.getElementById("save_images").addEventListener('click', function (e) {
+    let imagesTab = {};
+    let images = photoList.getElementsByTagName('img');
+    let tags = photoList.getElementsByTagName('p');
+    let j = 0;
+    for (let i = 0; i < images.length; i++) {
+        let imageInfo = {};
+        imageInfo.src = images[i].src;
+        imagesTab[j] = imageInfo;
+        j++;
+    }
+    j = 0;
+    for (i = 0; i < tags.length; i++) {
+        imagesTab[j].description = tags[i].innerHTML;
+        j++;
+    }
+    console.log(imagesTab);
+    console.log(images);
+    console.log(tags);
+});
 
 startStream();
 videoStreamButton.addEventListener('click', toggleStream);

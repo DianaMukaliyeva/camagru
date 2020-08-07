@@ -65,6 +65,8 @@ class ImagesController extends Controller {
                 imagedestroy($dest);
                 $json['valid'] = true;
                 $json['message'] = "Image added to the list";
+                // delete all # characters before
+                $data['tags'] = str_replace('#', '', $data['tags']);
                 $json['tags'] = array_filter(explode(' ', $data['tags']));
             }
             echo json_encode($json);

@@ -60,8 +60,8 @@
             <div id="display_list">
                 <div id="photo_list"></div>
                 <br>
-                <button class="btn btn-success">Cancel</button>
-                <button class="btn btn-success">Save</button>
+                <button class="btn btn-success" id="delete_images">Cancel</button>
+                <button class="btn btn-success" id="save_images">Save</button>
             </div>
         </div>
     </div>
