@@ -18,12 +18,12 @@ class ImagesController extends Controller {
         }
         $images = $this->imageModel->getImages();
         if ($this->isAjaxRequest()) {
-            if ($sort == 'newest') {
+            if ($sort == 'popular') {
                 echo json_encode($images);
                 // $this->renderView('images/gallery', ['images' => $images]);
             } else {
                 echo json_encode($images);
-                // $this->renderView('images/gallery', ['images' => null]);
+                // $this->renderView('images/gallery', ['images' => $images]);
             }
         } else {
             $this->renderView('images/index');
@@ -65,7 +65,7 @@ class ImagesController extends Controller {
                 imagedestroy($dest);
                 $json['valid'] = true;
                 $json['message'] = "Image added to the list";
-                $json['description'] = "description";
+                $json['tags'] = array_filter(explode(' ', $data['tags']));
             }
             echo json_encode($json);
         } else {

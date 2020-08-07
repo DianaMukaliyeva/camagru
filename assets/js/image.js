@@ -7,6 +7,7 @@ const video = document.getElementById('video');
 const photoList = document.getElementById("photo_list");
 const videoStreamButton = document.getElementById('video_stream');
 const takePhotoButton = document.getElementById('take_photo');
+const uploadImageButton = document.getElementById('upload_photo');
 const canvas = document.createElement("canvas");
 const applied_filters = document.getElementById('filters');
 
@@ -14,11 +15,8 @@ let isVideoLoaded = false;
 let streaming = false;
 let imagesInCapture = 0;
 
-// standard definition television pic is 640px x 480px (4:3 aspect ratio)
-// hidh-definition 1280px x 720px
 let width = 320; // We will scale the photo width to this
 let height = 0; // This will be computed based on the input stream
-
 
 const deleteImageContainer = function (div) { this.parentElement.remove(); }
 
@@ -38,8 +36,7 @@ const startStream = function () {
         if (!streaming) {
             height = video.videoHeight / (video.videoWidth / width);
 
-            // Firefox currently has a bug where the height can't be read from
-            // the video, so we will make assumptions if this happens.
+            // Some browser has a bug
             if (isNaN(height)) {
                 height = width / (4 / 3);
             }
@@ -54,35 +51,29 @@ const startStream = function () {
 
 const takePhoto = function () {
     // var applied_filters = document.getElementsByName('filters[]');
+    const uploadedImage = document.getElementById('uploaded_photo');
+
     let data = {};
     let filters = [];
     canvas.width = width;
     canvas.height = height;
     data.width = width;
     data.height = height;
-    if (isVideoLoaded || document.getElementById('uploaded_photo')) {
-        // if (document.getElementById('uploaded_photo') && isVideoLoaded) {
-        //     var uploaded_photo = document.getElementById('uploaded_photo');
-        //     canvas.getContext('2d').drawImage(uploaded_photo, 0, 0, canvas.width, canvas.height);
-        //     uploaded_photo.remove();
-        // } else if (!isVideoLoaded && document.getElementById('inner_container').getElementsByTagName('img')) {
-        //     var uploaded_photo = document.getElementById('inner_container').getElementsByTagName('img')[0];
-        //     canvas.getContext('2d').drawImage(uploaded_photo, 0, 0, canvas.width, canvas.height);
-        //     uploaded_photo.remove();
-        // }
-        // else
-        canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-        data.img_data = canvas.toDataURL('image/png');
-        // for (filter of applied_filters) {
-        //     if (filter.checked) {
-        //         filters.push(filter.dataset.src);
-        //     }
-        // }
-        for (var i = 0; i < applied_filters.options.length; i++)
+    if (isVideoLoaded || uploadedImage) {
+        if (uploadedImage) {
+            canvas.getContext('2d').drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
+            data.img_data = canvas.toDataURL('image/png');
+        } else {
+            canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+            data.img_data = canvas.toDataURL('image/png');
+        }
+        for (let i = 0; i < applied_filters.options.length; i++)
             if (applied_filters.options[i].selected && applied_filters.options[i].value != "")
                 filters.push(applied_filters.options[i].value);
         data.filters = filters;
-        // data.description = document.getElementById('description').value;
+        data.tags = document.getElementById('tags').value;
+        document.getElementById('tags').value = "";
+        resetFilters();
         canvas.remove();
         video.style.opacity = 1;
         // console.log(data);
@@ -93,7 +84,6 @@ const takePhoto = function () {
                 document.getElementById('display_list').style.display = "block";
                 imagesInCapture++;
                 document.getElementById('images_header').innerHTML = "Preview (" + imagesInCapture + ")";
-
                 // console.log(this.responseText + ' response');
             }
         }
@@ -105,7 +95,8 @@ const takePhoto = function () {
 }
 
 // stop or start webcam stream
-const toggleStream = function () {
+const toggleStream = function (start = true) {
+    const uploadedImage = document.getElementById('uploaded_photo');
     let stream = video.srcObject;
     if (stream) {
         let tracks = stream.getTracks();
@@ -117,45 +108,110 @@ const toggleStream = function () {
         videoStreamButton.innerHTML = "Start video";
         takePhotoButton.disabled = true;
     } else {
-        if (video.srcObject === null) {
-            startStream();
+        if (uploadedImage) {
+            uploadedImage.remove();
         }
-        videoStreamButton.innerHTML = "Stop video";
-        takePhotoButton.disabled = false;
+        if (video.srcObject === null && start) {
+            startStream();
+            videoStreamButton.innerHTML = "Stop video";
+            takePhotoButton.disabled = false;
+        }
     }
 }
 
 const createImageContainer = function (img) {
-    var div = document.createElement("div");
+    let div = document.createElement("div");
+    div.classList.add("mx-3");
+    let tags = '';
+    img['tags'].forEach(element => {
+        tags += "#" + element + " ";
+    });
+    if (tags == '')
+        tags = 'No tags';
     div.innerHTML = "<img src='" + img['photo'] + "'></img>\
                     <a class='delete'></a>\
-                    <p>"+ img['description'] + "</p>";
+                    <p>"+ tags + "</p>";
     div.childNodes[2].addEventListener('click', deleteImageContainer);
     return div;
 }
 
-
-applied_filters.addEventListener('change', function (e) {
+const applyFilters = function () {
     const inner_container = document.getElementById('video_container');
     let elements = inner_container.getElementsByTagName("img");
     let selected_filter = false;
     for (let i = elements.length - 1; i >= 0; i--) {
-        if (elements[i].id != "upload_photo")
-           elements[i].remove();
+        if (elements[i].id != "uploaded_photo")
+            elements[i].remove();
     }
-    for (i = applied_filters.options.length - 1; i >=0; i--) {
+    for (i = applied_filters.options.length - 1; i >= 0; i--) {
         if (applied_filters[i].selected) {
             selected_filter = true;
             if (applied_filters[i].value != "") {
                 const img = document.createElement('img');
                 img.src = applied_filters[i].value;
                 img.classList.add("video_overlay");
-                inner_container.prepend(img);
+                inner_container.insertBefore(img, inner_container.firstChild);
             }
         }
     }
-});
+}
+
+const resetFilters = function () {
+    const inner_container = document.getElementById('video_container');
+    let elements = inner_container.getElementsByTagName("img");
+    let selected_filter = false;
+    for (let i = elements.length - 1; i >= 0; i--) {
+        if (elements[i].id != "uploaded_photo")
+            elements[i].remove();
+    }
+    for (i = applied_filters.options.length - 1; i >= 0; i--) {
+        applied_filters[i].selected = false;
+    }
+    applied_filters[0].selected = true;
+}
+
+const createUploadedImage = function () {
+    const img = new Image();
+    const uploadedImage = document.getElementById('uploaded_photo');
+
+    if (!isVideoLoaded) {
+        video.style.width = "680px";
+        video.style.height = "480px";
+    }
+    img.onload = function () {
+        // console.log('here');
+        if (uploadedImage)
+            uploadedImage.remove();
+        const img = document.createElement('img');
+        // console.log("this.src" + this.src);
+        img.src = this.src;
+        img.classList.add("video_overlay");
+        img.style.zIndex = 1;
+        img.classList.add("embed-responsive-item");
+        img.id = "uploaded_photo";
+        const camera = document.getElementById('video_container');
+        // console.log("camera div: " + document.getElementById('video_container'));
+        // console.log("img" + img);
+        camera.insertBefore(img, camera.firstChild);
+    };
+    img.src = this.result;
+    // console.log('img src') + img.src;
+}
+
+const uploadImage = function () {
+    // console.log('here');
+    const img = uploadImageButton.files[0];
+    const reader = new FileReader();
+    reader.onload = createUploadedImage;
+    // console.log(uploadImageButton.files[0]);
+    reader.readAsDataURL(img);
+    toggleStream(false);
+    takePhotoButton.disabled = false;
+    video.style.opacity = 0;
+}
 
 startStream();
 videoStreamButton.addEventListener('click', toggleStream);
 takePhotoButton.addEventListener('click', takePhoto);
+applied_filters.addEventListener('change', applyFilters);
+uploadImageButton.addEventListener('change', uploadImage);

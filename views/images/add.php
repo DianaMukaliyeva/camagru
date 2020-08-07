@@ -47,7 +47,10 @@
                     <button class="btn btn-block btn-info" id="take_photo"><img src="<?= URLROOT ?>/assets/img/images/camera.png" alt="Take photo"></button>
                 </div>
                 <div class="col pt-3 px-0 d-flex justify-content-center">
-                    <button class="btn btn-success btn-block" id="upload_photo">Upload photo</button>
+                    <label class="btn btn-success btn-block mb-0 d-flex" for="upload_photo">
+                        <input id="upload_photo" type="file" class="d-none" accept="image/*" type="file">
+                        <div class="m-auto">Upload photo</div>
+                    </label>
                 </div>
             </div>
         </div>
