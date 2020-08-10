@@ -15,6 +15,7 @@ let isVideoLoaded = false;
 let streaming = false;
 let imageUploaded = false;
 let imagesInCapture = 0;
+let appliedFilters = [];
 
 let width = 320; // We will scale the photo width to this
 let height = 0; // This will be computed based on the input stream
@@ -31,6 +32,37 @@ const deleteImageContainer = function (div) {
     imagesInCapture--;
     changeImagesInPreview();
 }
+
+// delete all images in preview
+const deletePreview = function () {
+    while (photoList.firstChild) {
+        photoList.removeChild(photoList.firstChild);
+        imagesInCapture--;
+    }
+    changeImagesInPreview();
+}
+
+// Send images to server and save them
+const saveImages = function () {
+    let imagesTab = {};
+    let images = photoList.getElementsByTagName('img');
+    let tags = photoList.getElementsByTagName('p');
+    let j = 0;
+    for (let i = 0; i < images.length; i++) {
+        let imageInfo = {};
+        imageInfo.src = images[i].src;
+        imagesTab[j] = imageInfo;
+        j++;
+    }
+    j = 0;
+    for (i = 0; i < tags.length; i++) {
+        imagesTab[j].description = tags[i].innerHTML;
+        j++;
+    }
+    console.log(imagesTab);
+    console.log(images);
+    console.log(tags);
+};
 
 // starts video stream
 const startStream = function () {
@@ -117,15 +149,15 @@ const toggleStream = function (confirmStart = true) {
     }
 }
 
+// Create container for image in preview
 const createImageContainer = function (img) {
     let div = document.createElement("div");
-    div.classList.add("mx-3", "try");
+    div.classList.add("mx-3", "delete_img");
     let tags = '';
     img['tags'].forEach(element => {
         tags += "#" + element;
     });
-    if (tags == '')
-        tags = 'No tags';
+    tags = tags == '' ? 'No tags' : tags;
     div.innerHTML = "<img src='" + img['photo'] + "'></img>\
                     <a><i class='fas fa-times-circle'></i></a>\
                     <p>"+ tags + "</p>";
@@ -199,37 +231,6 @@ const toggleUploadImage = function () {
         }
     }
 }
-
-// Delete all images in preview
-document.getElementById("delete_images").addEventListener('click', function () {
-    while (photoList.firstChild) {
-        photoList.removeChild(photoList.firstChild);
-        imagesInCapture--;
-    }
-    changeImagesInPreview();
-});
-
-// Send images to server and save them
-document.getElementById("save_images").addEventListener('click', function () {
-    let imagesTab = {};
-    let images = photoList.getElementsByTagName('img');
-    let tags = photoList.getElementsByTagName('p');
-    let j = 0;
-    for (let i = 0; i < images.length; i++) {
-        let imageInfo = {};
-        imageInfo.src = images[i].src;
-        imagesTab[j] = imageInfo;
-        j++;
-    }
-    j = 0;
-    for (i = 0; i < tags.length; i++) {
-        imagesTab[j].description = tags[i].innerHTML;
-        j++;
-    }
-    console.log(imagesTab);
-    console.log(images);
-    console.log(tags);
-});
 
 startStream();
 videoStreamButton.addEventListener('click', toggleStream);

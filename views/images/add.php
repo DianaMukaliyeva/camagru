@@ -10,6 +10,7 @@
                 <div class="col-lg-10 px-0 embed-responsive embed-responsive-4by3" id="video_container">
                     <video class="embed-responsive-item" id="video" autoplay=true></video>
                 </div>
+                <!-- filters -->
                 <div class="col-lg-2 filter_container px-0">
                     <select name="filters[]" id="filters" multiple>
                         <option value="" selected>No filters</option>
@@ -19,6 +20,14 @@
                             <?php endforeach ?>
                         <?php endif ?>
                     </select>
+                        <!-- <input type="checkbox" onclick="toggleFilter(this.id)" id="filter_0" class='d-none'>
+                        <label for="filter_0" class="border label-filter">No filters</label>
+                        <?php if ($data) : ?>
+                            <?php foreach ($data as $filter) : ?>
+                                <input type="checkbox" onclick="toggleFilter(this.id)" id="filter_<?= $filter['id'] ?>" class='d-none'>
+                                <label for="filter_<?= $filter['id'] ?>" class="border label-filter"><?= $filter['name'] ?></label>
+                            <?php endforeach ?>
+                        <?php endif ?> -->
                 </div>
             </div>
             <div class="row py-3">
@@ -34,7 +43,7 @@
                 </div>
                 <div class="col pt-3 px-0 d-flex justify-content-center">
                     <input id="upload_photo" type="file" class="d-none" accept="image/*">
-                    <input id="upload" type="button" value="Upload photo" class="btn btn-success btn-block mb-0 justify-content-center d-flex">
+                    <input id="upload" type="button" value="Upload photo" class="btn btn-success btn-block mb-0 justify-content-center d-flex wspace">
                 </div>
             </div>
         </div>
@@ -44,8 +53,8 @@
             <div id="display_list">
                 <div id="photo_list"></div>
                 <br>
-                <button class="btn btn-success" id="delete_images">Cancel</button>
-                <button class="btn btn-success" id="save_images">Save</button>
+                <button class="btn btn-success" onclick="deletePreview()">Cancel</button>
+                <button class="btn btn-success" onclick="saveImages()" id="save_images">Save</button>
             </div>
         </div>
     </div>
