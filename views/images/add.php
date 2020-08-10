@@ -5,12 +5,10 @@
 
     <div class="row">
         <!-- camera screen -->
-        <div class="col-md-8">
+        <div class="col-md-7 p-0">
             <div class="row border">
-                <div class="col-lg-10 px-0" id="video_container">
-                    <div class="embed-responsive embed-responsive-4by3">
-                        <video class="embed-responsive-item" id="video" autoplay=true></video>
-                    </div>
+                <div class="col-lg-10 px-0 embed-responsive embed-responsive-4by3" id="video_container">
+                    <video class="embed-responsive-item" id="video" autoplay=true></video>
                 </div>
                 <div class="col-lg-2 filter_container px-0">
                     <select name="filters[]" id="filters" multiple>
@@ -21,25 +19,13 @@
                             <?php endforeach ?>
                         <?php endif ?>
                     </select>
-                    <!-- <div class="row" id="filters">
-                        <input name="filters[]" type="checkbox" data-src="" id="0" />
-                        <label class="filter_label" for="0"></label>
-                        <?php if ($data) : ?>
-                            <?php foreach ($data as $filter) : ?>
-                                <li>
-                                <input name="filters[]" type="checkbox" data-src="<?= URLROOT . $filter['path'] ?>" id="<?= $filter['id'] ?>" />
-                                <label class="filter_label" for="<?= $filter['id'] ?>"><img src="<?= URLROOT . $filter['path'] ?>" alt="<?= $filter['name'] ?>" /></label>
-                                </li>
-                            <?php endforeach ?>
-                        <?php endif ?>
-                    </div> -->
                 </div>
             </div>
-            <div class="row pt-3">
+            <div class="row py-3">
                 <div class="col-md-4 text-center"><label>Tags to image:</label></div>
                 <div class="col-md-8"><input class="w-100" id="tags" placeholder="Separated by space"></div>
             </div>
-            <div class="row">
+            <div class="row py-3">
                 <div class="col pt-3 px-0 d-flex justify-content-center">
                     <button class="btn btn-success btn-block" id="video_stream">Stop video</button>
                 </div>
@@ -47,16 +33,14 @@
                     <button class="btn btn-block btn-info" id="take_photo"><img src="<?= URLROOT ?>/assets/img/images/camera.png" alt="Take photo"></button>
                 </div>
                 <div class="col pt-3 px-0 d-flex justify-content-center">
-                    <label class="btn btn-success btn-block mb-0 d-flex" for="upload_photo">
-                        <input id="upload_photo" type="file" class="d-none" accept="image/*" type="file">
-                        <div class="m-auto">Upload photo</div>
-                    </label>
+                    <input id="upload_photo" type="file" class="d-none" accept="image/*">
+                    <input id="upload" type="button" value="Upload photo" class="btn btn-success btn-block mb-0 justify-content-center d-flex">
                 </div>
             </div>
         </div>
         <!-- show captured image -->
-        <div class="text-center col-md-4 h-70 pt-5">
-            <h4 class="py-3" id="images_header">Preview (0)</h4>
+        <div class="text-center col-md-4 h-70 ml-auto">
+            <h4 class="pb-3" id="images_header">Preview (0)</h4>
             <div id="display_list">
                 <div id="photo_list"></div>
                 <br>
