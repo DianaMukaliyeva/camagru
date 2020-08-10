@@ -50,7 +50,7 @@ footer {
 #photo_list {
     overflow-y: auto;
     height: 42vh;
-    border: 3px solid #333;
+    border: 1px solid #333;
     padding: 10px 0;
 }
 
@@ -66,25 +66,26 @@ img {
     height: 48px;
 }
 
-#filters {
-    height: 100%;
-    border: none;
-    width: 100%;
-    outline: none;
+.label-filter {
+    display: block;
+    padding: 10px;
+    margin: 0;
+    text-align: center;
 }
 
-#filters option {
-    padding: 15px 10px;
-    text-align: center;
+.label-filter:hover {
+    cursor: pointer;
 }
 
 .filter_container {
     height: 125px;
+    overflow-y: scroll;
 }
 
 @media screen and (min-width: 992px) {
     .filter_container {
         height: auto;
+        overflow: hidden;
     }
 }
 
@@ -94,68 +95,28 @@ img {
     height: 100%;
 }
 
-.try {
-    position:relative;
-}
-.try a {
-    display:block;
-    position:absolute;
-    top:3px;
-    right:3px;
-    overflow:hidden;
-}
-/*
-#filters input {
-    display: none;
-}
-
-.filter_label {
-    border: 1px solid #fff;
-    padding: 10px;
-    display: block;
+.delete_img {
     position: relative;
-    margin: 10px auto;
-    cursor: pointer;
-    background-color: rgb(199, 195, 195);
 }
-
-.filter_label:before {
-    background-color: white;
-    color: white;
-    content: " ";
+.delete_img a {
+    font-size: 1.5em;
     display: block;
-    border-radius: 50%;
-    border: 1px solid grey;
     position: absolute;
     top: -5px;
-    left: -5px;
-    width: 25px;
-    height: 25px;
-    text-align: center;
-    line-height: 28px;
-    transition-duration: 0.4s;
-    transform: scale(0);
+    right: 0;
+    overflow: hidden;
 }
 
-.filter_label img {
-    height: 100px;
-    width: 100px;
-    transition-duration: 0.2s;
-    transform-origin: 50% 50%;
+.delete_img a:hover {
+    cursor: pointer;
+    font-size: 1.8em;
 }
 
-:checked + .filter_label {
-    border-color: rgb(90, 6, 6);
+.wspace {
+    white-space: normal;
 }
 
-:checked + .filter_label:before {
-    content: "✓";
-    background-color: grey;
-    transform: scale(1);
+:checked + .label-filter{
+    background-color: #17a3b86b;
+    color: white;
 }
-
-:checked + .filter_label img {
-    transform: scale(0.9);
-    box-shadow: 0 0 5px #333;
-    z-index: -1;
-} */

@@ -7,8 +7,6 @@ const photoList = document.getElementById("photo_list");
 const videoStreamButton = document.getElementById('video_stream');
 const takePhotoButton = document.getElementById('take_photo');
 const uploadImageButton = document.getElementById('upload');
-const canvas = document.createElement("canvas");
-const applied_filters = document.getElementById('filters');
 const camera = document.getElementById('video_container');
 
 let isVideoLoaded = false;
@@ -72,23 +70,23 @@ const startStream = function () {
             .then(function (stream) {
                 video.srcObject = stream;
                 isVideoLoaded = true;
+                video.play();
             })
-            .catch(function (err0r) {
-                console.log("Something went wrong!");
+            .catch(function (error) {
+                console.log("Something went wrong!" + error);
             });
     }
     video.addEventListener('canplay', function (ev) {
         if (!streaming) {
             height = video.videoHeight / (video.videoWidth / width);
 
-            // Some browser has a bug
+            // Firefox currently has a bug where the height can't be read from
+            // the video, so we will make assumptions if this happens.
             if (isNaN(height)) {
                 height = width / (4 / 3);
             }
             video.setAttribute('width', width);
             video.setAttribute('height', height);
-            canvas.setAttribute('width', width);
-            canvas.setAttribute('height', height);
             streaming = true;
         }
     }, false);
@@ -98,18 +96,18 @@ const startStream = function () {
 const takePhoto = function () {
     let data = {};
     let filters = [];
+    const canvas = document.createElement("canvas");
     const imageToSend = imageUploaded ? document.getElementById('uploaded_photo') : video;
+    canvas.width = width;
+    canvas.height = height;
     canvas.getContext('2d').drawImage(imageToSend, 0, 0, width, height);
     data.img_data = canvas.toDataURL('image/png');
     data.width = width;
     data.height = height;
-    for (let i = 0; i < applied_filters.options.length; i++)
-        if (applied_filters.options[i].selected && applied_filters.options[i].value != "")
-            filters.push(applied_filters.options[i].value);
-    data.filters = filters;
-    resetFilters();
+    data.filters = appliedFilters;
     data.tags = document.getElementById('tags').value;
     document.getElementById('tags').value = "";
+    canvas.remove();
 
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
@@ -134,7 +132,6 @@ const toggleStream = function (confirmStart = true) {
             let track = tracks[i];
             track.stop();
         }
-        resetFilters();
         video.srcObject = null;
         videoStreamButton.innerHTML = "Start video";
         takePhotoButton.disabled = true;
@@ -158,44 +155,41 @@ const createImageContainer = function (img) {
         tags += "#" + element;
     });
     tags = tags == '' ? 'No tags' : tags;
-    div.innerHTML = "<img src='" + img['photo'] + "'></img>\
+    div.innerHTML = "<img class='border' src='" + img['photo'] + "'></img>\
                     <a><i class='fas fa-times-circle'></i></a>\
                     <p>"+ tags + "</p>";
     div.childNodes[2].addEventListener('click', deleteImageContainer);
     return div;
 }
 
-const applyFilters = function () {
-    let elements = camera.getElementsByTagName("img");
-    let selected_filter = false;
-    for (let i = elements.length - 1; i >= 0; i--) {
-        if (elements[i].id != "uploaded_photo")
-            elements[i].remove();
-    }
-    for (let i = 0; i < applied_filters.options.length; i++) {
-        if (applied_filters[i].selected) {
-            selected_filter = true;
-            if (applied_filters[i].value != "") {
-                const img = document.createElement('img');
-                img.src = applied_filters[i].value;
-                img.classList.add("video_overlay", "embed-responsive-item");
-                camera.appendChild(img);
+// Add/delete filter
+const toggleFilter = function (id) {
+    if (id == 'filter_0') {
+        appliedFilters = [];
+        let filters = document.getElementById('filters').getElementsByTagName('input');
+        for (var i = 0; i < filters.length; i++) {
+            if (filters[i].type == 'checkbox') {
+                if (document.getElementById('applied_' + filters[i].id))
+                    document.getElementById('applied_' + filters[i].id).remove();
+                filters[i].checked = false;
             }
         }
+        filters[0].checked = true;
+    } else {
+        document.getElementById('filter_0').checked = false;
+        let filter = document.getElementById(id);
+        if (appliedFilters.includes(filter.dataset.path)) {
+            appliedFilters = appliedFilters.filter(item => item !== filter.dataset.path);
+            document.getElementById('applied_' + id).remove();
+        } else {
+            const img = document.createElement('img');
+            img.id = "applied_" + id;
+            img.src = filter.dataset.path;
+            img.classList.add("video_overlay", "embed-responsive-item");
+            camera.appendChild(img);
+            appliedFilters.push(filter.dataset.path);
+        }
     }
-}
-
-const resetFilters = function () {
-    let elements = camera.getElementsByTagName("img");
-    let selected_filter = false;
-    for (let i = elements.length - 1; i >= 0; i--) {
-        if (elements[i].id != "uploaded_photo")
-            elements[i].remove();
-    }
-    for (i = applied_filters.options.length - 1; i >= 0; i--) {
-        applied_filters[i].selected = false;
-    }
-    applied_filters[0].selected = true;
 }
 
 // Upload/remove image
@@ -206,7 +200,6 @@ const toggleUploadImage = function () {
         document.getElementById('upload_photo').value = '';
         uploadImageButton.value = "Upload photo";
         takePhotoButton.disabled = true;
-        resetFilters();
     } else {
         document.getElementById('upload_photo').click();
         document.getElementById('upload_photo').onchange = function () {
@@ -235,5 +228,4 @@ const toggleUploadImage = function () {
 startStream();
 videoStreamButton.addEventListener('click', toggleStream);
 takePhotoButton.addEventListener('click', takePhoto);
-applied_filters.addEventListener('change', applyFilters);
 uploadImageButton.addEventListener('click', toggleUploadImage);

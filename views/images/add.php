@@ -12,22 +12,16 @@
                 </div>
                 <!-- filters -->
                 <div class="col-lg-2 filter_container px-0">
-                    <select name="filters[]" id="filters" multiple>
-                        <option value="" selected>No filters</option>
-                        <?php if ($data) : ?>
-                            <?php foreach ($data as $filter) : ?>
-                                <option value="<?= URLROOT . $filter['path'] ?>"><?= $filter['name'] ?></option>
-                            <?php endforeach ?>
-                        <?php endif ?>
-                    </select>
-                        <!-- <input type="checkbox" onclick="toggleFilter(this.id)" id="filter_0" class='d-none'>
+                    <div id="filters">
+                        <input type="checkbox" onclick="toggleFilter(this.id)" id="filter_0" class='d-none' checked>
                         <label for="filter_0" class="border label-filter">No filters</label>
                         <?php if ($data) : ?>
                             <?php foreach ($data as $filter) : ?>
-                                <input type="checkbox" onclick="toggleFilter(this.id)" id="filter_<?= $filter['id'] ?>" class='d-none'>
+                                <input type="checkbox" onclick="toggleFilter(this.id)" id="filter_<?= $filter['id'] ?>" class='d-none' data-path="<?= URLROOT . $filter['path'] ?>">
                                 <label for="filter_<?= $filter['id'] ?>" class="border label-filter"><?= $filter['name'] ?></label>
                             <?php endforeach ?>
-                        <?php endif ?> -->
+                        <?php endif ?>
+                    </div>
                 </div>
             </div>
             <div class="row py-3">
