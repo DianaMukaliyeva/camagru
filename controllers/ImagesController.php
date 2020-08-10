@@ -38,7 +38,7 @@ class ImagesController extends Controller {
         }
     }
 
-    public function add(...$param) {
+    public function takePhoto(...$param) {
         if (!isset($_SESSION['user'])) {
             $this->redirect('');
         }
@@ -52,14 +52,14 @@ class ImagesController extends Controller {
                 imagealphablending($dest, true);
                 imagesavealpha($dest, true);
                 foreach ($data['filters'] as $filter) {
-                        $src = imagecreatefrompng($filter);
-                        imagecopyresized($dest, $src, 0, 0, 0, 0, $data['width'], $data['height'], imagesx($src), imagesy($src));
-                        imagedestroy($src);
+                    $src = imagecreatefrompng($filter);
+                    imagecopyresized($dest, $src, 0, 0, 0, 0, $data['width'], $data['height'], imagesx($src), imagesy($src));
+                    imagedestroy($src);
                 }
-                ob_start ();
+                ob_start();
                 imagepng($dest);
                 $final_image_data = ob_get_contents();
-                ob_end_clean ();
+                ob_end_clean();
                 $final_image_data_base_64 = base64_encode($final_image_data);
                 $json['photo'] = 'data:image/png;base64,' . $final_image_data_base_64;
                 imagedestroy($dest);
@@ -72,7 +72,41 @@ class ImagesController extends Controller {
             echo json_encode($json);
         } else {
             $filters = $this->filterModel->getFilters();
-            $this->renderView('images/add', $filters);
+            $this->renderView('images/photomaker', $filters);
+        }
+    }
+
+    public function combine() {
+        if ($this->isAjaxRequest()) {
+            if (isset($_POST['data'])) {
+                $data = json_decode($_POST['data'], true);
+                $img_data = str_replace('data:image/png;base64,', '', $data['img_data']);
+                $img_data = str_replace(' ', '+', $img_data);
+                $img_data = base64_decode($img_data);
+                $dest = imagecreatefromstring($img_data);
+                imagealphablending($dest, true);
+                imagesavealpha($dest, true);
+                foreach ($data['filters'] as $filter) {
+                    $src = imagecreatefrompng($filter);
+                    imagecopyresized($dest, $src, 0, 0, 0, 0, $data['width'], $data['height'], imagesx($src), imagesy($src));
+                    imagedestroy($src);
+                }
+                ob_start();
+                imagepng($dest);
+                $final_image_data = ob_get_contents();
+                ob_end_clean();
+                $final_image_data_base_64 = base64_encode($final_image_data);
+                $json['photo'] = 'data:image/png;base64,' . $final_image_data_base_64;
+                imagedestroy($dest);
+                $json['valid'] = true;
+                $json['message'] = "Image added to the list";
+                // delete all # characters before
+                $data['tags'] = str_replace('#', '', $data['tags']);
+                $json['tags'] = array_filter(explode(' ', $data['tags']));
+            }
+            echo json_encode($json);
+        } else {
+            $this->redirect('');
         }
     }
 

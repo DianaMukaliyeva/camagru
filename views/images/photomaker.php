@@ -53,5 +53,6 @@
         </div>
     </div>
 </div>
-<script src="<?= URLROOT; ?>/assets/js/image.js"></script>
+<script src="<?= URLROOT; ?>/assets/js/camera.js"></script>
+<script src="<?= URLROOT; ?>/assets/js/photomaker.js"></script>
 <?php require 'views/include/footer.php' ?>

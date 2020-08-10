@@ -1,8 +1,6 @@
 let images = null;
 let request_in_progress = false;
 
-const urlpath = window.location.pathname.split('/')[1];
-
 const img_container = document.getElementById('article-list');
 const pagination = document.getElementById('post-pagination');
 const load_more = document.getElementById('load-more');

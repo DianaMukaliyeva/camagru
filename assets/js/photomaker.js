@@ -1,22 +1,6 @@
-// setting up video stream on different browsers
-navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
-
-const video = document.getElementById('video');
-const photoList = document.getElementById("photo_list");
-const videoStreamButton = document.getElementById('video_stream');
-const takePhotoButton = document.getElementById('take_photo');
+const videoContainer = document.getElementById('video_container');
 const uploadImageButton = document.getElementById('upload');
-const camera = document.getElementById('video_container');
-
-let isVideoLoaded = false;
-let streaming = false;
-let imageUploaded = false;
-let imagesInCapture = 0;
 let appliedFilters = [];
-
-let width = 320; // We will scale the photo width to this
-let height = 0; // This will be computed based on the input stream
 
 // show how many Images in preview
 const changeImagesInPreview = function () {
@@ -62,90 +46,6 @@ const saveImages = function () {
     console.log(tags);
 };
 
-// starts video stream
-const startStream = function () {
-    // ensure that our media-related code only works if getUserMedia is actually supported
-    if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-                video.srcObject = stream;
-                isVideoLoaded = true;
-                video.play();
-            })
-            .catch(function (error) {
-                console.log("Something went wrong!" + error);
-            });
-    }
-    video.addEventListener('canplay', function (ev) {
-        if (!streaming) {
-            height = video.videoHeight / (video.videoWidth / width);
-
-            // Firefox currently has a bug where the height can't be read from
-            // the video, so we will make assumptions if this happens.
-            if (isNaN(height)) {
-                height = width / (4 / 3);
-            }
-            video.setAttribute('width', width);
-            video.setAttribute('height', height);
-            streaming = true;
-        }
-    }, false);
-}
-
-// Sends taken photo with filters on server, receives combined image
-const takePhoto = function () {
-    let data = {};
-    let filters = [];
-    const canvas = document.createElement("canvas");
-    const imageToSend = imageUploaded ? document.getElementById('uploaded_photo') : video;
-    canvas.width = width;
-    canvas.height = height;
-    canvas.getContext('2d').drawImage(imageToSend, 0, 0, width, height);
-    data.img_data = canvas.toDataURL('image/png');
-    data.width = width;
-    data.height = height;
-    data.filters = appliedFilters;
-    data.tags = document.getElementById('tags').value;
-    document.getElementById('tags').value = "";
-    canvas.remove();
-
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            photoList.appendChild(createImageContainer(JSON.parse(this.responseText)));
-            imagesInCapture++;
-            changeImagesInPreview();
-        }
-    }
-    xmlhttp.open("POST", "/" + urlpath + "/gallery/add", true);
-    xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-    xmlhttp.send('data=' + JSON.stringify(data));
-}
-
-// Stop/start webcam stream
-const toggleStream = function (confirmStart = true) {
-    let stream = video.srcObject;
-    if (stream) {
-        let tracks = stream.getTracks();
-        for (let i = 0; i < tracks.length; i++) {
-            let track = tracks[i];
-            track.stop();
-        }
-        video.srcObject = null;
-        videoStreamButton.innerHTML = "Start video";
-        takePhotoButton.disabled = true;
-    } else if (video.srcObject === null && confirmStart) {
-        // Check if we have uploaded image, delete it if have
-        if (imageUploaded) {
-            toggleUploadImage();
-        }
-        startStream();
-        videoStreamButton.innerHTML = "Stop video";
-        takePhotoButton.disabled = false;
-    }
-}
-
 // Create container for image in preview
 const createImageContainer = function (img) {
     let div = document.createElement("div");
@@ -186,7 +86,7 @@ const toggleFilter = function (id) {
             img.id = "applied_" + id;
             img.src = filter.dataset.path;
             img.classList.add("video_overlay", "embed-responsive-item");
-            camera.appendChild(img);
+            videoContainer.appendChild(img);
             appliedFilters.push(filter.dataset.path);
         }
     }
@@ -216,7 +116,7 @@ const toggleUploadImage = function () {
                     img.src = this.src;
                     img.classList.add("video_overlay", "embed-responsive-item");
                     img.id = "uploaded_photo";
-                    camera.insertBefore(img, camera.firstChild);
+                    videoContainer.insertBefore(img, videoContainer.firstChild);
                 };
                 img.src = this.result;
             };
@@ -225,7 +125,4 @@ const toggleUploadImage = function () {
     }
 }
 
-startStream();
-videoStreamButton.addEventListener('click', toggleStream);
-takePhotoButton.addEventListener('click', takePhoto);
 uploadImageButton.addEventListener('click', toggleUploadImage);
