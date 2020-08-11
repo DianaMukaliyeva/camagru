@@ -12,7 +12,7 @@ class Router {
         $urlParts = explode('/', $url);
 
         // Look if our root folder is an array's first element, delete it
-        if (isset($urlParts[0]) && $urlParts[0] == APPROOT) {
+        if (isset($urlParts[0]) && $urlParts[0] == APPNAME) {
             array_shift($urlParts);
         }
 

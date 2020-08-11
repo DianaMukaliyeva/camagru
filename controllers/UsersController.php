@@ -31,14 +31,14 @@ class UsersController extends Controller {
     }
 
     private function createUserSession($user) {
-        $_SESSION['user'] = $user;
+        $_SESSION[APPNAME]['user'] = $user;
         $this->redirect('');
     }
 
     public function login() {
         $data = [];
 
-        if (isset($_SESSION['user'])) {
+        if (isset($_SESSION[APPNAME]['user'])) {
             $data = $this->addMessage(false, 'You need logout first!');
         } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $email = trim($_POST['email']);
@@ -59,7 +59,7 @@ class UsersController extends Controller {
 
     public function register() {
         $data = [];
-        if (isset($_SESSION['user'])) {
+        if (isset($_SESSION[APPNAME]['user'])) {
             $this->logout('users/register');
         }
 
@@ -116,14 +116,14 @@ class UsersController extends Controller {
     }
 
     public function account() {
-        if (isset($_SESSION['user'])) {
+        if (isset($_SESSION[APPNAME]['user'])) {
             $this->renderView('users/account');
         }
         $this->renderView('images/index');
     }
 
     public function logout($url = '') {
-        unset($_SESSION['user']);
+        unset($_SESSION[APPNAME]['user']);
         $this->redirect($url);
     }
 }

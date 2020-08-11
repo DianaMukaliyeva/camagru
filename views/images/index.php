@@ -7,7 +7,7 @@
     </div>
     <input type="hidden" name="sort_image" id="sort_image">
 </div>
-<div class="article-list" id="article-list"></div>
+<div class="container article-list" id="article-list"></div>
 <!-- <div class="article-list row row-cols-1 row-cols-md-3 pt-5 m-auto px-md-5" id="article-list"></div> -->
 <div id="load-more-container">
     <button id="load-more" data-page="0">Loading</button>

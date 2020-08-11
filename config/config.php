@@ -24,6 +24,7 @@ $urlroot .= $_SERVER['HTTP_HOST'];
 $urlroot .= dirname($_SERVER['PHP_SELF']);
 
 define('URLROOT', $urlroot);
-define('APPROOT', basename(dirname($_SERVER['PHP_SELF'])));
+define('APPNAME', basename(dirname($_SERVER['PHP_SELF'])));
+define('APPROOT', dirname(dirname(__FILE__)));
 
 Db::connect($DB_DSN, $DB_USER, $DB_PASSWORD, $DB_NAME);

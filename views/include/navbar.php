@@ -13,7 +13,7 @@
                 <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
             </form>
             <ul class="navbar-nav">
-                <?php if (isset($_SESSION['user'])) : ?>
+                <?php if (isset($_SESSION[APPNAME]['user'])) : ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo URLROOT; ?>/images/takePhoto">Add photo</a>
                     </li>

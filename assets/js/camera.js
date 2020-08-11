@@ -114,7 +114,7 @@ const takePhoto = function () {
             changeImagesInPreview();
         }
     }
-    xmlhttp.open("POST", "/" + urlpath + "/gallery/takePhoto", true);
+    xmlhttp.open("POST", "/" + urlpath + "/images/takePhoto", true);
     xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xmlhttp.send('data=' + JSON.stringify(data));

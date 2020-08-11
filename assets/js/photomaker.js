@@ -26,24 +26,33 @@ const deletePreview = function () {
 
 // Send images to server and save them
 const saveImages = function () {
-    let imagesTab = {};
+    let imagesToSave = {};
     let images = photoList.getElementsByTagName('img');
     let tags = photoList.getElementsByTagName('p');
     let j = 0;
     for (let i = 0; i < images.length; i++) {
-        let imageInfo = {};
-        imageInfo.src = images[i].src;
-        imagesTab[j] = imageInfo;
+        let info = {};
+        info.src = images[i].src;
+        imagesToSave[j] = info;
+        imagesToSave[j].tags = tags[i].innerHTML != "No tags" ? tags[i].innerHTML : null;
         j++;
     }
-    j = 0;
-    for (i = 0; i < tags.length; i++) {
-        imagesTab[j].description = tags[i].innerHTML;
-        j++;
+    console.log(imagesToSave);
+    // console.log(images);
+    // console.log(tags);
+
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log('result:');
+            console.log(this.responseText);
+            deletePreview();
+        }
     }
-    console.log(imagesTab);
-    console.log(images);
-    console.log(tags);
+    xmlhttp.open("POST", "/" + urlpath + "/images/saveImages", true);
+    xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    xmlhttp.send('data=' + JSON.stringify(imagesToSave));
 };
 
 // Create container for image in preview

@@ -65,7 +65,7 @@ const appendToDiv = function (div, new_html, page) {
     const page_number = document.createElement('div');
     const temp = document.createElement('div');
     page_number.id = getPageId(page);
-    page_number.classList.add('article-list__page', 'row', 'row-cols-1', 'row-cols-md-3', 'pt-5', 'px-md-5');
+    page_number.classList.add('article-list__page', 'row', 'row-cols-1', 'row-cols-md-3', 'pt-5');
     temp.innerHTML = new_html;
 
     const class_name = temp.firstElementChild.className;
@@ -119,7 +119,7 @@ const loadMore = function () {
 const scrollReaction = function () {
     let content_height = img_container.offsetHeight;
     let current_y = window.innerHeight + window.pageYOffset;
-    if (current_y >= content_height) {
+    if (current_y >= content_height || images.length <= 9) {
         loadMore();
         pagination.classList.remove('fixed');
     } else {

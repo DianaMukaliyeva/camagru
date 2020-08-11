@@ -39,7 +39,7 @@ class ImagesController extends Controller {
     }
 
     public function takePhoto(...$param) {
-        if (!isset($_SESSION['user'])) {
+        if (!isset($_SESSION[APPNAME]['user'])) {
             $this->redirect('');
         }
         if ($this->isAjaxRequest()) {
@@ -76,35 +76,38 @@ class ImagesController extends Controller {
         }
     }
 
-    public function combine() {
+    public function saveImages() {
         if ($this->isAjaxRequest()) {
             if (isset($_POST['data'])) {
+                $json = [];
+                $user = $_SESSION[APPNAME]['user'];
+                $path = 'assets/img/users/' . $user['login'];
+                if (!file_exists(APPROOT . '/' . $path))
+                    mkdir(APPROOT . '/' . $path);
                 $data = json_decode($_POST['data'], true);
-                $img_data = str_replace('data:image/png;base64,', '', $data['img_data']);
-                $img_data = str_replace(' ', '+', $img_data);
-                $img_data = base64_decode($img_data);
-                $dest = imagecreatefromstring($img_data);
-                imagealphablending($dest, true);
-                imagesavealpha($dest, true);
-                foreach ($data['filters'] as $filter) {
-                    $src = imagecreatefrompng($filter);
-                    imagecopyresized($dest, $src, 0, 0, 0, 0, $data['width'], $data['height'], imagesx($src), imagesy($src));
-                    imagedestroy($src);
+                // $this->renderView('images/test', $data);
+                foreach ($data as $key => $image) {
+                    // $json['key'] = $key;
+                    // $json['value'] = $image['tags'];
+                    if (substr($image['src'], 0, 22) === "data:image/png;base64,") {
+                        $filename = $path . '/' . md5(uniqid()) . '.png';
+                        $file = APPROOT . '/' . $filename;
+                        $image['src'] = str_replace('data:image/png;base64,', '', $image['src']);
+                        $image['src'] = str_replace(' ', '+', $image['src']);
+                        file_put_contents($file, base64_decode($image['src']));
+                        $this->imageModel->createImage($user['id'], $filename);
+                    } else {
+                        $json['message'] = "You can't upload something else than images";
+                        echo json_encode($json);
+                        exit();
+                    }
+                    $tags = $image['tags'];
+                    $json['tags'] = $tags;
+                    // $json['path'] = $path;
+                    $json['dir'] = APPROOT;
                 }
-                ob_start();
-                imagepng($dest);
-                $final_image_data = ob_get_contents();
-                ob_end_clean();
-                $final_image_data_base_64 = base64_encode($final_image_data);
-                $json['photo'] = 'data:image/png;base64,' . $final_image_data_base_64;
-                imagedestroy($dest);
-                $json['valid'] = true;
-                $json['message'] = "Image added to the list";
-                // delete all # characters before
-                $data['tags'] = str_replace('#', '', $data['tags']);
-                $json['tags'] = array_filter(explode(' ', $data['tags']));
+                echo json_encode($json);
             }
-            echo json_encode($json);
         } else {
             $this->redirect('');
         }

@@ -12,7 +12,9 @@
                         </a>
                     </div>
                 </div>
-                <img src="<?= URLROOT . '/' . $image['image_path'] ?>" class="img-fluid card-img-top" alt="<?= isset($image['title']) ? $image['title'] : 'no title' ?>">
+                <div class="m-1">
+                    <img src="<?= URLROOT . '/' . $image['image_path'] ?>" class="img-fluid card-img-top" alt="<?= isset($image['title']) ? $image['title'] : 'no title' ?>">
+                </div>
                 <div class="card-body">
                     <div class="float-left pr-2"><i class="fas fa-comment icon-7x"></i> 10</div>
                     <div class="float-left pr-2"><i class="fas fa-heart icon-7x"></i> 5</div>
