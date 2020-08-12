@@ -26,13 +26,4 @@ class Like {
         $result = Db::queryOne('SELECT COUNT(*) FROM `likes` WHERE `image_id` = ?', [$imageId]);
         return $result['COUNT(*)'];
     }
-
-    // Insert image into database
-    public function createImage($userId, $imagePath) {
-        $result = Db::query(
-            'INSERT INTO `images`(`image_path`, `user_id`) VALUES (?, ?)',
-            [$imagePath, $userId]
-        );
-        return $result;
-    }
 }

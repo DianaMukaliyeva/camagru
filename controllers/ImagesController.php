@@ -77,8 +77,11 @@ class ImagesController extends Controller {
         $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : null;
         $images = json_decode($_POST['images'], true);
         foreach ($images as $key => $image) {
+            $images[$key]['comments'] = $this->imageModel->getComments($image['id']);
+            $images[$key]['comments_amount'] = $this->imageModel->getNumberOfComments($image['id']);
             $images[$key]['user_login'] = $this->userModel->getLoginById($image['user_id']);
             $images[$key]['user_liked'] = $user ? $this->likeModel->isImageLiked($user['id'], $image['id']) : false;
+            $images[$key]['user_commented'] = $user ? $this->imageModel->isCommented($user['id'], $image['id']) : false;
             $images[$key]['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($image['id']);
         }
         $this->renderView('images/gallery', ['images' => $images]);
@@ -117,10 +120,24 @@ class ImagesController extends Controller {
         echo json_encode($json);
     }
 
-    // Edit image
-    public function edit(...$param) {
+    // Add comment
+    public function addComment() {
+        // Only works for ajax requests
         $this->onlyAjaxRequests();
-        echo "edit image";
+        $json = [];
+        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
+        if (!$user) {
+            $json['message'] = 'You should be logged in to like a photo';
+        } else if (isset($_POST['data'])) {
+            $data = json_decode($_POST['data'], true);
+            if ($this->imageModel->getImageById($data['image_id'])) {
+                $json['success'] = $this->imageModel->addComment($user['id'], $data['image_id'], $data['comment']);
+                $json['comments_amount'] = $this->imageModel->getNumberOfComments($data['image_id']);
+            }
+        } else {
+            $json['message'] = 'Image does not exists';
+        }
+        echo json_encode($json);
     }
 
     // Delete image from db
@@ -138,7 +155,7 @@ class ImagesController extends Controller {
         $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : null;
         if ($imageId && $json = $this->imageModel->getImageById($imageId)) {
             // $json['tags'] = $this->likeModel->unlikeImage($user['id'], $imageId) ? 'unliked' : 'db failed';
-            // $json['comments'] = $this->likeModel->likeImage($user['id'], $imageId) ? 'liked' : 'db failed';
+            $json['comments'] = $this->imageModel->getComments($imageId);
             $json['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($imageId);
             $json['message'] = $user && $this->likeModel->isImageLiked($user['id'], $imageId) ? 'liked' : 'unliked';
             $image_user = $this->userModel->getUserById($json['user_id']);

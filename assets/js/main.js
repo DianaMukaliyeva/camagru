@@ -15,7 +15,7 @@ const fillModalImage = function (imageId) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
-
+            console.log(result);
             if (result['message'] == 'liked') {
                 document.getElementById('modal_like_button').childNodes[0].classList.add('my_like');
             } else if (result['message'] == 'unliked') {

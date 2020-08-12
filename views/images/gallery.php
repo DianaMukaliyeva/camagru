@@ -17,14 +17,13 @@
                 </div>
                 <div class="card-body px-sm-4 px-2">
                     <button name="like" data-image-id="<?= $image['id'] ?>" id="like_button_<?= $image['id'] ?>" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg <?= $image['user_liked'] ? 'my_like' : '' ?>"></i><span> <?= $image['likes_amount'] ?></span></button>
-                    <button class="btn py-0 shadow-none"><i class="fas fa-comment icon-7x fa-lg"></i><span> 10</span></button>
+                    <button class="btn py-0 shadow-none" id="comments_<?= $image['id'] ?>" onclick="openModal(<?= $image['id'] ?>)"><i class="fas fa-comment icon-7x fa-lg <?= $image['user_commented'] ? 'my_like' : '' ?>"></i><span> <?= $image['comments_amount'] ?></span></button>
                     <div class="float-right"><?= $image['created_at'] ?></div>
                 </div>
-                <form>
+                <form method="post" action="" name="send_comment" data-image-id="<?= $image['id'] ?>">
                     <div class="form-row mx-auto">
                         <div class="col-8">
-                            <label for="<?= $image['id'] ?>" class="sr-only">Comment</label>
-                            <input type="password" class="form-control" id="<?= $image['id'] ?>" placeholder="Comment...">
+                            <input type="text" class="form-control" placeholder="Comment..." required>
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-success mb-2">Send</button>

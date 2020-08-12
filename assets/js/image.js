@@ -38,3 +38,33 @@ if (document.getElementsByName('like')) {
         });
     }
 }
+
+if (document.getElementsByName('send_comment')) {
+    let commentForm = document.getElementsByName('send_comment');
+    for (let i = 0; i < commentForm.length; i++) {
+        commentForm[i].addEventListener('submit', function (e) {
+            e.preventDefault();
+            const data = {};
+            data['image_id'] = commentForm[i].dataset.imageId;
+            data['comment'] = commentForm[i].getElementsByTagName('input')[0].value;
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/' + urlpath + '/images/addComment', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    let result = JSON.parse(xhr.responseText);
+                    if (result['success']) {
+                        document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments_amount'];
+                        document.getElementById('comments_' + data['image_id']).classList.add('my_like');
+                        commentForm[i].getElementsByTagName('input')[0].innerHTML = '';
+                    } else {
+                        alert(result['message']);
+                    }
+                }
+            };
+            xhr.send('data=' + JSON.stringify(data));
+        });
+    }
+}
