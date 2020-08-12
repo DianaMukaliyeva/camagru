@@ -31,7 +31,7 @@ try {
             `notify`     tinyint DEFAULT 1,
             `activated`  tinyint DEFAULT 0,
             `picture`    varchar(45),
-            `created_at` date DEFAULT CURRENT_TIMESTAMP
+            `created_at` datetime DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB;
     SQL;
     Db::query($query);
@@ -41,7 +41,7 @@ try {
         CREATE TABLE IF NOT EXISTS `images` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
             `image_path` varchar(500) NOT NULL,
-            `created_at` date DEFAULT CURRENT_TIMESTAMP,
+            `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
             `user_id`    int NOT NULL,
 
             KEY `fkIdx_46` (`user_id`),
@@ -54,7 +54,7 @@ try {
     $query = <<<SQL
         CREATE TABLE IF NOT EXISTS `likes` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
-            `created_at` date DEFAULT CURRENT_TIMESTAMP,
+            `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
             `user_id`    int NOT NULL,
             `image_id`    int NOT NULL,
 
@@ -71,7 +71,7 @@ try {
         CREATE TABLE IF NOT EXISTS `comments` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
             `comment`    varchar(100) NOT NULL,
-            `created_at` date DEFAULT CURRENT_TIMESTAMP,
+            `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
             `user_id`    int NOT NULL,
             `image_id`    int NOT NULL,
 
@@ -87,7 +87,7 @@ try {
     $query = <<<SQL
         CREATE TABLE IF NOT EXISTS `followers` (
             `id`               int AUTO_INCREMENT PRIMARY KEY,
-            `created_at`       date DEFAULT CURRENT_TIMESTAMP,
+            `created_at`       datetime DEFAULT CURRENT_TIMESTAMP,
             `user_id_followed`    int NOT NULL,
             `user_id_follower`    int NOT NULL,
 

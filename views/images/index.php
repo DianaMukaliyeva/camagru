@@ -9,7 +9,7 @@
 </div>
 
 <!-- gallery -->
-<div class="container article-list" id="article-list"></div>
+<div class="container article-list px-0 px-sm-4" id="article-list"></div>
 
 <!-- modal window for image -->
 <div class="modal fade" id="exampleModal" tabindex="-1">

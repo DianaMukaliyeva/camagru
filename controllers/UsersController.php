@@ -13,16 +13,16 @@ class UsersController extends Controller {
         $header .= "Content-type: text/html; charset=utf-8 \r\n";
         $subject = "Camagru web application";
 
-        $message = "<div style=\"background-color:pink;\">";
+        $message = "<div style=\"background-color:pink; text-align:center;\">";
         $message .= "<h2 style=\"text-align:center;\">Hello, " . $login . "!</h2>";
 
         if ($purpose == 'confirmation_email') {
-            $message .= "<p style=\"text-align:center;\">Thank you for joining Camagru</p>";
-            $message .= "<p style=\"text-align:center;\">To activate your account click ";
+            $message .= "<p>Thank you for joining Camagru</p>";
+            $message .= "<p>To activate your account click ";
             $message .= "<a href=\"" . URLROOT . "/email/activateAccount/" . $token . "\">here</a></p>";
             $message .= "<p><small>If you have any questions do not hesitate to contact us.</p>";
         } else if ($purpose == 'reset_password') {
-            $message .= "<p style=\"text-align:center;\">To reset your password click ";
+            $message .= "<p>To reset your password click ";
             $message .= "<a href=\"" . URLROOT . "/email/resetPassword/" . $token . "\">here</a></p>";
         }
         $message .= "<p><small>Camagru</p></div>";
