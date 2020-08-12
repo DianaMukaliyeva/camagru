@@ -21,7 +21,7 @@ class Image {
     // Get image by Id
     public function getImageById($imageId) {
         $result = Db::queryAll('SELECT * FROM `images` WHERE `id` = ?', [$imageId]);
-        if ($result[0])
+        if (isset($result[0]))
             return $result[0];
         return $result;
     }
@@ -49,9 +49,20 @@ class Image {
         return $result;
     }
 
+    // Get date of comment
+    public function getCreatedDateOfComment($commentId) {
+        $result = Db::queryOne('SELECT `created_at` FROM `comments` WHERE `id` = ?', [$commentId]);
+        if (isset($result['created_at']))
+            return $result['created_at'];
+        return $result;
+    }
+
     // Get all comments of image
     public function getComments($imageId) {
-        $result = Db::queryAll('SELECT * FROM `comments` WHERE `image_id` = ?', [$imageId]);
+        $result = Db::queryAll(
+            'SELECT comments.id AS `id`, users.login, `comment`, comments.created_at AS `created_at`,
+            `user_id`, `image_id` FROM `comments` LEFT JOIN `users` ON users.id = comments.user_id WHERE `image_id` = ?', [$imageId]
+        );
         return $result;
     }
 

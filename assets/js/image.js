@@ -47,7 +47,7 @@ if (document.getElementsByName('send_comment')) {
             const data = {};
             data['image_id'] = commentForm[i].dataset.imageId;
             data['comment'] = commentForm[i].getElementsByTagName('input')[0].value;
-
+            // console.log(data);
             let xhr = new XMLHttpRequest();
             xhr.open('POST', '/' + urlpath + '/images/addComment', true);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -56,9 +56,13 @@ if (document.getElementsByName('send_comment')) {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     let result = JSON.parse(xhr.responseText);
                     if (result['success']) {
+                        // console.log(result);
                         document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments_amount'];
                         document.getElementById('comments_' + data['image_id']).classList.add('my_like');
-                        commentForm[i].getElementsByTagName('input')[0].innerHTML = '';
+                        commentForm[i].getElementsByTagName('input')[0].value = '';
+                        if (commentForm[i].id && commentForm[i].id == 'modal_comment_form') {
+                            createComment(result, document.getElementById('modal_image_comments'));
+                        }
                     } else {
                         alert(result['message']);
                     }

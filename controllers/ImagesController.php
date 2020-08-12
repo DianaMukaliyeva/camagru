@@ -44,7 +44,7 @@ class ImagesController extends Controller {
 
         if (isset($_POST['data'])) {
             $json = [];
-            $path = 'assets/img/users/' . $user['login'];
+            $path = 'assets/img/users/' . $user['id'];
             $data = json_decode($_POST['data'], true);
             // create folder for user if it does not exists
             if (!file_exists(APPROOT . '/' . $path))
@@ -132,7 +132,13 @@ class ImagesController extends Controller {
             $data = json_decode($_POST['data'], true);
             if ($this->imageModel->getImageById($data['image_id'])) {
                 $json['success'] = $this->imageModel->addComment($user['id'], $data['image_id'], $data['comment']);
+                $commentId = Db::getLastId();
+                $json['created_at'] =$this->imageModel->getCreatedDateOfComment($commentId);
+                $json['login'] = $user['login'];
+                $json['comment'] = $data['comment'];
                 $json['comments_amount'] = $this->imageModel->getNumberOfComments($data['image_id']);
+            } else {
+                $json['message'] = 'Image does not exists';
             }
         } else {
             $json['message'] = 'Image does not exists';

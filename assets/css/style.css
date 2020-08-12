@@ -132,8 +132,17 @@ img {
 }
 
 
+.comment_box {
+    max-height: 100px;
+    overflow-y: scroll;
+}
+
 @media screen and (min-width: 768px) {
     .position_bottom {
         position: absolute;
+    }
+
+    .comment_box {
+        max-height: 420px;
     }
 }

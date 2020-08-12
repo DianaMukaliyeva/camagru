@@ -40,4 +40,9 @@ final class Db {
         $result->execute($params);
         return $result->fetchAll();
     }
+
+    // Return id of the last execution
+    public static function getLastId() {
+        return self::$conn->lastInsertId();
+    }
 }

@@ -13,7 +13,7 @@
 
 <!-- modal window for image -->
 <div class="modal fade" id="exampleModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header p-0">
                 <div class="media mt-2">
@@ -47,15 +47,14 @@
                         </div>
                     </div>
                     <div class="col-md-6 border py-2">
-                        <div class="row">
-                            <div class="col" id="modal_image_comments">Comments</div>
+                        <div class="row mb-3 comment_box">
+                            <div class="col" id="modal_image_comments"></div>
                         </div>
                         <div class="row position_bottom">
-                            <form id="modal_image_comment_form">
+                            <form method="post" action="" id="modal_comment_form" name="send_comment" data-image-id="0">
                                 <div class="form-row mx-auto">
                                     <div class="col-8">
-                                        <label for="" class="sr-only">Comment</label>
-                                        <input type="password" class="form-control" id="" placeholder="Comment...">
+                                        <input type="text" class="form-control" placeholder="Comment..." required>
                                     </div>
                                     <div class="col-3">
                                         <button type="submit" class="btn btn-success mb-2">Send</button>
