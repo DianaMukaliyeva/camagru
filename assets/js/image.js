@@ -1,8 +1,6 @@
 if (document.getElementsByName('like')) {
     let likeIcons = document.getElementsByName('like');
-    // console.log(likeIcons);
     for (let i = 0; i < likeIcons.length; i++) {
-        // console.log('iterating');
         likeIcons[i].addEventListener('click', function (e) {
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -47,7 +45,6 @@ if (document.getElementsByName('send_comment')) {
             const data = {};
             data['image_id'] = commentForm[i].dataset.imageId;
             data['comment'] = commentForm[i].getElementsByTagName('input')[0].value;
-            // console.log(data);
             let xhr = new XMLHttpRequest();
             xhr.open('POST', '/' + urlpath + '/images/addComment', true);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -56,7 +53,6 @@ if (document.getElementsByName('send_comment')) {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     let result = JSON.parse(xhr.responseText);
                     if (result['success']) {
-                        // console.log(result);
                         document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments_amount'];
                         document.getElementById('comments_' + data['image_id']).classList.add('my_like');
                         commentForm[i].getElementsByTagName('input')[0].value = '';

@@ -8,13 +8,10 @@ burger.addEventListener('click', function () { nav.classList.toggle('collapse');
 const urlpath = window.location.pathname.split('/')[1];
 
 const createComment = function (comment, div) {
-    // console.log(comment);
-    // console.log(div);
     const comment_div = document.createElement('div');
     const p = document.createElement('p');
     p.innerHTML = "<a class='link' href=''>" + comment['login'] + "</a> (" + comment['created_at'] + ") :<br> <i>" + comment['comment'] + "</i>";
     comment_div.appendChild(p);
-    // console.log(comment_div);
     div.appendChild(comment_div);
 }
 
@@ -32,7 +29,7 @@ const fillModalImage = function (imageId) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
-            // console.log(result);
+            console.log(result);
             if (result['message'] == 'liked') {
                 document.getElementById('modal_like_button').childNodes[0].classList.add('my_like');
             } else if (result['message'] == 'unliked') {
@@ -48,6 +45,14 @@ const fillModalImage = function (imageId) {
             document.getElementById('modal_like_button').childNodes[1].innerHTML = ' ' + result['likes_amount'];
             document.getElementById('modal_like_button').dataset.imageId = imageId;
             document.getElementById('modal_comment_form').dataset.imageId = imageId;
+            if (result['tags'].length > 0) {
+                result['tags'].forEach(element => {
+                    document.getElementById('modal_image_tags').innerHTML += '#' + element['tag'] + ' ';
+                });
+            } else {
+                document.getElementById('modal_image_tags').innerHTML = '';
+            }
+            document.getElementById('modal_image_tags').dataset.imageId = imageId;
             if (result['comments'].length != 0)
                 fillComments(result['comments'], document.getElementById('modal_image_comments'));
             else {

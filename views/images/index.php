@@ -43,11 +43,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="" id="modal_image_tags">Tags</div>
+                            <div class="text-center" id="modal_image_tags"></div>
                         </div>
                     </div>
                     <div class="col-md-6 border py-2">
-                        <div class="row mb-3 comment_box">
+                        <div class="row mb-3 mb-sm-5 comment_box">
                             <div class="col" id="modal_image_comments"></div>
                         </div>
                         <div class="row position_bottom">

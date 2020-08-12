@@ -3,7 +3,7 @@ class Image {
 
     // Get all images ordered by date
     public function getImagesByDate() {
-        $result = Db::queryAll('SELECT * FROM `images` ORDER BY `created_at`');
+        $result = Db::queryAll('SELECT * FROM `images` ORDER BY `created_at` DESC');
         return $result;
     }
 
@@ -61,7 +61,8 @@ class Image {
     public function getComments($imageId) {
         $result = Db::queryAll(
             'SELECT comments.id AS `id`, users.login, `comment`, comments.created_at AS `created_at`,
-            `user_id`, `image_id` FROM `comments` LEFT JOIN `users` ON users.id = comments.user_id WHERE `image_id` = ?', [$imageId]
+            `user_id`, `image_id` FROM `comments` LEFT JOIN `users` ON users.id = comments.user_id WHERE `image_id` = ?',
+            [$imageId]
         );
         return $result;
     }
@@ -69,6 +70,21 @@ class Image {
     // Add comment to image
     public function addComment($userId, $imageId, $comment) {
         $result = Db::query('INSERT INTO `comments` (`user_id`, `image_id`, `comment`) VALUES (?, ?, ?)', [$userId, $imageId, $comment]);
+        return $result;
+    }
+
+    // Add comment to image
+    public function addTag($imageId, $tag) {
+        $result = Db::query('INSERT INTO `tags` (`image_id`, `title`) VALUES (?, ?)', [$imageId, $tag]);
+        return $result;
+    }
+
+    // Get all tags of image
+    public function getTagsbyImageId($imageId) {
+        $result = Db::queryAll(
+            'SELECT tags.title AS `tag` FROM `tags` LEFT JOIN `images` ON images.id = tags.image_id WHERE `image_id` = ?',
+            [$imageId]
+        );
         return $result;
     }
 }

@@ -64,6 +64,11 @@ class ImagesController extends Controller {
                     exit();
                 }
                 $tags = $image['tags'];
+                $tags = array_filter(explode('#', $tags));
+                $imageId = Db::getLastId();
+                foreach ($tags as $tag) {
+                    $this->imageModel->addTag($imageId, $tag);
+                }
                 $json['tags'] = $tags;
             }
             echo json_encode($json);
@@ -160,7 +165,7 @@ class ImagesController extends Controller {
         $json = [];
         $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : null;
         if ($imageId && $json = $this->imageModel->getImageById($imageId)) {
-            // $json['tags'] = $this->likeModel->unlikeImage($user['id'], $imageId) ? 'unliked' : 'db failed';
+            $json['tags'] = $this->imageModel->getTagsbyImageId($imageId);
             $json['comments'] = $this->imageModel->getComments($imageId);
             $json['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($imageId);
             $json['message'] = $user && $this->likeModel->isImageLiked($user['id'], $imageId) ? 'liked' : 'unliked';
