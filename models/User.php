@@ -128,6 +128,20 @@ class User {
         return $row;
     }
 
+    public function getLoginById($id) {
+        $row = Db::queryOne('SELECT `login` FROM `users` WHERE `id` = ?', [$id]);
+        if (isset($row['login']))
+            return $row['login'];
+        return $row;
+    }
+
+    public function getUserById($id) {
+        $row = Db::queryAll('SELECT * FROM `users` WHERE `id` = ?', [$id]);
+        if (isset($row[0]))
+            return $row[0];
+        return $row;
+    }
+
     public function activateAccountByEmail($email) {
         $row = Db::query('UPDATE `users` SET `activated` = 1 WHERE `email` = ?', [$email]);
         $this->updateToken(null, $email);

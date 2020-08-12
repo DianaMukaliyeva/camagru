@@ -42,4 +42,17 @@ class Controller {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
             $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
     }
+
+    public function checkUserSession() {
+        if (!isset($_SESSION[APPNAME]['user'])) {
+            $this->redirect('');
+        }
+        return $_SESSION[APPNAME]['user'];
+    }
+
+    public function onlyAjaxRequests() {
+        if (!$this->isAjaxRequest()) {
+            $this->redirect('');
+        }
+    }
 }

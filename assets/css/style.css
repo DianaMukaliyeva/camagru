@@ -89,6 +89,7 @@ img {
     }
 }
 
+
 .video_overlay {
     position: absolute;
     width: 100%;
@@ -119,4 +120,20 @@ img {
 :checked + .label-filter{
     background-color: #17a3b86b;
     color: white;
+}
+
+.my_like {
+    color: red;
+}
+
+.position_bottom {
+    position: inherit;
+    bottom: 0;
+}
+
+
+@media screen and (min-width: 768px) {
+    .position_bottom {
+        position: absolute;
+    }
 }
