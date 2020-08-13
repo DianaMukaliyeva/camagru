@@ -1,5 +1,6 @@
 <?php
 class Controller {
+
     public function redirect($url) {
         header("Location: " . URLROOT . "/$url");
         header('Connection: close');
@@ -54,13 +55,17 @@ class Controller {
     }
 
     public function checkUserSession() {
-        if (!isset($_SESSION[APPNAME]['user'])) {
-            $data = $this->addMessage(false, 'You need log in first');
-            $this->renderView('users/login', $data);
-            exit();
+        if (isset($_SESSION[APPNAME]['user'])) {
+            $user = $_SESSION[APPNAME]['user'];
+            if ($this->getModel('User')->getLoginById($user['id']) == $user['login']) {
+                return $user;
+            } else {
+                unset($_SESSION[APPNAME]['user']);
+            }
         }
-
-        return $_SESSION[APPNAME]['user'];
+        $data = $this->addMessage(false, 'You need log in first');
+        $this->renderView('users/login', $data);
+        exit();
     }
 
     public function onlyAjaxRequests() {

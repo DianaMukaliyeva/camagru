@@ -103,7 +103,7 @@ try {
     $query = <<<SQL
         CREATE TABLE IF NOT EXISTS `tags` (
             `id`       int AUTO_INCREMENT PRIMARY KEY,
-            `title`    varchar(45) NOT NULL,
+            `tag`    varchar(45) NOT NULL,
             `image_id`    int NOT NULL,
 
             KEY `fkIdx_94` (`image_id`),

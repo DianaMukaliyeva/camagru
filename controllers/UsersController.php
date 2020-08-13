@@ -38,7 +38,7 @@ class UsersController extends Controller {
     public function login() {
         $data = [];
 
-        if (isset($_SESSION[APPNAME]['user'])) {
+        if ($this->getLoggedInUser()) {
             $data = $this->addMessage(false, 'You need logout first!');
         } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $email = trim($_POST['email']);
@@ -59,7 +59,7 @@ class UsersController extends Controller {
 
     public function register() {
         $data = [];
-        if (isset($_SESSION[APPNAME]['user'])) {
+        if ($this->getLoggedInUser()) {
             $this->logout('users/register');
         }
 

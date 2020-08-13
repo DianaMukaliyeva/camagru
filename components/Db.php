@@ -41,6 +41,16 @@ final class Db {
         return $result->fetchAll();
     }
 
+    // Insert into table array of params
+    public static function insert($table, $params = array()) {
+        return self::query(
+            "INSERT INTO `$table` (`" .
+                implode('`, `', array_keys($params)) .
+                "`) VALUES (" . str_repeat('?,', sizeof($params) - 1) . "?)",
+            array_values($params)
+        );
+    }
+
     // Return id of the last execution
     public static function getLastId() {
         return self::$conn->lastInsertId();

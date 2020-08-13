@@ -69,13 +69,13 @@ class ImagesController extends Controller {
                     echo json_encode($json);
                     exit();
                 }
-                $tags = $image['tags'];
-                $tags = array_filter(explode('#', $tags));
-                $imageId = Db::getLastId();
-                foreach ($tags as $tag) {
-                    $this->imageModel->addTag($imageId, $tag);
-                }
-                $json['tags'] = $tags;
+                        $tags = $image['tags'];
+                        $tags = array_filter(explode('#', $tags));
+                        $imageId = Db::getLastId();
+                        foreach ($tags as $tag) {
+                            $this->imageModel->addTag($imageId, $tag);
+                        }
+                        $json['tags'] = $tags;
             }
         } else {
             $json['message'] = 'No data is provided';
