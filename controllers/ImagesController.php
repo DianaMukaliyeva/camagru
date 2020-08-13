@@ -153,8 +153,23 @@ class ImagesController extends Controller {
 
     // Delete image from db
     public function delete(...$param) {
+        // Only works for ajax requests
         $this->onlyAjaxRequests();
-        echo "delete image";
+        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
+        $imageId = isset($param[0]) ? $param[0] : '0';
+        $json = [];
+        if (!$user) {
+            $json['message'] = 'You should be logged in';
+        } else if (!$imageId || !$this->imageModel->getImageById($imageId)) {
+            $json['message'] = 'Image does not exists';
+        } else {
+            if ($this->imageModel->deleteImage($imageId)) {
+                $json['message'] = 'success';
+            } else {
+                $json['message'] = 'Something went wrong with database';
+            }
+        }
+        echo json_encode($json);
     }
 
     // Show an image with comments
@@ -163,7 +178,7 @@ class ImagesController extends Controller {
         $this->onlyAjaxRequests();
 
         $json = [];
-        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : null;
+        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
         if ($imageId && $json = $this->imageModel->getImageById($imageId)) {
             $json['tags'] = $this->imageModel->getTagsbyImageId($imageId);
             $json['comments'] = $this->imageModel->getComments($imageId);
@@ -172,6 +187,7 @@ class ImagesController extends Controller {
             $image_user = $this->userModel->getUserById($json['user_id']);
             $json['user_login'] = $image_user['login'];
             $json['profile_photo'] = $image_user['picture'] ? $image_user['picture'] : 'assets/img/images/default.png';
+            $json['logged_in_user'] = $user ? $user['login'] : false;
         } else {
             $json['message'] = 'Image does not exists';
         }
