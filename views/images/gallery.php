@@ -14,6 +14,11 @@
                     <a class="text-decoration-none" href="#" onclick="openModal(<?= $image['id'] ?>)">
                         <img src="<?= URLROOT . '/' . $image['image_path'] ?>" class="img-fluid card-img-top" alt="<?= isset($image['title']) ? $image['title'] : 'no title' ?>">
                     </a>
+                    <div class="text-center">
+                        <?php foreach ($image['tags'] as $key => $tag) : ?>
+                            #<?= $tag['tag'] ?>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
                 <div class="card-body px-sm-4 px-2">
                     <button name="like" data-image-id="<?= $image['id'] ?>" id="like_button_<?= $image['id'] ?>" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg <?= $image['user_liked'] ? 'my_like' : '' ?>"></i><span> <?= $image['likes_amount'] ?></span></button>

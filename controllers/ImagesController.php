@@ -82,6 +82,7 @@ class ImagesController extends Controller {
         $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : null;
         $images = json_decode($_POST['images'], true);
         foreach ($images as $key => $image) {
+            $images[$key]['tags'] = $this->imageModel->getTagsbyImageId($image['id']);
             $images[$key]['comments'] = $this->imageModel->getComments($image['id']);
             $images[$key]['comments_amount'] = $this->imageModel->getNumberOfComments($image['id']);
             $images[$key]['user_login'] = $this->userModel->getLoginById($image['user_id']);
