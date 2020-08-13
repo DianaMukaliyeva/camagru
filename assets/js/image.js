@@ -57,7 +57,8 @@ if (document.getElementsByName('send_comment')) {
                         document.getElementById('comments_' + data['image_id']).classList.add('my_like');
                         commentForm[i].getElementsByTagName('input')[0].value = '';
                         if (commentForm[i].id && commentForm[i].id == 'modal_comment_form') {
-                            createComment(result, document.getElementById('modal_image_comments'));
+                            $firstComment = result['comments_amount'] == 1 ? true : false;
+                            createComment(result, document.getElementById('modal_image_comments'), $firstComment);
                         }
                     } else {
                         alert(result['message']);

@@ -37,15 +37,15 @@ const saveImages = function () {
         imagesToSave[j].tags = tags[i].innerHTML != "No tags" ? tags[i].innerHTML : null;
         j++;
     }
-    console.log(imagesToSave);
+    // console.log(imagesToSave);
     // console.log(images);
     // console.log(tags);
 
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            console.log('result:');
-            console.log(this.responseText);
+            // console.log('result:');
+            // console.log(this.responseText);
             deletePreview();
         }
     }
