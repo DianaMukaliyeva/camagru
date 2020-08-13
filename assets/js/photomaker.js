@@ -59,7 +59,7 @@ const saveImages = function () {
             deletePreview();
         }
     }
-    xmlhttp.open("POST", "/" + urlpath + "/images/saveImages", true);
+    xmlhttp.open("POST", "/" + urlpath + "/camera/saveImages", true);
     xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xmlhttp.send('data=' + JSON.stringify(imagesToSave));
