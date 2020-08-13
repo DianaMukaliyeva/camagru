@@ -12,6 +12,7 @@ class Controller {
         else
             $data['message']['class'] = 'alert-danger';
         $data['message']['content'] = $content;
+
         return $data;
     }
 
@@ -23,6 +24,7 @@ class Controller {
             echo "could not find model";
             return null;
         }
+
         return new $model();
     }
 
@@ -32,9 +34,9 @@ class Controller {
         if (file_exists('views/' . $view . '.php')) {
             require_once 'views/' . $view . '.php';
         } else {
-            // View does not exist
-            echo "something went wrong";
+            echo "view does not exist";
         }
+
         exit;
     }
 
@@ -43,10 +45,21 @@ class Controller {
             $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
     }
 
+    public function getLoggedInUser() {
+        if (isset($_SESSION[APPNAME]['user'])) {
+            return $_SESSION[APPNAME]['user'];
+        }
+
+        return false;
+    }
+
     public function checkUserSession() {
         if (!isset($_SESSION[APPNAME]['user'])) {
-            $this->redirect('');
+            $data = $this->addMessage(false, 'You need log in first');
+            $this->renderView('users/login', $data);
+            exit();
         }
+
         return $_SESSION[APPNAME]['user'];
     }
 

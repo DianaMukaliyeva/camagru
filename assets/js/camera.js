@@ -109,6 +109,13 @@ const takePhoto = function () {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+            let result = JSON.parse(xmlhttp.responseText);
+            if (result['message']) {
+                alert(result['message']);
+                if (result['message'] == 'You should be logged in')
+                    window.location.replace('/' + urlpath);
+                return;
+            }
             photoList.appendChild(createImageContainer(JSON.parse(this.responseText)));
             imagesInCapture++;
             changeImagesInPreview();

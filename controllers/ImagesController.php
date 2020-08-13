@@ -17,6 +17,7 @@ class ImagesController extends Controller {
     // Main page of app show our gallery
     public function gallery(...$param) {
         $sort = !empty($param) ? $param[0] : '';
+
         if ($this->isAjaxRequest()) {
             if ($sort == 'popular') {
                 $images = $this->imageModel->getImagesByLikes();
@@ -41,13 +42,16 @@ class ImagesController extends Controller {
     public function saveImages() {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
-        // Check if user is logged in
-        $user = $this->checkUserSession();
 
-        if (isset($_POST['data'])) {
-            $json = [];
+        // Check if user is logged in
+        $user = $this->getLoggedInUser();
+
+        if (!$user) {
+            $json['message'] = 'You should be logged in';
+        } else if (isset($_POST['data'])) {
             $path = 'assets/img/user_' . $user['id'];
             $data = json_decode($_POST['data'], true);
+
             // create folder for user if it does not exists
             if (!file_exists(APPROOT . '/' . $path))
                 mkdir(APPROOT . '/' . $path);
@@ -73,15 +77,19 @@ class ImagesController extends Controller {
                 }
                 $json['tags'] = $tags;
             }
-            echo json_encode($json);
+        } else {
+            $json['message'] = 'No data is provided';
         }
+
+        echo json_encode($json);
     }
 
     // Render given images
     public function download(...$param) {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
-        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : null;
+
+        $user = $this->getLoggedInUser();
         $images = json_decode($_POST['images'], true);
         foreach ($images as $key => $image) {
             $images[$key]['tags'] = $this->imageModel->getTagsbyImageId($image['id']);
@@ -92,6 +100,7 @@ class ImagesController extends Controller {
             $images[$key]['user_commented'] = $user ? $this->commentModel->isCommented($user['id'], $image['id']) : false;
             $images[$key]['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($image['id']);
         }
+
         $this->renderView('images/gallery', ['images' => $images]);
     }
 
@@ -100,8 +109,11 @@ class ImagesController extends Controller {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
         // Check if user is logged in
-        $this->checkUserSession();
-        if (isset($_POST['data'])) {
+        $user = $this->getLoggedInUser();
+
+        if (!$user) {
+            $json['message'] = 'You should be logged in';
+        } else if (isset($_POST['data'])) {
             $data = json_decode($_POST['data'], true);
             $img_data = str_replace('data:image/png;base64,', '', $data['img_data']);
             $img_data = str_replace(' ', '+', $img_data);
@@ -124,7 +136,10 @@ class ImagesController extends Controller {
             // delete all # characters before
             $data['tags'] = str_replace('#', '', $data['tags']);
             $json['tags'] = array_filter(explode(' ', $data['tags']));
+        } else {
+            $json['message'] = 'No data is provided';
         }
+
         echo json_encode($json);
     }
 
@@ -132,9 +147,10 @@ class ImagesController extends Controller {
     public function delete(...$param) {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
-        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
+        $user = $this->getLoggedInUser();
         $imageId = isset($param[0]) ? $param[0] : '0';
         $json = [];
+
         if (!$user) {
             $json['message'] = 'You should be logged in';
         } else if (!$imageId || !$this->imageModel->getImageById($imageId)) {
@@ -146,6 +162,7 @@ class ImagesController extends Controller {
                 $json['message'] = 'Something went wrong with database';
             }
         }
+
         echo json_encode($json);
     }
 
@@ -155,7 +172,8 @@ class ImagesController extends Controller {
         $this->onlyAjaxRequests();
 
         $json = [];
-        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
+        $user = $this->getLoggedInUser();
+
         if ($imageId && $json = $this->imageModel->getImageById($imageId)) {
             $json['tags'] = $this->imageModel->getTagsbyImageId($imageId);
             $json['comments'] = $this->commentModel->getComments($imageId);
@@ -168,6 +186,7 @@ class ImagesController extends Controller {
         } else {
             $json['message'] = 'Image does not exists';
         }
+
         echo json_encode($json);
     }
 }

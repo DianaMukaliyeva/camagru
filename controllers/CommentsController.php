@@ -13,7 +13,8 @@ class CommentsController extends Controller {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
         $json = [];
-        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
+        $user = $this->getLoggedInUser();
+
         if (!$user) {
             $json['message'] = 'You should be logged in to like a photo';
         } else if (isset($_POST['data'])) {
@@ -31,6 +32,7 @@ class CommentsController extends Controller {
         } else {
             $json['message'] = 'Image does not exists';
         }
+
         echo json_encode($json);
     }
 }

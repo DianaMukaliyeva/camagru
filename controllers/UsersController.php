@@ -116,7 +116,7 @@ class UsersController extends Controller {
     }
 
     public function account() {
-        if (isset($_SESSION[APPNAME]['user'])) {
+        if ($this->getLoggedInUser()) {
             $this->renderView('users/account');
         }
         $this->renderView('images/index');

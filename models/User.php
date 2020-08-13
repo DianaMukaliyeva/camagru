@@ -1,6 +1,7 @@
 <?php
 class User {
 
+    // Check passwords match and correctness
     private function validatePassword($password, $confirm_password, $errors = []) {
         if (!$password || empty($password)) {
             $errors['password_err'] = 'Please enter password';
@@ -17,6 +18,7 @@ class User {
         return $errors;
     }
 
+    // Check all given information
     private function validateRegisterData($data) {
         $errors = [];
         // Validate Email
@@ -60,14 +62,17 @@ class User {
         return $errors;
     }
 
+    // Update user's token
     private function updateToken($token, $email) {
         if ($token) {
             $token = "camagru_token" . $token;
         }
         $row = Db::query('UPDATE `users` SET `token` = ? WHERE `email` = ?', [$token, $email]);
+
         return $row;
     }
 
+    // Check email
     private function validateExistingEmail($email, $user) {
         $errors = [];
 
@@ -107,9 +112,11 @@ class User {
         return ['errors' => $errors];
     }
 
+    // Check all information of user
     public function login($email, $password) {
         $user = $this->findUserByEmail($email);
         $errors = $this->validateExistingEmail($email, $user);
+
         if (!$errors && $password != $user['password']) {
             $errors['password_err'] = 'Password incorrect';
         }
@@ -120,32 +127,40 @@ class User {
     // Get user's email by login
     public function getEmailByLogin($login) {
         $row = Db::queryOne('SELECT `email` FROM `users` WHERE `login` = ?', [$login]);
+
         if (isset($row['email']))
             return $row['email'];
+
         return $row;
     }
 
     // Get user's email by token
     public function getEmailByToken($token) {
         $row = Db::queryOne('SELECT `email` FROM `users` WHERE `token` = ?', [$token]);
+
         if (isset($row['email']))
             return $row['email'];
+
         return $row;
     }
 
     // Get user's login by id
     public function getLoginById($id) {
         $row = Db::queryOne('SELECT `login` FROM `users` WHERE `id` = ?', [$id]);
+
         if (isset($row['login']))
             return $row['login'];
+
         return $row;
     }
 
     // Get user by id
     public function getUserById($id) {
         $row = Db::queryAll('SELECT * FROM `users` WHERE `id` = ?', [$id]);
+
         if (isset($row[0]))
             return $row[0];
+
         return $row;
     }
 
@@ -153,14 +168,17 @@ class User {
     public function activateAccountByEmail($email) {
         $row = Db::query('UPDATE `users` SET `activated` = 1 WHERE `email` = ?', [$email]);
         $this->updateToken(null, $email);
+
         return $row;
     }
 
     // Get user's token
     public function getToken($email) {
         $row = Db::queryOne('SELECT `token` FROM `users` WHERE `email` = ?', [$email]);
+
         if (isset($row['token']))
             return $row['token'];
+
         return '';
     }
 
@@ -180,6 +198,7 @@ class User {
             Db::query('UPDATE `users` SET `password` = ? WHERE `email` = ?', [hash('whirlpool', $password), $email]);
             $this->updateToken(null, $email);
         }
+
         return ['errors' => $errors];
     }
 }

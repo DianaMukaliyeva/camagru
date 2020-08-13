@@ -12,6 +12,7 @@ class LikesController extends Controller {
     public function like($imageId = false) {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
+
         $json = [];
         $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
         if (!$user) {
@@ -26,6 +27,7 @@ class LikesController extends Controller {
         } else {
             $json['message'] = 'Image does not exists';
         }
+
         echo json_encode($json);
     }
 }
