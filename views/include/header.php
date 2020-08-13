@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <!-- Css files -->
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/css/main.css">
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/css/image.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/css/gallery.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/css/photomaker.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/css/pagination.css">
 </head>
 

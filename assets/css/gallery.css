@@ -1,0 +1,47 @@
+/* Css for gallery images */
+
+.account-img {
+    height: 250px;
+    width: 250px;
+    border-radius: 50%;
+}
+
+.image-card {
+    opacity: .95;
+    transition: opacity .2s, transform .2s;
+}
+
+.image-card:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    z-index: 3;
+}
+
+.media-img {
+    height: 50px;
+    width: 50px;
+}
+
+.position_bottom {
+    position: inherit;
+    bottom: 0;
+}
+
+.user_act {
+    color: red;
+}
+
+.comment_box {
+    max-height: 100px;
+    overflow-y: scroll;
+}
+
+@media screen and (min-width: 768px) {
+    .position_bottom {
+        position: absolute;
+    }
+
+    .comment_box {
+        max-height: 420px;
+    }
+}

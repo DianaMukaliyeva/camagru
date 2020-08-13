@@ -1,15 +1,4 @@
-a {
-    color: #28f;
-    text-decoration: none;
-}
-
-a:hover, a:focus {
-    color: darken(#28f, 15%);
-}
-
-a:active {
-    color: darken(#28f, 30%);
-}
+/* Css for gallery pagination */
 
 .article-list__page {
     border-top: 1px solid #ddd;
@@ -31,17 +20,6 @@ a:active {
     top: -.75em;
     vertical-align: middle;
     z-index: 1;
-}
-
-.article-list__item {
-    background-color: #eee;
-    float: left;
-    height: 15em;
-    max-width: 50%;
-    opacity: .75;
-    transform: scale(.8);
-    transition: opacity .2s, transform .2s;
-    width: 15em;
 }
 
 .article-list__pagination {
@@ -80,4 +58,9 @@ a:active {
 
 .article-list__pagination__item:active {
     color: lighten(#888, 30%);
+}
+
+.fixed {
+    margin: 0;
+    position: fixed;
 }
