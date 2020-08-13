@@ -44,7 +44,7 @@ class ImagesController extends Controller {
 
         if (isset($_POST['data'])) {
             $json = [];
-            $path = 'assets/img/users/' . $user['id'];
+            $path = 'assets/img/user_' . $user['id'];
             $data = json_decode($_POST['data'], true);
             // create folder for user if it does not exists
             if (!file_exists(APPROOT . '/' . $path))
