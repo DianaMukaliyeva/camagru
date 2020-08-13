@@ -19,9 +19,15 @@ class LikesController extends Controller {
             $json['message'] = 'You should be logged in to like a photo';
         } else if ($imageId && $this->imageModel->getImageById($imageId)) {
             if ($this->likeModel->isImageLiked($user['id'], $imageId)) {
-                $json['message'] = $this->likeModel->unlikeImage($user['id'], $imageId) ? 'unliked' : 'db failed';
+                $json['message'] = $this->likeModel->unlikeImage(
+                    $user['id'],
+                    $imageId
+                ) ? 'unliked' : 'db failed';
             } else {
-                $json['message'] = $this->likeModel->likeImage($user['id'], $imageId) ? 'liked' : 'db failed';
+                $json['message'] = $this->likeModel->likeImage(
+                    $user['id'],
+                    $imageId
+                ) ? 'liked' : 'db failed';
             }
             $json['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($imageId);
         } else {

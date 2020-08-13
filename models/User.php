@@ -24,7 +24,7 @@ class User {
         // Validate Email
         if (!$data['email'] || empty($data['email'])) {
             $errors['email_err'] = 'Please enter email';
-        } else if ($this->findUserByEmail($data['email'])) {
+        } else if ($this->findUser(['email' => $data['email']])) {
             $errors['email_err'] = 'Email has been already taken';
         }
 
@@ -93,18 +93,12 @@ class User {
     }
 
     // Get user by given parameter
+    // Ex: $data = ['id' => userid]
     public function findUser($data) {
-        return (Db::queryOne('SELECT * FROM `users` WHERE `email` = ?', $data));
-    }
-
-    // Get user with this email
-    public function findUserByEmail($email) {
-        return (Db::queryOne('SELECT * FROM `users` WHERE `email` = ?', [$email]));
-    }
-
-    // Get user with this login
-    public function findUserByLogin($login) {
-        return (Db::queryOne('SELECT * FROM `users` WHERE `login` = ?', [$login]));
+        return (Db::queryOne(
+            "SELECT * FROM `users` WHERE `" . implode('`, `', array_keys($data)) . "` = ?",
+            array_values($data)
+        ));
     }
 
     // Create user
@@ -128,7 +122,7 @@ class User {
 
     // Check all information of user
     public function login($email, $password) {
-        $user = $this->findUserByEmail($email);
+        $user = $this->findUser(['email' => $email]);
         $errors = $this->validateExistingEmail($email, $user);
 
         if (!$errors && $password != $user['password']) {
@@ -160,13 +154,6 @@ class User {
         return isset($result['login']) ? $result['login'] : $result;
     }
 
-    // Get user by id
-    public function getUserById($id) {
-        $result = Db::queryAll('SELECT * FROM `users` WHERE `id` = ?', [$id]);
-
-        return isset($result[0]) ? $result[0] : $result;
-    }
-
     // Activate user's account
     public function activateAccountByEmail($email) {
         $result = Db::query(
@@ -188,7 +175,7 @@ class User {
     // Update user's password
     public function updatePassword($email, $reset = false, $password, $confirm_password) {
         if (!$reset) {
-            $user = $this->findUserByEmail($email);
+            $user = $this->findUser(['email' => $email]);
             $errors = $this->validateExistingEmail($email, $user);
             if (!$errors) {
                 $this->updateToken(bin2hex(random_bytes(50)), $email);

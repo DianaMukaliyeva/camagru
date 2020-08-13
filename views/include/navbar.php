@@ -15,7 +15,7 @@
             <ul class="navbar-nav">
                 <?php if (isset($_SESSION[APPNAME]['user'])) : ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo URLROOT; ?>/images/takePhoto">Add photo</a>
+                        <a class="nav-link" href="<?php echo URLROOT; ?>/camera/takePhoto">Add photo</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo URLROOT; ?>/users/account">Profile</a>

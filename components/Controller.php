@@ -1,22 +1,22 @@
 <?php
 class Controller {
 
+    // Redirect to the given address
     public function redirect($url) {
         header("Location: " . URLROOT . "/$url");
         header('Connection: close');
         exit;
     }
 
+    // Add to array $data given content
     public function addMessage($success, $content, $data = []) {
-        if ($success)
-            $data['message']['class'] = 'alert-success';
-        else
-            $data['message']['class'] = 'alert-danger';
+        $data['message']['class'] = $success ? 'alert-success' : 'alert-danger';
         $data['message']['content'] = $content;
 
         return $data;
     }
 
+    // Return instance of model
     public function getModel($model) {
         // Check model exists
         if (file_exists('models/' . $model . '.php')) {
@@ -41,11 +41,13 @@ class Controller {
         exit;
     }
 
+    // Check if request is ajax or not
     public function isAjaxRequest() {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
             $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
     }
 
+    // Return logged in user
     public function getLoggedInUser() {
         if (isset($_SESSION[APPNAME]['user'])) {
             return $_SESSION[APPNAME]['user'];
@@ -54,6 +56,7 @@ class Controller {
         return false;
     }
 
+    // Check that user is logged in and exists in db. Otherwise redirect ot login page
     public function checkUserSession() {
         if (isset($_SESSION[APPNAME]['user'])) {
             $user = $_SESSION[APPNAME]['user'];
@@ -68,6 +71,7 @@ class Controller {
         exit();
     }
 
+    // Redirect if request is not ajax
     public function onlyAjaxRequests() {
         if (!$this->isAjaxRequest()) {
             $this->redirect('');

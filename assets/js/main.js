@@ -53,13 +53,14 @@ const fillModalImage = function (imageId) {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
             // console.log(result);
-            if (result['message'] == 'liked') {
-                document.getElementById('modal_like_button').childNodes[0].classList.add('user_act');
-            } else if (result['message'] == 'unliked') {
-                document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
-            } else {
+            if (result['message']) {
                 alert(result['message']);
                 return;
+            }
+            if (result['user_liked'] == 'liked') {
+                document.getElementById('modal_like_button').childNodes[0].classList.add('user_act');
+            } else {
+                document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
             }
             document.getElementById('modal_profile_photo').src = result['profile_photo'];
             document.getElementById('modal_profile_login').innerHTML = result['user_login'];
