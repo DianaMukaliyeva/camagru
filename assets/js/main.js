@@ -29,7 +29,7 @@ const deleteImage = function (button) {
             let result = JSON.parse(xhr.responseText);
             if (result['message'] == 'success') {
                 closeModal();
-                document.getElementById('image_card_' + imageId).remove();
+                location.reload();
             } else {
                 alert(result['message']);
             }
