@@ -11,9 +11,10 @@ class Image {
     public function getImagesByLikes() {
         $result = Db::queryAll(
             'SELECT images.id, images.image_path, images.created_at, images.user_id,
-            COUNT(likes.id) AS `likes_amount`
-            FROM images LEFT JOIN likes ON likes.image_id = images.id
-            GROUP BY images.id ORDER BY `likes_amount` DESC'
+            COUNT(likes.id) AS `likes_amount`, COUNT(comments.id) AS `comments_amount`
+            FROM `images` LEFT JOIN `likes` ON likes.image_id = images.id
+            LEFT JOIN `comments` ON comments.image_id = images.id
+            GROUP BY images.id ORDER BY `likes_amount` DESC, `comments_amount` DESC'
         );
         return $result;
     }
@@ -32,6 +33,12 @@ class Image {
             'INSERT INTO `images`(`image_path`, `user_id`) VALUES (?, ?)',
             [$imagePath, $userId]
         );
+        return $result;
+    }
+
+    // Delete image by id
+    public function deleteImage($imageId) {
+        $result = Db::query('DELETE FROM `images` WHERE `id` = ?', [$imageId]);
         return $result;
     }
 
