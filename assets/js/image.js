@@ -14,9 +14,9 @@ if (document.getElementsByName('like')) {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     let result = JSON.parse(xhr.responseText);
                     if (result['message'] == 'liked') {
-                        likeIcons[i].childNodes[0].classList.add('my_like');
+                        likeIcons[i].childNodes[0].classList.add('user_act');
                     } else if (result['message'] == 'unliked') {
-                        likeIcons[i].childNodes[0].classList.remove('my_like');
+                        likeIcons[i].childNodes[0].classList.remove('user_act');
                     } else {
                         alert(result['message']);
                         return;
@@ -24,9 +24,9 @@ if (document.getElementsByName('like')) {
                     likeIcons[i].childNodes[1].innerHTML = ' ' + result['likes_amount'];
                     if (likeIcons[i].id == 'modal_like_button') {
                         if (result['message'] == 'liked') {
-                            document.getElementById('like_button_' + imageId).childNodes[0].classList.add('my_like');
+                            document.getElementById('like_button_' + imageId).childNodes[0].classList.add('user_act');
                         } else if (result['message'] == 'unliked') {
-                            document.getElementById('like_button_' + imageId).childNodes[0].classList.remove('my_like');
+                            document.getElementById('like_button_' + imageId).childNodes[0].classList.remove('user_act');
                         }
                         document.getElementById('like_button_' + imageId).childNodes[1].innerHTML = ' ' + result['likes_amount'];
                     }
@@ -54,7 +54,7 @@ if (document.getElementsByName('send_comment')) {
                     let result = JSON.parse(xhr.responseText);
                     if (result['success']) {
                         document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments_amount'];
-                        document.getElementById('comments_' + data['image_id']).classList.add('my_like');
+                        document.getElementById('comments_' + data['image_id']).classList.add('user_act');
                         commentForm[i].getElementsByTagName('input')[0].value = '';
                         if (commentForm[i].id && commentForm[i].id == 'modal_comment_form') {
                             $firstComment = result['comments_amount'] == 1 ? true : false;

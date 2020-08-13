@@ -54,9 +54,9 @@ const fillModalImage = function (imageId) {
             let result = JSON.parse(xhr.responseText);
             // console.log(result);
             if (result['message'] == 'liked') {
-                document.getElementById('modal_like_button').childNodes[0].classList.add('my_like');
+                document.getElementById('modal_like_button').childNodes[0].classList.add('user_act');
             } else if (result['message'] == 'unliked') {
-                document.getElementById('modal_like_button').childNodes[0].classList.remove('my_like');
+                document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
             } else {
                 alert(result['message']);
                 return;

@@ -5,7 +5,10 @@ let appliedFilters = [];
 // show how many Images in preview
 const changeImagesInPreview = function () {
     document.getElementById('images_header').innerHTML = "Preview (" + imagesInCapture + ")";
-    document.getElementById('display_list').style.display = imagesInCapture == 0 ? "none" : "block";
+    if (imagesInCapture == 0)
+        document.getElementById('display_list').classList.add('d-none');
+    else
+        document.getElementById('display_list').classList.remove('d-none');
 }
 
 // delete Image from preview
