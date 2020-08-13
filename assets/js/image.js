@@ -46,7 +46,7 @@ if (document.getElementsByName('send_comment')) {
             data['image_id'] = commentForm[i].dataset.imageId;
             data['comment'] = commentForm[i].getElementsByTagName('input')[0].value;
             let xhr = new XMLHttpRequest();
-            xhr.open('POST', '/' + urlpath + '/images/addComment', true);
+            xhr.open('POST', '/' + urlpath + '/comments/addComment', true);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
             xhr.onreadystatechange = function () {

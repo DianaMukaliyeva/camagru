@@ -7,7 +7,7 @@ class Image {
         return $result;
     }
 
-    // Get all images ordered by likes
+    // Get all images ordered by likes and comments
     public function getImagesByLikes() {
         $result = Db::queryAll(
             'SELECT images.id, images.image_path, images.created_at, images.user_id,
@@ -19,7 +19,7 @@ class Image {
         return $result;
     }
 
-    // Get image by Id
+    // Get an image by Id
     public function getImageById($imageId) {
         $result = Db::queryAll('SELECT * FROM `images` WHERE `id` = ?', [$imageId]);
         if (isset($result[0]))
@@ -39,44 +39,6 @@ class Image {
     // Delete image by id
     public function deleteImage($imageId) {
         $result = Db::query('DELETE FROM `images` WHERE `id` = ?', [$imageId]);
-        return $result;
-    }
-
-    // Get how many comments image has
-    public function getNumberOfComments($imageId) {
-        $result = Db::queryOne('SELECT COUNT(*) FROM `comments` WHERE `image_id` = ?', [$imageId]);
-        return $result['COUNT(*)'];
-    }
-
-    // Check if user liked this image
-    public function isCommented($userId, $imageId) {
-        $result = Db::queryOne('SELECT `id` FROM `comments` WHERE `user_id` = ? AND `image_id` = ?', [$userId, $imageId]);
-        if (isset($result['id']))
-            return $result['id'];
-        return $result;
-    }
-
-    // Get date of comment
-    public function getCreatedDateOfComment($commentId) {
-        $result = Db::queryOne('SELECT `created_at` FROM `comments` WHERE `id` = ?', [$commentId]);
-        if (isset($result['created_at']))
-            return $result['created_at'];
-        return $result;
-    }
-
-    // Get all comments of image
-    public function getComments($imageId) {
-        $result = Db::queryAll(
-            'SELECT comments.id AS `id`, users.login, `comment`, comments.created_at AS `created_at`,
-            `user_id`, `image_id` FROM `comments` LEFT JOIN `users` ON users.id = comments.user_id WHERE `image_id` = ?',
-            [$imageId]
-        );
-        return $result;
-    }
-
-    // Add comment to image
-    public function addComment($userId, $imageId, $comment) {
-        $result = Db::query('INSERT INTO `comments` (`user_id`, `image_id`, `comment`) VALUES (?, ?, ?)', [$userId, $imageId, $comment]);
         return $result;
     }
 

@@ -24,10 +24,12 @@
                     </div>
                 </div>
             </div>
+            <!-- tags -->
             <div class="row py-3">
                 <div class="col-md-4 text-center"><label>Tags to image:</label></div>
                 <div class="col-md-8"><input class="w-100" id="tags" placeholder="Separated by space"></div>
             </div>
+            <!-- buttons -->
             <div class="row py-3">
                 <div class="col pt-3 px-0 d-flex justify-content-center">
                     <button class="btn btn-success btn-block" id="video_stream">Stop video</button>
@@ -41,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <!-- show captured image -->
+        <!-- captured images -->
         <div class="text-center col-md-4 h-70 ml-auto">
             <h4 class="pb-3" id="images_header">Preview (0)</h4>
             <div class="d-none" id="display_list">

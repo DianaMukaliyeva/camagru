@@ -82,14 +82,17 @@ class User {
         return $errors;
     }
 
+    // Get user with this email
     public function findUserByEmail($email) {
         return (Db::queryOne('SELECT * FROM `users` WHERE `email` = ?', [$email]));
     }
 
+    // Get user with this login
     public function findUserByLogin($login) {
         return (Db::queryOne('SELECT * FROM `users` WHERE `login` = ?', [$login]));
     }
 
+    // Create user
     public function register($data) {
         $errors = $this->validateRegisterData($data);
 
@@ -114,6 +117,7 @@ class User {
         return $errors ? ['errors' => $errors] : ['user' => $user];
     }
 
+    // Get user's email by login
     public function getEmailByLogin($login) {
         $row = Db::queryOne('SELECT `email` FROM `users` WHERE `login` = ?', [$login]);
         if (isset($row['email']))
@@ -121,6 +125,7 @@ class User {
         return $row;
     }
 
+    // Get user's email by token
     public function getEmailByToken($token) {
         $row = Db::queryOne('SELECT `email` FROM `users` WHERE `token` = ?', [$token]);
         if (isset($row['email']))
@@ -128,6 +133,7 @@ class User {
         return $row;
     }
 
+    // Get user's login by id
     public function getLoginById($id) {
         $row = Db::queryOne('SELECT `login` FROM `users` WHERE `id` = ?', [$id]);
         if (isset($row['login']))
@@ -135,6 +141,7 @@ class User {
         return $row;
     }
 
+    // Get user by id
     public function getUserById($id) {
         $row = Db::queryAll('SELECT * FROM `users` WHERE `id` = ?', [$id]);
         if (isset($row[0]))
@@ -142,12 +149,14 @@ class User {
         return $row;
     }
 
+    // Activate user's account
     public function activateAccountByEmail($email) {
         $row = Db::query('UPDATE `users` SET `activated` = 1 WHERE `email` = ?', [$email]);
         $this->updateToken(null, $email);
         return $row;
     }
 
+    // Get user's token
     public function getToken($email) {
         $row = Db::queryOne('SELECT `token` FROM `users` WHERE `email` = ?', [$email]);
         if (isset($row['token']))
@@ -155,6 +164,7 @@ class User {
         return '';
     }
 
+    // Update user's password
     public function updatePassword($email, $reset = false, $password = '', $confirm_password = '') {
         if (!$reset) {
             $user = $this->findUserByEmail($email);

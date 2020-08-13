@@ -1,5 +1,6 @@
 <?php require 'views/include/header.php' ?>
 
+<!-- sorting buttons -->
 <div class="mt-3 input-group justify-content-center">
     <div id="radioBtn" class="btn-group">
         <a class="sort_images btn btn-light active" data-toggle="sort_image" data-title="newest">Newest</a>
@@ -30,6 +31,7 @@
             </div>
             <div class="modal-body p-0">
                 <div class="row mb-3">
+                    <!-- image -->
                     <div class="col-md-6 border py-2">
                         <div class="row">
                             <div class="col embed-responsive embed-responsive-4by3">
@@ -47,6 +49,7 @@
                             <div class="text-center" id="modal_image_tags"></div>
                         </div>
                     </div>
+                    <!-- comments -->
                     <div class="col-md-6 border py-2">
                         <div class="row mb-3 mb-sm-5 comment_box">
                             <div class="col" id="modal_image_comments"></div>
@@ -71,9 +74,13 @@
 </div>
 <div class="modal-backdrop fade show d-none" id="backdrop"></div>
 
+<!-- button in case of big screen -->
 <div id="load-more-container">
     <button id="load-more" data-page="0">Loading</button>
 </div>
+
+<!-- page numeration -->
 <ul class="article-list__pagination fixed article-list__pagination--inactive" id="post-pagination"></ul>
 <script src="<?php echo URLROOT; ?>/assets/js/gallery.js"></script>
+
 <?php require 'views/include/footer.php' ?>

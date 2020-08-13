@@ -1,7 +1,9 @@
+<!-- check if we have images -->
 <?php if (isset($data['images'])) : ?>
     <?php foreach ($data['images'] as $image) : ?>
         <div class="col mb-4">
             <div class="card h-100 bg-light image-card">
+                <!-- image's owner -->
                 <div class="media mt-3">
                     <img class="rounded-circle media-img mx-3" src="<?= URLROOT . '/assets/img/images/default.png' ?>" alt="profile image">
                     <div class="media-body">
@@ -10,6 +12,7 @@
                         </a>
                     </div>
                 </div>
+                <!-- image with tags -->
                 <div class="m-1">
                     <a class="text-decoration-none" href="#" onclick="openModal(<?= $image['id'] ?>)">
                         <img src="<?= URLROOT . '/' . $image['image_path'] ?>" class="img-fluid card-img-top" alt="<?= isset($image['title']) ? $image['title'] : 'no title' ?>">
@@ -20,11 +23,13 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
+                <!-- likes and comments -->
                 <div class="card-body px-sm-4 px-2">
                     <button name="like" data-image-id="<?= $image['id'] ?>" id="like_button_<?= $image['id'] ?>" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg <?= $image['user_liked'] ? 'user_act' : '' ?>"></i><span> <?= $image['likes_amount'] ?></span></button>
                     <button class="btn py-0 shadow-none" id="comments_<?= $image['id'] ?>" onclick="openModal(<?= $image['id'] ?>)"><i class="fas fa-comment icon-7x fa-lg <?= $image['user_commented'] ? 'user_act' : '' ?>"></i><span> <?= $image['comments_amount'] ?></span></button>
                     <div class="float-right"><?= $image['created_at'] ?></div>
                 </div>
+                <!-- send comment form -->
                 <form method="post" action="" name="send_comment" data-image-id="<?= $image['id'] ?>">
                     <div class="form-row mx-auto">
                         <div class="col-8">
@@ -39,6 +44,7 @@
         </div>
     <?php endforeach ?>
 <?php else : ?>
+    <!-- in case if no images -->
     <div class="col-md-6 m-auto text-center pt-5">
         <p>No photo yet</p>
     </div>

@@ -4,12 +4,14 @@ class ImagesController extends Controller {
     private $imageModel;
     private $filterModel;
     private $likeModel;
+    private $commentModel;
 
     public function __construct() {
         $this->imageModel = $this->getModel('Image');
         $this->userModel = $this->getModel('User');
         $this->filterModel = $this->getModel('Filter');
         $this->likeModel = $this->getModel('Like');
+        $this->commentModel = $this->getModel('Comment');
     }
 
     // Main page of app show our gallery
@@ -83,11 +85,11 @@ class ImagesController extends Controller {
         $images = json_decode($_POST['images'], true);
         foreach ($images as $key => $image) {
             $images[$key]['tags'] = $this->imageModel->getTagsbyImageId($image['id']);
-            $images[$key]['comments'] = $this->imageModel->getComments($image['id']);
-            $images[$key]['comments_amount'] = $this->imageModel->getNumberOfComments($image['id']);
+            $images[$key]['comments'] = $this->commentModel->getComments($image['id']);
+            $images[$key]['comments_amount'] = $this->commentModel->getNumberOfComments($image['id']);
             $images[$key]['user_login'] = $this->userModel->getLoginById($image['user_id']);
             $images[$key]['user_liked'] = $user ? $this->likeModel->isImageLiked($user['id'], $image['id']) : false;
-            $images[$key]['user_commented'] = $user ? $this->imageModel->isCommented($user['id'], $image['id']) : false;
+            $images[$key]['user_commented'] = $user ? $this->commentModel->isCommented($user['id'], $image['id']) : false;
             $images[$key]['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($image['id']);
         }
         $this->renderView('images/gallery', ['images' => $images]);
@@ -126,32 +128,6 @@ class ImagesController extends Controller {
         echo json_encode($json);
     }
 
-    // Add comment
-    public function addComment() {
-        // Only works for ajax requests
-        $this->onlyAjaxRequests();
-        $json = [];
-        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
-        if (!$user) {
-            $json['message'] = 'You should be logged in to like a photo';
-        } else if (isset($_POST['data'])) {
-            $data = json_decode($_POST['data'], true);
-            if ($this->imageModel->getImageById($data['image_id'])) {
-                $json['success'] = $this->imageModel->addComment($user['id'], $data['image_id'], $data['comment']);
-                $commentId = Db::getLastId();
-                $json['created_at'] =$this->imageModel->getCreatedDateOfComment($commentId);
-                $json['login'] = $user['login'];
-                $json['comment'] = $data['comment'];
-                $json['comments_amount'] = $this->imageModel->getNumberOfComments($data['image_id']);
-            } else {
-                $json['message'] = 'Image does not exists';
-            }
-        } else {
-            $json['message'] = 'Image does not exists';
-        }
-        echo json_encode($json);
-    }
-
     // Delete image from db
     public function delete(...$param) {
         // Only works for ajax requests
@@ -173,7 +149,7 @@ class ImagesController extends Controller {
         echo json_encode($json);
     }
 
-    // Show an image with comments
+    // Show image with comments
     public function imageInfo($imageId = false) {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
@@ -182,7 +158,7 @@ class ImagesController extends Controller {
         $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
         if ($imageId && $json = $this->imageModel->getImageById($imageId)) {
             $json['tags'] = $this->imageModel->getTagsbyImageId($imageId);
-            $json['comments'] = $this->imageModel->getComments($imageId);
+            $json['comments'] = $this->commentModel->getComments($imageId);
             $json['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($imageId);
             $json['message'] = $user && $this->likeModel->isImageLiked($user['id'], $imageId) ? 'liked' : 'unliked';
             $image_user = $this->userModel->getUserById($json['user_id']);

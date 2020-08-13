@@ -5,6 +5,7 @@
         <div class="mt-5 alert <?= $data['message']['class'] ?>"><?= $data['message']['content'] ?></div>
     <?php endif ?>
     <?php if (isset($data['reset'])) : ?>
+        <!-- form to change password -->
         <div class="card card-body bg-light mt-5">
             <h2>Change your password</h2>
             <form action="<?= URLROOT ?>/users/resetPassword" method="post">
@@ -27,6 +28,7 @@
             </form>
         </div>
     <?php else : ?>
+        <!-- form to send email with reset password credentials -->
         <div class="card card-body bg-light mt-5">
             <form action="<?= URLROOT ?>/users/resetPassword" method="post">
                 <div class="form-group">

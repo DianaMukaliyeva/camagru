@@ -23,8 +23,11 @@ $urlroot .= $_SERVER['HTTP_HOST'];
 // Append the requested resource location to the URL
 $urlroot .= dirname($_SERVER['PHP_SELF']);
 
+// Define application URL
 define('URLROOT', $urlroot);
+// Define application root folder
 define('APPNAME', basename(dirname($_SERVER['PHP_SELF'])));
+// Define the whole path to application root folder
 define('APPROOT', dirname(dirname(__FILE__)));
 
 Db::connect($DB_DSN, $DB_USER, $DB_PASSWORD, $DB_NAME);

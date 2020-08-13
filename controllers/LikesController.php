@@ -1,17 +1,14 @@
 <?php
 class LikesController extends Controller {
-    private $userModel;
     private $imageModel;
-    private $filterModel;
     private $likeModel;
 
     public function __construct() {
         $this->imageModel = $this->getModel('Image');
-        $this->userModel = $this->getModel('User');
-        $this->filterModel = $this->getModel('Filter');
         $this->likeModel = $this->getModel('Like');
     }
 
+    // Like or unlike image
     public function like($imageId = false) {
         // Only works for ajax requests
         $this->onlyAjaxRequests();

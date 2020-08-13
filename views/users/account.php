@@ -1,5 +1,6 @@
 <?php require 'views/include/header.php' ?>
 
+<!-- user's profile -->
 <div class="container">
     <?php if (isset($_SESSION[APPNAME]['user'])) : ?>
         <div class="media pt-5">
