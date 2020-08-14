@@ -42,6 +42,7 @@ if (document.getElementsByName('send_comment')) {
     for (let i = 0; i < commentForm.length; i++) {
         commentForm[i].addEventListener('submit', function (e) {
             e.preventDefault();
+            e.stopImmediatePropagation();
             const data = {};
             data['image_id'] = commentForm[i].dataset.imageId;
             data['comment'] = commentForm[i].getElementsByTagName('input')[0].value;
@@ -66,6 +67,19 @@ if (document.getElementsByName('send_comment')) {
                 }
             };
             xhr.send('data=' + JSON.stringify(data));
+            let newxhr = new XMLHttpRequest();
+            newxhr.open('POST', '/' + urlpath + '/comments/sendCommentEmail', true);
+            newxhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            newxhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+            newxhr.onreadystatechange = function () {
+                if (newxhr.readyState == 4 && newxhr.status == 200) {
+                    let result = JSON.parse(newxhr.responseText);
+                    if (result['message']) {
+                        alert(result['message']);
+                    }
+                }
+            };
+            newxhr.send('data=' + JSON.stringify(data));
         });
     }
 }

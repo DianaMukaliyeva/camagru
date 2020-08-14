@@ -75,8 +75,8 @@
 <div class="modal-backdrop fade show d-none" id="backdrop"></div>
 
 <!-- button in case of big screen -->
-<div id="load-more-container">
-    <button id="load-more" data-page="0">Loading</button>
+<div class="text-center" id="load-more-container">
+    <button class="btn btn-outline-info" id="load-more" data-page="0">Load more</button>
 </div>
 
 <!-- page numeration -->

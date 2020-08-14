@@ -46,6 +46,17 @@ class Comment {
         return isset($result['id']) ? $result['id'] : $result;
     }
 
+    // Get user login that commented photo
+    public function getLoginByComment($commentId) {
+        $result = Db::queryOne(
+            'SELECT users.login AS `login` FROM `comments`
+            JOIN `users` ON comments.user_id = users.id WHERE comments.id = ?',
+            [$commentId]
+        );
+
+        return isset($result['login']) ? $result['login'] : $result;
+    }
+
     // Get date of comment
     public function getCreatedDateOfComment($commentId) {
         $result = Db::queryOne(
