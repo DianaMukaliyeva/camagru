@@ -31,8 +31,8 @@ class CommentsController extends Controller {
                 $json['created_at'] = $this->commentModel->getCreatedDateOfComment($commentId);
                 $json['login'] = $user['login'];
                 $json['comment'] = filter_var($data['comment'], FILTER_SANITIZE_STRING);
-                $json['comments_amount'] =
-                    $this->commentModel->getNumberOfComments($data['image_id']);
+                $json['comments'] =
+                    $this->commentModel->getComments($data['image_id']);
             } else {
                 $json['message'] = 'Image does not exists';
             }

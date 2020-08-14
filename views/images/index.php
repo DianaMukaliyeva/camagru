@@ -3,8 +3,8 @@
 <!-- sorting buttons -->
 <div class="mt-3 input-group justify-content-center">
     <div id="radioBtn" class="btn-group">
-        <a class="sort_images btn btn-light active" data-toggle="sort_image" data-title="newest">Newest</a>
-        <a class="sort_images btn btn-light" data-toggle="sort_image" data-title="popular">Popular</a>
+        <button class="sort_images btn btn-light active" onclick="sortImages(this.dataset.title)" data-title="newest">Newest</button>
+        <button class="sort_images btn btn-light" onclick="sortImages(this.dataset.title)" data-title="popular">Popular</button>
     </div>
     <input type="hidden" name="sort_image" id="sort_image">
 </div>
@@ -76,7 +76,7 @@
 
 <!-- button in case of big screen -->
 <div class="text-center" id="load-more-container">
-    <button class="btn btn-outline-info" id="load-more" data-page="0">Load more</button>
+    <button class="btn btn-outline-info d-none" id="load-more" data-page="0">Load more</button>
 </div>
 
 <!-- page numeration -->

@@ -27,6 +27,10 @@
     bottom: 0;
 }
 
+.sort_images:focus {
+    box-shadow: none !important;
+}
+
 .user_act {
     color: red;
 }

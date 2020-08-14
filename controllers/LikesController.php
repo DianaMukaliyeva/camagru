@@ -22,12 +22,12 @@ class LikesController extends Controller {
                 $json['message'] = $this->likeModel->unlikeImage(
                     $user['id'],
                     $imageId
-                ) ? 'unliked' : 'db failed';
+                ) ? false : 'db failed';
             } else {
                 $json['message'] = $this->likeModel->likeImage(
                     $user['id'],
                     $imageId
-                ) ? 'liked' : 'db failed';
+                ) ? false : 'db failed';
             }
             $json['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($imageId);
         } else {

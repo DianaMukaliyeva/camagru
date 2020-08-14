@@ -6,29 +6,34 @@ burger.addEventListener('click', function () { nav.classList.toggle('collapse');
 
 // the root location of our project
 const urlpath = window.location.pathname.split('/')[1];
+let sendingComment = false;
 
+// add comment to database
 const addComment = function (form) {
     event.preventDefault();
+    if (sendingComment) {
+        return;
+    }
+    sendingComment = true;
+    form.getElementsByTagName('input')[0].disabled = true;
+    form.getElementsByTagName('button')[0].disabled = true;
+    form.getElementsByTagName('button')[0].innerHTML = 'Sending';
+
     const data = {};
     data['image_id'] = form.dataset.imageId;
     data['comment'] = form.getElementsByTagName('input')[0].value;
 
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/' + urlpath + '/comments/addComment', true);
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
             if (result['success']) {
-                document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments_amount'];
+                document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments'].length;
                 document.getElementById('comments_' + data['image_id']).classList.add('user_act');
-                form.getElementsByTagName('input')[0].value = '';
                 // console.log('form = ' + form.id);
                 if (form.id && form.id == 'modal_comment_form') {
                     // console.log('this is from modal');
-                    $firstComment = result['comments_amount'] == 1 ? true : false;
-                    createComment(result, document.getElementById('modal_image_comments'), $firstComment);
+                    fillComments(result['comments'], document.getElementById('modal_image_comments'));
                 }
             } else {
                 alert(result['message']);
@@ -36,35 +41,34 @@ const addComment = function (form) {
             // console.log('comment inserted');
         }
     };
-    // console.log('send data 1');
+    xhr.open('POST', '/' + urlpath + '/comments/addComment', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('data=' + JSON.stringify(data));
+
+    // send email to user about commentin his photo
     let newxhr = new XMLHttpRequest();
-    newxhr.open('POST', '/' + urlpath + '/comments/sendCommentEmail', true);
-    newxhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    newxhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     newxhr.onreadystatechange = function () {
         if (newxhr.readyState == 4 && newxhr.status == 200) {
             let result = JSON.parse(newxhr.responseText);
             if (result['message']) {
                 alert(result['message']);
             }
+            sendingComment = false;
+            form.getElementsByTagName('input')[0].disabled = false;
+            form.getElementsByTagName('input')[0].value = '';
+            form.getElementsByTagName('button')[0].disabled = false;
+            form.getElementsByTagName('button')[0].innerHTML = 'Send';
             // console.log('email send');
         }
     };
-    // console.log('send data 2');
+    newxhr.open('POST', '/' + urlpath + '/comments/sendCommentEmail', true);
+    newxhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    newxhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     newxhr.send('data=' + JSON.stringify(data));
 }
 
-const createComment = function (comment, div, firstComment = false) {
-    if (firstComment)
-        div.innerHTML = '';
-    const comment_div = document.createElement('div');
-    const p = document.createElement('p');
-    p.innerHTML = "<a class='link' href=''>" + comment['login'] + "</a> (" + comment['created_at'] + ") :<br> <i>" + comment['comment'] + "</i>";
-    comment_div.appendChild(p);
-    div.appendChild(comment_div);
-}
-
+// delete image from db
 const deleteImage = function (button) {
     imageId = button.dataset.imageId;
 
@@ -86,12 +90,20 @@ const deleteImage = function (button) {
     xhr.send();
 }
 
+// fill modal window with comments
 const fillComments = function (comments, div) {
+    div.innerHTML = '<h5 class="text-center">Comments</h5>';
     comments.forEach(comment => {
-        createComment(comment, div);
+        const comment_div = document.createElement('div');
+        const p = document.createElement('p');
+        p.innerHTML = "<a class='link' href=''>" + comment['login'] + "</a> (" + comment['created_at'] + ") :<br> <i>" + comment['comment'] + "</i>";
+        comment_div.appendChild(p);
+        div.appendChild(comment_div);
     });
 }
 
+
+// get info about image and fill modal window with it
 const fillModalImage = function (imageId) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', '/' + urlpath + '/images/imageInfo/' + imageId, true);
@@ -128,17 +140,13 @@ const fillModalImage = function (imageId) {
                 });
             }
             document.getElementById('modal_image_tags').dataset.imageId = imageId;
-            document.getElementById('modal_image_comments').innerHTML = '';
-            if (result['comments'].length != 0)
-                fillComments(result['comments'], document.getElementById('modal_image_comments'));
-            else {
-                document.getElementById('modal_image_comments').innerHTML = 'No comments yet';
-            }
+            fillComments(result['comments'], document.getElementById('modal_image_comments'));
         }
     };
     xhr.send();
 }
 
+// triggers when user likes/unlikes image
 const like = function (button) {
     event.preventDefault;
     let imageId = button.dataset.imageId;
@@ -151,21 +159,14 @@ const like = function (button) {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
             // console.log(result);
-            if (result['message'] == 'liked') {
-                button.childNodes[0].classList.add('user_act');
-            } else if (result['message'] == 'unliked') {
-                button.childNodes[0].classList.remove('user_act');
-            } else {
+            if (result['message']) {
                 alert(result['message']);
                 return;
             }
+            button.childNodes[0].classList.toggle('user_act');
             button.childNodes[1].innerHTML = ' ' + result['likes_amount'];
             if (button.id == 'modal_like_button') {
-                if (result['message'] == 'liked') {
-                    document.getElementById('like_button_' + imageId).childNodes[0].classList.add('user_act');
-                } else if (result['message'] == 'unliked') {
-                    document.getElementById('like_button_' + imageId).childNodes[0].classList.remove('user_act');
-                }
+                document.getElementById('like_button_' + imageId).childNodes[0].classList.toggle('user_act');
                 document.getElementById('like_button_' + imageId).childNodes[1].innerHTML = ' ' + result['likes_amount'];
             }
         }
@@ -173,6 +174,7 @@ const like = function (button) {
     xhr.send();
 }
 
+// open modal window for image
 const openModal = function (imageId) {
     event.preventDefault();
     if (imageId) {
@@ -184,6 +186,7 @@ const openModal = function (imageId) {
     document.getElementById("exampleModal").classList.add('show');
 }
 
+// close modal window with image
 const closeModal = function () {
     document.getElementById("backdrop").classList.add('d-none')
     document.getElementById("exampleModal").style.display = "none";

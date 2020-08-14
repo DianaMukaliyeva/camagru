@@ -2,15 +2,16 @@ let images = null;
 let request_in_progress = false;
 let imagesOnPage = 9;
 
-const img_container = document.getElementById('article-list');
+const imgContainer = document.getElementById('article-list');
 const pagination = document.getElementById('post-pagination');
-const load_more = document.getElementById('load-more');
+const loadMoreButton = document.getElementById('load-more');
 
 const getPageId = function (n) { return 'article-page-' + n; }
-const showLoadMore = function () { load_more.style.display = 'inline'; }
-const hideLoadMore = function () { load_more.style.display = 'none'; }
-const setCurrentPage = function (page) { load_more.setAttribute('data-page', page); }
+const showLoadMore = function () { loadMoreButton.classList.remove('d-none'); }
+const hideLoadMore = function () { loadMoreButton.classList.add('d-none'); }
+const setCurrentPage = function (page) { loadMoreButton.setAttribute('data-page', page); }
 
+// Add next page to pagination
 const addPaginationPage = function (page) {
     const pageLink = document.createElement('a');
     pageLink.href = '#' + getPageId(page);
@@ -27,41 +28,7 @@ const addPaginationPage = function (page) {
     }
 }
 
-const sortImages = function (title) {
-    document.querySelectorAll(".sort_images").forEach(function (item) {
-        item.classList.remove('active');
-        if (item.dataset.title == title) {
-            item.classList.add('active');
-        }
-    });
-
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            images = JSON.parse(this.responseText);
-            if (images != '') {
-                img_container.innerHTML = '';
-                pagination.innerHTML = '';
-                pagination.classList.add('article-list__pagination--inactive');
-                load_more.setAttribute('data-page', 0);
-                loadMore();
-            } else {
-                pagination.innerHTML = '';
-                pagination.classList.add('article-list__pagination--inactive');
-                hideLoadMore();
-                img_container.innerHTML = '<div class="mt-5 text-center">No images yet</div>';
-            }
-        }
-    }
-    if (title == 'newest') {
-        xmlhttp.open("GET", "/" + urlpath + "/images/gallery/newest", true);
-    } else {
-        xmlhttp.open("GET", "/" + urlpath + "/images/gallery/popular", true);
-    }
-    xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xmlhttp.send();
-};
-
+// Add given images into container
 const appendToDiv = function (div, new_html, page) {
     const page_number = document.createElement('div');
     const temp = document.createElement('div');
@@ -79,6 +46,37 @@ const appendToDiv = function (div, new_html, page) {
     div.appendChild(page_number);
 }
 
+// Send request to server to get list of images sorted by sorting parameter
+const sortImages = function (sorting) {
+    document.querySelectorAll(".sort_images").forEach(function (item) {
+        item.classList.remove('active');
+        if (item.dataset.title == sorting) {
+            item.classList.add('active');
+        }
+    });
+
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            images = JSON.parse(this.responseText);
+            imgContainer.innerHTML = '';
+            pagination.innerHTML = '';
+            pagination.classList.add('article-list__pagination--inactive');
+            loadMoreButton.setAttribute('data-page', 0);
+            hideLoadMore();
+            if (images != '') {
+                loadMore();
+            } else {
+                imgContainer.innerHTML = '<div class="mt-5 text-center">No images yet</div>';
+            }
+        }
+    }
+    xmlhttp.open("GET", "/" + urlpath + "/images/gallery/" + sorting, true);
+    xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xmlhttp.send();
+};
+
+// send to server and receive part of images for the next page
 const loadMore = function () {
 
     if (request_in_progress) {
@@ -86,7 +84,7 @@ const loadMore = function () {
     }
 
     request_in_progress = true;
-    let page = parseInt(load_more.getAttribute('data-page'));
+    let page = parseInt(loadMoreButton.getAttribute('data-page'));
     let size = images ? images.length : 0;
     let next_page = page + 1;
     // console.log('page = ' + page + ', size = ' + size + ', next page = ' + next_page);
@@ -94,31 +92,31 @@ const loadMore = function () {
         addPaginationPage(next_page);
 
         let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/' + urlpath + '/images/download', true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        // xhr.setRequestHeader('Content-Type', 'application/json')
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 let result = xhr.responseText;
                 // console.log('Result: ' + result);
 
                 setCurrentPage(next_page);
-                // append results to end of blog posts
-                appendToDiv(img_container, result, next_page);
+                // append results to the end of blog posts
+                appendToDiv(imgContainer, result, next_page);
                 if (next_page * imagesOnPage < size)
                     showLoadMore();
                 else
                     hideLoadMore();
             }
         };
+        xhr.open('POST', '/' + urlpath + '/images/download', true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send('images=' + JSON.stringify(images.slice(page * imagesOnPage, next_page * imagesOnPage)));
     }
     request_in_progress = false;
 }
 
+// show next page on scroll
 const scrollReaction = function () {
-    let content_height = img_container.offsetHeight;
+    let content_height = imgContainer.offsetHeight;
     let current_y = window.innerHeight + window.pageYOffset;
     // console.log('content heigh: ' + content_height);
     // console.log('current_y: ' + current_y);
@@ -127,7 +125,7 @@ const scrollReaction = function () {
     }
     pagination.classList.add('fixed');
     if (current_y >= content_height &&
-        images.length <= imagesOnPage * parseInt(load_more.getAttribute('data-page'))) {
+        images.length <= imagesOnPage * parseInt(loadMoreButton.getAttribute('data-page'))) {
         pagination.classList.remove('fixed');
     }
 }
@@ -135,12 +133,7 @@ const scrollReaction = function () {
 window.addEventListener('DOMContentLoaded', function (event) {
     sortImages('newest');
 
-    document.querySelectorAll(".sort_images").forEach(function (item) {
-        item.addEventListener('click', function () {
-            sortImages(item.dataset.title);
-        });
-    });
-    load_more.addEventListener('click', loadMore);
+    loadMoreButton.addEventListener('click', loadMore);
     hideLoadMore();
 });
 
@@ -154,13 +147,14 @@ window.onscroll = function () {
     }, 50);
 }
 
-let current_y = window.innerHeight + window.pageYOffset;
+let windowHeight = window.innerHeight + window.pageYOffset;
 
-if (current_y < 1200) {
+// calculate how many images show on the page
+if (windowHeight < 1200) {
     imagesOnPage = 6;
-} else if (current_y < 1800) {
+} else if (windowHeight < 1800) {
     imagesOnPage = 9;
-} else if (current_y < 2500) {
+} else if (windowHeight < 2500) {
     imagesOnPage = 12;
 } else {
     imagesOnPage = 20;
