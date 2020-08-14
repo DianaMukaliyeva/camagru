@@ -6,30 +6,6 @@ class UsersController extends Controller {
         $this->model = $this->getModel('User');
     }
 
-    private function sendEmail($login, $email, $purpose) {
-        $token = str_replace('camagru_token', '', $this->model->getToken($email));
-        $header = "From: Camagru web application\r\n";
-        $header .= "Reply-To: <hive2020hive@gmail.com>\r\n";
-        $header .= "Content-type: text/html; charset=utf-8 \r\n";
-        $subject = "Camagru web application";
-
-        $message = "<div style=\"background-color:pink; text-align:center;\">";
-        $message .= "<h2 style=\"text-align:center;\">Hello, " . $login . "!</h2>";
-
-        if ($purpose == 'confirmation_email') {
-            $message .= "<p>Thank you for joining Camagru</p>";
-            $message .= "<p>To activate your account click ";
-            $message .= "<a href=\"" . URLROOT . "/email/activateAccount/" . $token . "\">here</a></p>";
-            $message .= "<p><small>If you have any questions do not hesitate to contact us.</p>";
-        } else if ($purpose == 'reset_password') {
-            $message .= "<p>To reset your password click ";
-            $message .= "<a href=\"" . URLROOT . "/email/resetPassword/" . $token . "\">here</a></p>";
-        }
-        $message .= "<p><small>Camagru</p></div>";
-
-        return (mail($email, $subject, $message, $header));
-    }
-
     private function createUserSession($user) {
         $_SESSION[APPNAME]['user'] = $user;
         $this->redirect('');
@@ -56,7 +32,6 @@ class UsersController extends Controller {
         $this->renderView('users/login', $data);
     }
 
-
     public function register() {
         $data = [];
         if ($this->getLoggedInUser()) {
@@ -76,8 +51,13 @@ class UsersController extends Controller {
             if ($response['errors']) {
                 $data = array_merge($data, $response['errors']);
             } else {
+                $token = str_replace('camagru_token', '', $this->model->getToken($data['email']));
+                $message = "<p>Thank you for joining Camagru</p>";
+                $message .= "<p>To activate your account click ";
+                $message .= "<a href=\"" . URLROOT . "/account/activateAccount/" . $token . "\">here</a></p>";
+                $message .= "<p><small>If you have any questions do not hesitate to contact us.</p>";
                 $dataToSend = $this->addMessage(false, 'Could not sent an email to ' . $data['email']);
-                if ($this->sendEmail($data['login'], $data['email'], 'confirmation_email')) {
+                if ($this->sendEmail($data['email'], $data['login'], $message)) {
                     $dataToSend = $this->addMessage(true, 'Confirmation email sent to ' . $data['email']);
                 }
                 $this->renderView('users/login', $dataToSend);
@@ -95,8 +75,13 @@ class UsersController extends Controller {
                 $response = $this->model->updatePassword($data['email']);
 
                 if (!$response['errors'] && $response['user']) {
-                    $this->sendEmail($response['user']['login'], $response['user']['email'], 'reset_password');
-                    $data = $this->addMessage(true, 'An email was sent to ' . $data['email']);
+                    $token = str_replace('camagru_token', '', $this->model->getToken($data['email']));
+                    $message = "<p>To reset your password click ";
+                    $message .= "<a href=\"" . URLROOT . "/account/resetPassword/" . $token . "\">here</a></p>";
+                    if ($this->sendEmail($data['email'], $response['user']['login'], $message))
+                        $data = $this->addMessage(true, 'An email was sent to ' . $data['email']);
+                    else
+                        $data = $this->addMessage(false, 'Could not sent an email to ' . $data['email']);
                     $this->renderView('users/login', $data);
                 }
                 $data = array_merge($data, $response['errors']);
@@ -113,13 +98,6 @@ class UsersController extends Controller {
             }
         }
         $this->renderView('users/resetPassword', $data);
-    }
-
-    public function account() {
-        if ($this->getLoggedInUser()) {
-            $this->renderView('users/account');
-        }
-        $this->renderView('images/index');
     }
 
     public function logout($url = '') {

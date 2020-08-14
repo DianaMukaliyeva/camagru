@@ -8,6 +8,21 @@ class Controller {
         exit;
     }
 
+    // Send mail to given user with given content
+    public function sendEmail($email, $login, $content) {
+        $header = "From: Camagru web application\r\n";
+        $header .= "Reply-To: <hive2020hive@gmail.com>\r\n";
+        $header .= "Content-type: text/html; charset=utf-8 \r\n";
+        $subject = "Camagru web application";
+
+        $message = "<div style=\"background-color:pink; text-align:center;\">";
+        $message .= "<h2 style=\"text-align:center;\">Hello, " . $login . "!</h2>";
+        $message .= $content;
+        $message .= "<p><small>Camagru</p></div>";
+
+        return (mail($email, $subject, $message, $header));
+    }
+
     // Add to array $data given content
     public function addMessage($success, $content, $data = []) {
         $data['message']['class'] = $success ? 'alert-success' : 'alert-danger';

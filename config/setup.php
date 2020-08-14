@@ -23,14 +23,14 @@ try {
         CREATE TABLE IF NOT EXISTS `users` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
             `login`      varchar(20) NOT NULL,
-            `first_name` varchar(45) NOT NULL,
-            `last_name`  varchar(45) NOT NULL,
+            `first_name` varchar(255) NOT NULL,
+            `last_name`  varchar(255) NOT NULL,
             `password`   varchar(1000) NOT NULL,
             `token`      varchar(1000),
-            `email`      varchar(45) NOT NULL,
+            `email`      varchar(255) NOT NULL,
             `notify`     tinyint DEFAULT 1,
             `activated`  tinyint DEFAULT 0,
-            `picture`    varchar(45),
+            `picture`    varchar(255),
             `created_at` datetime DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB;
     SQL;
@@ -70,7 +70,7 @@ try {
     $query = <<<SQL
         CREATE TABLE IF NOT EXISTS `comments` (
             `id`         int AUTO_INCREMENT PRIMARY KEY,
-            `comment`    varchar(100) NOT NULL,
+            `comment`    varchar(255) NOT NULL,
             `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
             `user_id`    int NOT NULL,
             `image_id`    int NOT NULL,
@@ -117,7 +117,7 @@ try {
         CREATE TABLE IF NOT EXISTS `filters` (
         `id`   int AUTO_INCREMENT PRIMARY KEY,
         `name` varchar(45) NOT NULL,
-        `path` varchar(45) NOT NULL
+        `path` varchar(255) NOT NULL
         ) ENGINE=InnoDB;
     SQL;
     Db::query($query);
