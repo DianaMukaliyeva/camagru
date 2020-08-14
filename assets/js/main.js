@@ -7,6 +7,54 @@ burger.addEventListener('click', function () { nav.classList.toggle('collapse');
 // the root location of our project
 const urlpath = window.location.pathname.split('/')[1];
 
+const addComment = function (form) {
+    event.preventDefault();
+    const data = {};
+    data['image_id'] = form.dataset.imageId;
+    data['comment'] = form.getElementsByTagName('input')[0].value;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/' + urlpath + '/comments/addComment', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            if (result['success']) {
+                document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments_amount'];
+                document.getElementById('comments_' + data['image_id']).classList.add('user_act');
+                form.getElementsByTagName('input')[0].value = '';
+                // console.log('form = ' + form.id);
+                if (form.id && form.id == 'modal_comment_form') {
+                    // console.log('this is from modal');
+                    $firstComment = result['comments_amount'] == 1 ? true : false;
+                    createComment(result, document.getElementById('modal_image_comments'), $firstComment);
+                }
+            } else {
+                alert(result['message']);
+            }
+            // console.log('comment inserted');
+        }
+    };
+    // console.log('send data 1');
+    xhr.send('data=' + JSON.stringify(data));
+    let newxhr = new XMLHttpRequest();
+    newxhr.open('POST', '/' + urlpath + '/comments/sendCommentEmail', true);
+    newxhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    newxhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    newxhr.onreadystatechange = function () {
+        if (newxhr.readyState == 4 && newxhr.status == 200) {
+            let result = JSON.parse(newxhr.responseText);
+            if (result['message']) {
+                alert(result['message']);
+            }
+            // console.log('email send');
+        }
+    };
+    // console.log('send data 2');
+    newxhr.send('data=' + JSON.stringify(data));
+}
+
 const createComment = function (comment, div, firstComment = false) {
     if (firstComment)
         div.innerHTML = '';
@@ -57,7 +105,7 @@ const fillModalImage = function (imageId) {
                 alert(result['message']);
                 return;
             }
-            if (result['user_liked'] == 'liked') {
+            if (result['user_liked']) {
                 document.getElementById('modal_like_button').childNodes[0].classList.add('user_act');
             } else {
                 document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
@@ -85,6 +133,40 @@ const fillModalImage = function (imageId) {
                 fillComments(result['comments'], document.getElementById('modal_image_comments'));
             else {
                 document.getElementById('modal_image_comments').innerHTML = 'No comments yet';
+            }
+        }
+    };
+    xhr.send();
+}
+
+const like = function (button) {
+    event.preventDefault;
+    let imageId = button.dataset.imageId;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', '/' + urlpath + '/likes/like/' + imageId, true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            // console.log(result);
+            if (result['message'] == 'liked') {
+                button.childNodes[0].classList.add('user_act');
+            } else if (result['message'] == 'unliked') {
+                button.childNodes[0].classList.remove('user_act');
+            } else {
+                alert(result['message']);
+                return;
+            }
+            button.childNodes[1].innerHTML = ' ' + result['likes_amount'];
+            if (button.id == 'modal_like_button') {
+                if (result['message'] == 'liked') {
+                    document.getElementById('like_button_' + imageId).childNodes[0].classList.add('user_act');
+                } else if (result['message'] == 'unliked') {
+                    document.getElementById('like_button_' + imageId).childNodes[0].classList.remove('user_act');
+                }
+                document.getElementById('like_button_' + imageId).childNodes[1].innerHTML = ' ' + result['likes_amount'];
             }
         }
     };

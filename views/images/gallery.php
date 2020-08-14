@@ -25,12 +25,12 @@
                 </div>
                 <!-- likes and comments -->
                 <div class="card-body px-sm-4 px-2">
-                    <button name="like" data-image-id="<?= $image['id'] ?>" id="like_button_<?= $image['id'] ?>" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg <?= $image['user_liked'] ? 'user_act' : '' ?>"></i><span> <?= $image['likes_amount'] ?></span></button>
+                    <button data-image-id="<?= $image['id'] ?>" onclick="like(this)" id="like_button_<?= $image['id'] ?>" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg <?= $image['user_liked'] ? 'user_act' : '' ?>"></i><span> <?= $image['likes_amount'] ?></span></button>
                     <button class="btn py-0 shadow-none" id="comments_<?= $image['id'] ?>" onclick="openModal(<?= $image['id'] ?>)"><i class="fas fa-comment icon-7x fa-lg <?= $image['user_commented'] ? 'user_act' : '' ?>"></i><span> <?= $image['comments_amount'] ?></span></button>
                     <div class="float-right"><?= $image['created_at'] ?></div>
                 </div>
                 <!-- send comment form -->
-                <form method="post" action="" name="send_comment" data-image-id="<?= $image['id'] ?>">
+                <form method="post" onsubmit="addComment(this)" data-image-id="<?= $image['id'] ?>">
                     <div class="form-row mx-auto">
                         <div class="col-8">
                             <input type="text" class="form-control" placeholder="Comment..." required>

@@ -77,15 +77,6 @@ const appendToDiv = function (div, new_html, page) {
         page_number.appendChild(items[0]);
     }
     div.appendChild(page_number);
-    // remove old script for likes and comments
-    if (document.getElementById('image_script')) {
-        document.getElementById('image_script').remove();
-    }
-    // add script for likes and comments
-    let imageScript = document.createElement('script');
-    imageScript.setAttribute('src', '/' + urlpath + '/assets/js/image.js');
-    imageScript.setAttribute('id', 'image_script');
-    img_container.appendChild(imageScript);
 }
 
 const loadMore = function () {

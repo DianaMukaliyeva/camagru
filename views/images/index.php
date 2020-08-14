@@ -43,8 +43,8 @@
                         </div>
                         <div class="row">
                             <div class="card-body p-0 py-1 pr-3">
-                                <button name="like" data-image-id="0" id="modal_like_button" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg"></i><span> 5</span></button>
-                                <button name="delete" type="submit" data-image-id="0" onclick="deleteImage(this)" id="modal_delete_button" class="btn py-0 shadow-none float-right d-none"><i class="fas fa-trash-alt fa-lg"></i></button>
+                                <button data-image-id="0" id="modal_like_button" onclick="like(this)" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg"></i><span> 5</span></button>
+                                <button type="submit" data-image-id="0" onclick="deleteImage(this)" id="modal_delete_button" class="btn py-0 shadow-none float-right d-none"><i class="fas fa-trash-alt fa-lg"></i></button>
                                 <div class="float-right" id="modal_image_date">created at</div>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                             <div class="col" id="modal_image_comments"></div>
                         </div>
                         <div class="row position_bottom">
-                            <form method="post" action="" id="modal_comment_form" name="send_comment" data-image-id="0">
+                            <form method="post" onsubmit="addComment(this)" id="modal_comment_form" data-image-id="0">
                                 <div class="form-row mx-auto">
                                     <div class="col-8">
                                         <input type="text" class="form-control" placeholder="Comment..." required>
