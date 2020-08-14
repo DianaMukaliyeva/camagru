@@ -92,6 +92,7 @@ const fillModalImage = function (imageId) {
 }
 
 const openModal = function (imageId) {
+    event.preventDefault();
     if (imageId) {
         fillModalImage(imageId);
     }
