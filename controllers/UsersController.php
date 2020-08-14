@@ -39,12 +39,12 @@ class UsersController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data['login'] = trim($_POST['login']);
-            $data['first_name'] = trim($_POST['first_name']);
-            $data['last_name'] = trim($_POST['last_name']);
-            $data['email'] = trim($_POST['email']);
-            $data['password'] = $_POST['password'];
-            $data['confirm_password'] = $_POST['confirm_password'];
+            $data['login'] = trim(filter_var($_POST['login'], FILTER_SANITIZE_STRING));
+            $data['first_name'] = trim(filter_var($_POST['first_name'], FILTER_SANITIZE_STRING));
+            $data['last_name'] = trim(filter_var($_POST['last_name'], FILTER_SANITIZE_STRING));
+            $data['email'] = trim(filter_var($_POST['email'], FILTER_SANITIZE_EMAIL));
+            $data['password'] = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
+            $data['confirm_password'] = filter_var($_POST['confirm_password'], FILTER_SANITIZE_STRING);
 
             $response = $this->model->register($data);
             unset($data['password'], $data['confirm_password']);
@@ -74,7 +74,7 @@ class UsersController extends Controller {
                 $data['email'] = trim($_POST['email']);
                 $response = $this->model->updatePassword($data['email']);
 
-                if (!$response['errors'] && $response['user']) {
+                if (!isset($response['errors']) && isset($response['user'])) {
                     $token = str_replace('camagru_token', '', $this->model->getToken($data['email']));
                     $message = "<p>To reset your password click ";
                     $message .= "<a href=\"" . URLROOT . "/account/resetPassword/" . $token . "\">here</a></p>";

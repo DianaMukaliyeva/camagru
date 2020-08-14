@@ -5,7 +5,7 @@ class User {
     private function validatePassword($password, $confirm_password, $errors = []) {
         if (!$password || empty($password)) {
             $errors['password_err'] = 'Please enter password';
-        } else if (strlen($password) < 6) {
+        } else if (strlen($password) < 3) {
             $errors['password_err'] = 'Password must be at least 6 characters';
         }
 
@@ -24,6 +24,8 @@ class User {
         // Validate Email
         if (!$data['email'] || empty($data['email'])) {
             $errors['email_err'] = 'Please enter email';
+        } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email_err'] = 'Invalid mail';
         } else if ($this->findUser(['email' => $data['email']])) {
             $errors['email_err'] = 'Email has been already taken';
         }
@@ -32,7 +34,8 @@ class User {
         if (!$data['first_name'] || empty($data['first_name'])) {
             $errors['first_name_err'] = 'Please enter first name';
         } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['first_name'])) {
-            $errors['first_name_err'] =  "Name must include letters and numbers only";
+            $errors['first_name_err'] =
+                "Name must start with letter and include letters and numbers only";
         } else if (strlen($data['first_name']) > 45) {
             $errors['first_name_err'] =  "Name must be less than 45 characters";
         }
@@ -41,7 +44,8 @@ class User {
         if (!$data['last_name'] || empty($data['last_name'])) {
             $errors['last_name_err'] = 'Please enter last name';
         } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['last_name'])) {
-            $errors['last_name_err'] =  "Last name must include letters and numbers only";
+            $errors['last_name_err'] =
+                "Last must start with letter and include letters and numbers only";
         } else if (strlen($data['last_name']) > 45) {
             $errors['last_name_err'] =  "Last name must be less than 45 characters";
         }
@@ -95,10 +99,12 @@ class User {
     // Get user by given parameter
     // Ex: $data = ['id' => userid]
     public function findUser($data) {
-        return (Db::queryOne(
+        $result = Db::queryOne(
             "SELECT * FROM `users` WHERE `" . implode('`, `', array_keys($data)) . "` = ?",
             array_values($data)
-        ));
+        );
+
+        return isset($result[0]) ? $result[0] : $result;
     }
 
     // Create user
@@ -173,7 +179,7 @@ class User {
     }
 
     // Update user's password
-    public function updatePassword($email, $reset = false, $password, $confirm_password) {
+    public function updatePassword($email, $reset = false, $password = '', $confirm_password = '') {
         if (!$reset) {
             $user = $this->findUser(['email' => $email]);
             $errors = $this->validateExistingEmail($email, $user);

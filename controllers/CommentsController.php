@@ -21,21 +21,16 @@ class CommentsController extends Controller {
             $json['message'] = 'You should be logged in to comment a photo';
         } else if (isset($_POST['data'])) {
             $data = json_decode($_POST['data'], true);
-            if ($image = $this->imageModel->getImageById($data['image_id'])) {
+            if ($this->imageModel->getImageById($data['image_id'])) {
                 $json['success'] = $this->commentModel->addComment(
                     $user['id'],
                     $data['image_id'],
-                    $data['comment']
+                    filter_var($data['comment'], FILTER_SANITIZE_STRING)
                 );
-                // $imageOwner = $this->userModel->findUser(['id' => $image['user_id']]);
-                // if ($imageOwner['notify'] && $imageOwner['id'] != $user['id']) {
-                //     $message = "<p>" . $user['login'] . " recently commented your post</p>";
-                //     $this->sendEmail($imageOwner['email'], $imageOwner['login'], $message);
-                // }
                 $commentId = Db::getLastId();
                 $json['created_at'] = $this->commentModel->getCreatedDateOfComment($commentId);
                 $json['login'] = $user['login'];
-                $json['comment'] = $data['comment'];
+                $json['comment'] = filter_var($data['comment'], FILTER_SANITIZE_STRING);
                 $json['comments_amount'] =
                     $this->commentModel->getNumberOfComments($data['image_id']);
             } else {

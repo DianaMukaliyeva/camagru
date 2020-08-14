@@ -41,6 +41,7 @@ if (document.getElementsByName('send_comment')) {
     let commentForm = document.getElementsByName('send_comment');
     for (let i = 0; i < commentForm.length; i++) {
         commentForm[i].addEventListener('submit', function (e) {
+            // console.log('send comment');
             e.preventDefault();
             e.stopImmediatePropagation();
             const data = {};
@@ -57,15 +58,19 @@ if (document.getElementsByName('send_comment')) {
                         document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments_amount'];
                         document.getElementById('comments_' + data['image_id']).classList.add('user_act');
                         commentForm[i].getElementsByTagName('input')[0].value = '';
+                        // console.log('form = ' + commentForm[i].id);
                         if (commentForm[i].id && commentForm[i].id == 'modal_comment_form') {
+                            // console.log('this is from modal');
                             $firstComment = result['comments_amount'] == 1 ? true : false;
                             createComment(result, document.getElementById('modal_image_comments'), $firstComment);
                         }
                     } else {
                         alert(result['message']);
                     }
+                    // console.log('comment inserted');
                 }
             };
+            // console.log('send data 1');
             xhr.send('data=' + JSON.stringify(data));
             let newxhr = new XMLHttpRequest();
             newxhr.open('POST', '/' + urlpath + '/comments/sendCommentEmail', true);
@@ -77,8 +82,10 @@ if (document.getElementsByName('send_comment')) {
                     if (result['message']) {
                         alert(result['message']);
                     }
+                    // console.log('email send');
                 }
             };
+            // console.log('send data 2');
             newxhr.send('data=' + JSON.stringify(data));
         });
     }
