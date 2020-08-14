@@ -2,7 +2,7 @@
 
 <!-- user's profile -->
 <div class="container">
-    <?php if (isset($_SESSION[APPNAME]['user'])) : ?>
+    <?php if (!isset($data) || !$data && isset($_SESSION[APPNAME]['user'])) : ?>
         <div class="media pt-5">
             <img src="<?= URLROOT . '/assets/img/images/default.png' ?>" class="account-img mx-3" alt="Profile photo">
             <div class="media-body mx-5" style="width: 120px;">
@@ -13,6 +13,8 @@
                 <button class="btn btn-success btn-block align-self-end">Follow</button>
             </div>
         </div>
+    <?php else: ?>
+        <div class="text-center"><?= $data ?></div>
     <?php endif ?>
 </div>
 

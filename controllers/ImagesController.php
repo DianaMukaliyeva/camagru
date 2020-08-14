@@ -2,14 +2,12 @@
 class ImagesController extends Controller {
     private $userModel;
     private $imageModel;
-    private $filterModel;
     private $likeModel;
     private $commentModel;
 
     public function __construct() {
         $this->imageModel = $this->getModel('Image');
         $this->userModel = $this->getModel('User');
-        $this->filterModel = $this->getModel('Filter');
         $this->likeModel = $this->getModel('Like');
         $this->commentModel = $this->getModel('Comment');
     }

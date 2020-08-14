@@ -1,9 +1,15 @@
 <?php
 class AccountController extends Controller {
     private $userModel;
+    private $imageModel;
+    private $likeModel;
+    private $commentModel;
 
     public function __construct() {
         $this->userModel = $this->getModel('User');
+        $this->userModel = $this->getModel('User');
+        $this->likeModel = $this->getModel('Like');
+        $this->commentModel = $this->getModel('Comment');
     }
 
     // Check validity of token to reset password
@@ -56,10 +62,8 @@ class AccountController extends Controller {
         $this->renderView('images/index');
     }
 
-    public function profile() {
-        if ($this->getLoggedInUser()) {
-            $this->renderView('users/account');
-        }
-        $this->renderView('images/index');
+    public function profile(...$param) {
+        $user = empty($param) ? false : $param[0];
+        $this->renderView('users/profile', $user);
     }
 }
