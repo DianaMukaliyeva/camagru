@@ -118,6 +118,7 @@ const loadMore = function () {
                     showLoadMore();
                 else
                     hideLoadMore();
+                scrollReaction();
             }
         };
         xhr.send('images=' + JSON.stringify(images.slice(page * 9, next_page * 9)));
@@ -128,6 +129,7 @@ const loadMore = function () {
 const scrollReaction = function () {
     let content_height = img_container.offsetHeight;
     let current_y = window.innerHeight + window.pageYOffset;
+
     if (current_y >= content_height || images.length <= 9) {
         loadMore();
         pagination.classList.remove('fixed');
