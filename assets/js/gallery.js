@@ -1,5 +1,6 @@
 let images = null;
 let request_in_progress = false;
+let imagesOnPage = 9;
 
 const img_container = document.getElementById('article-list');
 const pagination = document.getElementById('post-pagination');
@@ -98,7 +99,7 @@ const loadMore = function () {
     let size = images ? images.length : 0;
     let next_page = page + 1;
     // console.log('page = ' + page + ', size = ' + size + ', next page = ' + next_page);
-    if (size > page * 9) {
+    if (size > page * imagesOnPage) {
         addPaginationPage(next_page);
 
         let xhr = new XMLHttpRequest();
@@ -114,14 +115,13 @@ const loadMore = function () {
                 setCurrentPage(next_page);
                 // append results to end of blog posts
                 appendToDiv(img_container, result, next_page);
-                if (next_page * 9 < size)
+                if (next_page * imagesOnPage < size)
                     showLoadMore();
                 else
                     hideLoadMore();
-                scrollReaction();
             }
         };
-        xhr.send('images=' + JSON.stringify(images.slice(page * 9, next_page * 9)));
+        xhr.send('images=' + JSON.stringify(images.slice(page * imagesOnPage, next_page * imagesOnPage)));
     }
     request_in_progress = false;
 }
@@ -129,12 +129,15 @@ const loadMore = function () {
 const scrollReaction = function () {
     let content_height = img_container.offsetHeight;
     let current_y = window.innerHeight + window.pageYOffset;
-
-    if (current_y >= content_height || images.length <= 9) {
+    // console.log('content heigh: ' + content_height);
+    // console.log('current_y: ' + current_y);
+    if (current_y >= content_height || images.length <= imagesOnPage) {
         loadMore();
+    }
+    pagination.classList.add('fixed');
+    if (current_y >= content_height &&
+        images.length <= imagesOnPage * parseInt(load_more.getAttribute('data-page'))) {
         pagination.classList.remove('fixed');
-    } else {
-        pagination.classList.add('fixed');
     }
 }
 
@@ -158,4 +161,16 @@ window.onscroll = function () {
     timeout = setTimeout(function () {
         scrollReaction();
     }, 50);
+}
+
+let current_y = window.innerHeight + window.pageYOffset;
+
+if (current_y < 1200) {
+    imagesOnPage = 6;
+} else if (current_y < 1800) {
+    imagesOnPage = 9;
+} else if (current_y < 2500) {
+    imagesOnPage = 12;
+} else {
+    imagesOnPage = 20;
 }
