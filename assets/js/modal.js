@@ -25,10 +25,20 @@ const fillModalImage = function (imageId) {
             document.getElementById('modal_like_button').dataset.imageId = imageId;
             document.getElementById('modal_comment_form').dataset.imageId = imageId;
             document.getElementById('modal_image_tags').innerHTML = '';
+            document.getElementById('modal_follow_button').setAttribute('data-user-id', result['user_id']);
             if (result['login'] == result['logged_in_user']) {
+                document.getElementById('modal_follow_button').classList.add('d-none');
                 document.getElementById('modal_delete_button').classList.remove('d-none');
                 document.getElementById('modal_delete_button').setAttribute('data-image-id', imageId);
             } else {
+                if (result['user_follow'] == 0) {
+                    document.getElementById('modal_follow_button').classList.add('btn-success');
+                    document.getElementById('modal_follow_button').innerHTML = "Follow";
+                } else {
+                    document.getElementById('modal_follow_button').classList.add('btn-outline-secondary');
+                    document.getElementById('modal_follow_button').innerHTML = "Unfollow";
+                }
+                document.getElementById('modal_follow_button').classList.remove('d-none');
                 document.getElementById('modal_delete_button').classList.add('d-none');
             }
             if (result['tags'].length > 0) {

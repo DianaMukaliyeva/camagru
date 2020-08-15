@@ -57,13 +57,15 @@ class Image {
             images.user_id, users.login , users.picture,
             COUNT(DISTINCT(likes.id)) AS like_amount,
             (SELECT COUNT(`id`) FROM `likes` where `user_id` = ? AND `image_id` = images.id) AS user_liked,
+            (SELECT COUNT(`id`) FROM `followers`
+            where `user_id_followed` = images.user_id AND `user_id_follower` = ?) AS user_follow,
             COUNT(DISTINCT(comments.id)) AS comment_amount
             FROM `images`
             LEFT JOIN `likes` ON images.id = likes.image_id
             LEFT JOIN `users` ON images.user_id = users.id
             LEFT JOIN `comments` ON images.id = comments.image_id
             WHERE images.id = ?',
-            [$loggedUserId, $imageId]
+            [$loggedUserId, $loggedUserId, $imageId]
         );
 
         return isset($result[0]) ? $result[0] : $result;
@@ -91,7 +93,7 @@ class Image {
     public function addTag($imageId, $tag) {
         $dataToInsert = [
             'image_id' => $imageId,
-            'tag' => $tag
+            'tag' => filter_var($tag, FILTER_SANITIZE_STRING)
         ];
         $result = Db::insert('tags', $dataToInsert);
 

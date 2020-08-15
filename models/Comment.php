@@ -36,6 +36,16 @@ class Comment {
         return isset($result['login']) ? $result['login'] : $result;
     }
 
+    // Check if user commented this image
+    public function isCommented($userId, $imageId) {
+        $result = Db::queryOne(
+            'SELECT `id` FROM `comments` WHERE `user_id` = ? AND `image_id` = ?',
+            [$userId, $imageId]
+        );
+
+        return isset($result['id']) ? $result['id'] : $result;
+    }
+
     // Get date of comment
     public function getCreatedDateOfComment($commentId) {
         $result = Db::queryOne(

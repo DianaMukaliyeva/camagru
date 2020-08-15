@@ -14,7 +14,7 @@ class LikesController extends Controller {
         $this->onlyAjaxRequests();
 
         $json = [];
-        $user = isset($_SESSION[APPNAME]['user']) ? $_SESSION[APPNAME]['user'] : false;
+        $user = $this->getLoggedInUser();
         if (!$user) {
             $json['message'] = 'You should be logged in to like a photo';
         } else if ($imageId && $this->imageModel->getImagesOwnerId($imageId)) {

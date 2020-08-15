@@ -3,8 +3,8 @@
 <!-- sorting buttons -->
 <div class="mt-3 input-group justify-content-center">
     <div id="radioBtn" class="btn-group">
-        <button class="sort_images btn btn-light active" onclick="sortImages(this.dataset.title)" data-title="newest">Newest</button>
-        <button class="sort_images btn btn-light" onclick="sortImages(this.dataset.title)" data-title="popular">Popular</button>
+        <button class="sort_images focus-btn btn btn-light active" onclick="sortImages(this.dataset.title)" data-title="newest">Newest</button>
+        <button class="sort_images focus-btn btn btn-light" onclick="sortImages(this.dataset.title)" data-title="popular">Popular</button>
     </div>
     <input type="hidden" name="sort_image" id="sort_image">
 </div>
@@ -25,10 +25,10 @@
                         </a>
                     </div>
                     <p class="my-auto mx-3">
-                        <button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="follow()">Follow</button>
+                        <button id="modal_follow_button" class="focus-btn btn btn-sm" data-dismiss="modal" onclick="follow(this)" data-user-id="0">Follow</button>
                     </p>
                 </div>
-                <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                <button class="close m-0" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

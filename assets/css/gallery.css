@@ -27,7 +27,7 @@
     bottom: 0;
 }
 
-.sort_images:focus {
+.focus-btn:focus {
     box-shadow: none !important;
 }
 

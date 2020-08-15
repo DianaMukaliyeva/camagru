@@ -21,16 +21,18 @@ class CommentsController extends Controller {
             $json['message'] = 'You should be logged in to comment a photo';
         } else if (isset($_POST['data'])) {
             $data = json_decode($_POST['data'], true);
-            if ($this->imageModel->getImagesOwnerId($data['image_id'])) {
+            $json['comment'] = filter_var($data['comment'], FILTER_SANITIZE_STRING);
+            if (strlen($json['comment']) > 255) {
+                $json['message'] = 'Comment should be less than 255 symbols';
+            } else if ($this->imageModel->getImagesOwnerId($data['image_id'])) {
                 $json['success'] = $this->commentModel->addComment(
                     $user['id'],
                     $data['image_id'],
-                    filter_var($data['comment'], FILTER_SANITIZE_STRING)
+                    $json['comment']
                 );
                 $commentId = Db::getLastId();
                 $json['created_at'] = $this->commentModel->getCreatedDateOfComment($commentId);
                 $json['login'] = $user['login'];
-                $json['comment'] = filter_var($data['comment'], FILTER_SANITIZE_STRING);
                 $json['comments'] =
                     $this->commentModel->getComments($data['image_id']);
                 $json['logged_user_id'] = $user['id'];
@@ -88,11 +90,11 @@ class CommentsController extends Controller {
             $json['message'] = 'success';
             $json['comments'] = $this->commentModel->getComments($data[1]);
             $json['logged_user_id'] = $user['id'];
+            $json['user_commented'] = $this->commentModel->isCommented($data[2], $data[1]);
         } else {
             $json['message'] = 'Something went wrong with database';
         }
 
         echo json_encode($json);
     }
-
 }

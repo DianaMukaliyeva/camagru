@@ -83,6 +83,8 @@ const deleteComment = function (data) {
             let result = JSON.parse(xhr.responseText);
             if (result['message'] == 'success') {
                 document.getElementById('comments_' + ids[1]).childNodes[1].innerHTML = ' ' + result['comments'].length;
+                if (!result['user_commented'])
+                    document.getElementById('comments_' + ids[1]).classList.remove('user_act');
                 fillComments(result['comments'], result['logged_user_id']);
             } else {
                 alert(result['message']);
@@ -117,15 +119,44 @@ const deleteImage = function (button) {
     xhr.send();
 }
 
+// triggers when user click follow/unfollow
+const follow = function (button) {
+    event.preventDefault();
+    let userIdToFollow = button.dataset.userId;
+    let imageId = button.dataset.imageId;
+
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            // console.log(result);
+            if (result['message']) {
+                alert(result['message']);
+                return;
+            }
+            if (result['success'] == 'Follow') {
+                button.classList.remove('btn-outline-secondary');
+                button.classList.add('btn-success');
+                button
+            } else {
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-secondary');
+            }
+            button.innerHTML = result['success'];
+        }
+    };
+    xhr.open('GET', '/' + urlpath + '/followers/follow/' + userIdToFollow, true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send();
+}
+
 // triggers when user likes/unlikes image
 const like = function (button) {
     event.preventDefault;
     let imageId = button.dataset.imageId;
 
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', '/' + urlpath + '/likes/like/' + imageId, true);
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
@@ -142,5 +173,8 @@ const like = function (button) {
             }
         }
     };
+    xhr.open('GET', '/' + urlpath + '/likes/like/' + imageId, true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send();
 }

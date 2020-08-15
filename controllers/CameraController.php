@@ -97,7 +97,13 @@ class CameraController extends Controller {
             imagedestroy($dest);
             // delete all # characters before
             $data['tags'] = str_replace('#', '', $data['tags']);
+            $data['tags'] = filter_var($data['tags'], FILTER_SANITIZE_STRING);
             $json['tags'] = array_filter(explode(' ', $data['tags']));
+            foreach ($json['tags'] as $tag) {
+                if (strlen($tag) > 45) {
+                    $json['message'] = 'Tags should be less than 45 characters';
+                }
+            }
         } else {
             $json['message'] = 'No data is provided';
         }

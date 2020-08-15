@@ -39,6 +39,6 @@ class Like {
             [$imageId]
         );
 
-        return $result['COUNT(*)'];
+        return $result['COUNT(`id`)'];
     }
 }
