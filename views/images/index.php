@@ -24,6 +24,9 @@
                             <p class="pt-3 font-weight-bold" id="modal_profile_login">login</p>
                         </a>
                     </div>
+                    <p class="my-auto mx-3">
+                        <button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="follow()">Follow</button>
+                    </p>
                 </div>
                 <button type="button" class="close m-0" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
                     <span aria-hidden="true">&times;</span>
@@ -42,7 +45,7 @@
                             <div class="text-center" id="modal_image_tags"></div>
                         </div>
                         <div class="row">
-                            <div class="card-body p-0 py-1 pr-3">
+                            <div class="card-body p-0 py-1">
                                 <button data-image-id="0" id="modal_like_button" onclick="like(this)" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg"></i><span> 5</span></button>
                                 <button type="submit" data-image-id="0" onclick="deleteImage(this)" id="modal_delete_button" class="btn py-0 shadow-none float-right d-none"><i class="fas fa-trash-alt fa-lg"></i></button>
                                 <div class="float-right" id="modal_image_date">created at</div>

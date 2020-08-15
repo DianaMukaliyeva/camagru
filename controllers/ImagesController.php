@@ -12,25 +12,16 @@ class ImagesController extends Controller {
         $this->commentModel = $this->getModel('Comment');
     }
 
-    private function getImageInfo($imageId, $user, $data = []) {
-        $data['user_liked'] =
-            $user ? $this->likeModel->isImageLiked($user['id'], $imageId) : false;
-        $data['tags'] = $this->imageModel->getTagsbyImageId($imageId);
-        $data['comments'] = $this->commentModel->getComments($imageId);
-        $data['likes_amount'] = $this->likeModel->getNumberOfLikesByImage($imageId);
-
-        return $data;
-    }
-
     // Main page of app show our gallery
     public function gallery(...$param) {
         $sort = !empty($param) ? $param[0] : '';
-
+        $user = $this->getLoggedInUser();
+        $userId = $user ? $user['id'] : 0;
         if ($this->isAjaxRequest()) {
             if ($sort == 'popular') {
-                $images = $this->imageModel->getImagesByLikes();
+                $images = $this->imageModel->getImagesByLikes($userId);
             } else {
-                $images = $this->imageModel->getImagesByDate();
+                $images = $this->imageModel->getImagesByDate($userId);
             }
             echo json_encode($images);
         } else {
@@ -46,12 +37,8 @@ class ImagesController extends Controller {
 
         $images = json_decode($_POST['images'], true);
         foreach ($images as $key => $image) {
-            $images[$key] = $this->getImageInfo($image['id'], $user, $images[$key]);
-            $images[$key]['user_login'] = $this->userModel->getLoginById($image['user_id']);
-            $images[$key]['comments_amount'] =
-                $this->commentModel->getNumberOfComments($image['id']);
-            $images[$key]['user_commented'] = $user ?
-                $this->commentModel->isCommented($user['id'], $image['id']) : false;
+            $images[$key]['tags'] = $this->imageModel->getTagsbyImageId($image['id']);
+            $images[$key]['comments'] = $this->commentModel->getComments($image['id']);
         }
 
         $this->renderView('images/gallery', ['images' => $images]);
@@ -66,7 +53,7 @@ class ImagesController extends Controller {
 
         if (!$user) {
             $json['message'] = 'You should be logged in';
-        } else if (!$imageId || !$this->imageModel->getImageById($imageId)) {
+        } else if (!$imageId || !$this->imageModel->getImagesOwnerId($imageId)) {
             $json['message'] = 'Image does not exists';
         } else if ($this->imageModel->deleteImage($imageId)) {
             $json['message'] = 'success';
@@ -78,17 +65,17 @@ class ImagesController extends Controller {
     }
 
     // Show image with comments
-    public function imageInfo($imageId = false) {
+    public function imageInfo($imageId = 0) {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
         $user = $this->getLoggedInUser();
 
-        if ($imageId && $json = $this->imageModel->getImageById($imageId)) {
-            $json = $this->getImageInfo($imageId, $user, $json);
-            $image_user = $this->userModel->findUser(['id' => $json['user_id']]);
-            $json['user_login'] = $image_user['login'];
-            $json['profile_photo'] = $image_user['picture'] ?
-                $image_user['picture'] : 'assets/img/images/default.png';
+        $loggedUserId = $user ? $user['id'] : 0;
+        $json['message'] = 'here';
+        $json = $this->imageModel->getImageFullInfo($imageId, $loggedUserId);
+        if ($json) {
+            $json['tags'] = $this->imageModel->getTagsbyImageId($imageId);
+            $json['comments'] = $this->commentModel->getComments($imageId);
             $json['logged_in_user'] = $user ? $user['login'] : false;
             $json['logged_user_id'] = $user ? $user['id'] : 0;
         } else {

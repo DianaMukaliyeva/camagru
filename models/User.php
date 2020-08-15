@@ -100,7 +100,9 @@ class User {
     // Ex: $data = ['id' => userid]
     public function findUser($data) {
         $result = Db::queryOne(
-            "SELECT * FROM `users` WHERE `" . implode('`, `', array_keys($data)) . "` = ?",
+            "SELECT `id`, `login`, `first_name`, `last_name`, `password`, `token`,
+            `email`, `notify`, `activated`, `picture`, `created_at`
+            FROM `users` WHERE `" . implode('`, `', array_keys($data)) . "` = ?",
             array_values($data)
         );
 

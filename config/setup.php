@@ -30,7 +30,7 @@ try {
             `email`      varchar(255) NOT NULL,
             `notify`     tinyint DEFAULT 1,
             `activated`  tinyint DEFAULT 0,
-            `picture`    varchar(255),
+            `picture`    varchar(255) DEFAULT 'assets/img/images/default.png',
             `created_at` datetime DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB;
     SQL;

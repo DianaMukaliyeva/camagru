@@ -26,31 +26,10 @@ class Comment {
         return $result;
     }
 
-    // Get how many comments image has
-    public function getNumberOfComments($imageId) {
+    // Check if comment exists
+    public function isCommentExists($commentId) {
         $result = Db::queryOne(
-            'SELECT COUNT(*) FROM `comments` WHERE `image_id` = ?',
-            [$imageId]
-        );
-
-        return $result['COUNT(*)'];
-    }
-
-    // Check if user commented this image
-    public function isCommented($userId, $imageId) {
-        $result = Db::queryOne(
-            'SELECT `id` FROM `comments` WHERE `user_id` = ? AND `image_id` = ?',
-            [$userId, $imageId]
-        );
-
-        return isset($result['id']) ? $result['id'] : $result;
-    }
-
-    // Get user login that commented photo
-    public function getLoginByComment($commentId) {
-        $result = Db::queryOne(
-            'SELECT users.login AS `login` FROM `comments`
-            JOIN `users` ON comments.user_id = users.id WHERE comments.id = ?',
+            'SELECT id FROM `comments` WHERE comments.id = ?',
             [$commentId]
         );
 

@@ -35,7 +35,7 @@ class Like {
     // Get how many likes image has
     public function getNumberOfLikesByImage($imageId) {
         $result = Db::queryOne(
-            'SELECT COUNT(*) FROM `likes` WHERE `image_id` = ?',
+            'SELECT COUNT(`id`) FROM `likes` WHERE `image_id` = ?',
             [$imageId]
         );
 

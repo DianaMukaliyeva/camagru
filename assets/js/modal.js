@@ -12,22 +12,24 @@ const fillModalImage = function (imageId) {
                 alert(result['message']);
                 return;
             }
-            if (result['user_liked']) {
+            if (result['user_liked'] != 0) {
                 document.getElementById('modal_like_button').childNodes[0].classList.add('user_act');
             } else {
                 document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
             }
-            document.getElementById('modal_profile_photo').src = result['profile_photo'];
-            document.getElementById('modal_profile_login').innerHTML = result['user_login'];
+            document.getElementById('modal_profile_photo').src = result['picture'];
+            document.getElementById('modal_profile_login').innerHTML = result['login'];
             document.getElementById('modal_image').src = result['image_path'];
             document.getElementById('modal_image_date').innerHTML = result['created_at'];
-            document.getElementById('modal_like_button').childNodes[1].innerHTML = ' ' + result['likes_amount'];
+            document.getElementById('modal_like_button').childNodes[1].innerHTML = ' ' + result['like_amount'];
             document.getElementById('modal_like_button').dataset.imageId = imageId;
             document.getElementById('modal_comment_form').dataset.imageId = imageId;
             document.getElementById('modal_image_tags').innerHTML = '';
-            if (result['user_login'] == result['logged_in_user']) {
+            if (result['login'] == result['logged_in_user']) {
                 document.getElementById('modal_delete_button').classList.remove('d-none');
                 document.getElementById('modal_delete_button').setAttribute('data-image-id', imageId);
+            } else {
+                document.getElementById('modal_delete_button').classList.add('d-none');
             }
             if (result['tags'].length > 0) {
                 result['tags'].forEach(element => {
@@ -44,7 +46,7 @@ const fillModalImage = function (imageId) {
 // fill modal window with comments
 const fillComments = function (comments, loggedUserId) {
     const div = document.getElementById('modal_image_comments');
-    div.innerHTML = "<h5 class='text-center'>Comments</h5>";
+    div.innerHTML = "<h5 class='text-center py-2'>Comments</h5>";
     comments.forEach(comment => {
         const comment_div = document.createElement('div');
         const p = document.createElement('p');

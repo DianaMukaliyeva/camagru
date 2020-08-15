@@ -5,17 +5,17 @@
             <div class="card h-100 bg-light image-card">
                 <!-- image's owner -->
                 <div class="media mt-3">
-                    <img class="rounded-circle media-img mx-3" src="<?= URLROOT . '/assets/img/images/default.png' ?>" alt="profile image">
+                    <img class="rounded-circle media-img mx-3" src="<?= $image['picture'] ?>" alt="profile image">
                     <div class="media-body">
                         <a class="text-decoration-none" href="#">
-                            <p class="pt-3 font-weight-bold"><?= $image['user_login'] ?></p>
+                            <p class="pt-3 font-weight-bold"><?= $image['login'] ?></p>
                         </a>
                     </div>
                 </div>
                 <!-- image with tags -->
                 <div class="m-1">
                     <a class="text-decoration-none" href="#" onclick="openModal(<?= $image['id'] ?>)">
-                        <img src="<?= URLROOT . '/' . $image['image_path'] ?>" class="img-fluid card-img-top" alt="<?= isset($image['title']) ? $image['title'] : 'no title' ?>">
+                        <img src="<?= URLROOT . '/' . $image['image_path'] ?>" class="img-fluid card-img-top" alt="no title">
                     </a>
                     <div class="text-center">
                         <?php foreach ($image['tags'] as $key => $tag) : ?>
