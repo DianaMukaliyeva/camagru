@@ -7,6 +7,7 @@
 </footer>
 </div>
 <script src="<?php echo URLROOT; ?>/assets/js/main.js"></script>
+<script src="<?php echo URLROOT; ?>/assets/js/modal.js"></script>
 </body>
 
 </html>
