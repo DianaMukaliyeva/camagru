@@ -33,6 +33,7 @@ class CommentsController extends Controller {
                 $json['comment'] = filter_var($data['comment'], FILTER_SANITIZE_STRING);
                 $json['comments'] =
                     $this->commentModel->getComments($data['image_id']);
+                $json['logged_user_id'] = $user['id'];
             } else {
                 $json['message'] = 'Image does not exists';
             }
@@ -68,4 +69,29 @@ class CommentsController extends Controller {
 
         echo json_encode($json);
     }
+
+    // Delete comment from image $data="commentId?imageId?userId"
+    public function delete($data) {
+        // Only works for ajax requests
+        $this->onlyAjaxRequests();
+        $data = array_filter(explode('?', $data));
+        $user = $this->getLoggedInUser();
+
+        if (!$user) {
+            $json['message'] = 'You should be logged in';
+        } else if (!$this->commentModel->getLoginByComment($data[0])) {
+            $json['message'] = 'Comment does not exists';
+        } else if ($data[2] == $user['id']) {
+            $json['message'] = 'You can not delete another\'s comment';
+        } else if ($this->commentModel->deleteComment($data[0])) {
+            $json['message'] = 'success';
+            $json['comments'] = $this->commentModel->getComments($data[1]);
+            $json['logged_user_id'] = $user['id'];
+        } else {
+            $json['message'] = 'Something went wrong with database';
+        }
+
+        echo json_encode($json);
+    }
+
 }

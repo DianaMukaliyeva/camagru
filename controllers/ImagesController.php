@@ -90,6 +90,7 @@ class ImagesController extends Controller {
             $json['profile_photo'] = $image_user['picture'] ?
                 $image_user['picture'] : 'assets/img/images/default.png';
             $json['logged_in_user'] = $user ? $user['login'] : false;
+            $json['logged_user_id'] = $user ? $user['id'] : 0;
         } else {
             $json['message'] = 'Image does not exists';
         }

@@ -66,4 +66,11 @@ class Comment {
 
         return isset($result['created_at']) ? $result['created_at'] : $result;
     }
+
+    // Delete comment by id
+    public function deleteComment($commentId) {
+        $result = Db::query('DELETE FROM `comments` WHERE `id` = ?', [$commentId]);
+
+        return $result;
+    }
 }

@@ -54,6 +54,7 @@
                         <div class="row mb-3 mb-sm-5 comment_box">
                             <div class="col" id="modal_image_comments"></div>
                         </div>
+                        <!-- form to send comment -->
                         <div class="row position_bottom">
                             <form method="post" onsubmit="addComment(this)" id="modal_comment_form" data-image-id="0">
                                 <div class="form-row mx-auto">

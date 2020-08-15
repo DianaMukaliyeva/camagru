@@ -33,7 +33,7 @@ const addComment = function (form) {
                 // console.log('form = ' + form.id);
                 if (form.id && form.id == 'modal_comment_form') {
                     // console.log('this is from modal');
-                    fillComments(result['comments'], document.getElementById('modal_image_comments'));
+                    fillComments(result['comments'], result['logged_user_id']);
                 }
             } else {
                 alert(result['message']);
@@ -68,6 +68,29 @@ const addComment = function (form) {
     newxhr.send('data=' + JSON.stringify(data));
 }
 
+// delete comment from image
+// data = commentId?imageId?userId
+const deleteComment = function (data) {
+    let ids = data.split('?');
+
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            if (result['message'] == 'success') {
+                document.getElementById('comments_' + ids[1]).childNodes[1].innerHTML = ' ' + result['comments'].length;
+                fillComments(result['comments'], result['logged_user_id']);
+            } else {
+                alert(result['message']);
+            }
+        }
+    };
+    xhr.open('DELETE', '/' + urlpath + '/comments/delete/' + data, true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    xhr.send();
+}
+
 // delete image from db
 const deleteImage = function (button) {
     imageId = button.dataset.imageId;
@@ -91,12 +114,20 @@ const deleteImage = function (button) {
 }
 
 // fill modal window with comments
-const fillComments = function (comments, div) {
-    div.innerHTML = '<h5 class="text-center">Comments</h5>';
+const fillComments = function (comments, loggedUserId) {
+    const div = document.getElementById('modal_image_comments');
+    div.innerHTML = "<h5 class='text-center'>Comments</h5>";
     comments.forEach(comment => {
         const comment_div = document.createElement('div');
         const p = document.createElement('p');
-        p.innerHTML = "<a class='link' href=''>" + comment['login'] + "</a> (" + comment['created_at'] + ") :<br> <i>" + comment['comment'] + "</i>";
+        p.innerHTML = `<a href=''>${comment['login']}</a> (${comment['created_at']}) :
+            <a role="button" onclick="deleteComment(this.dataset.dataId)" data-data-id="${comment['id']}?${comment['image_id']}?${comment['user_id']}'">
+            <i class='fas fa-times-circle'></i></a>
+            <br><i>${comment['comment']}</i>`;
+        if (comment['user_id'] != loggedUserId)
+            p.getElementsByTagName('a')[1].classList.add('d-none');
+        else
+            p.getElementsByTagName('a')[1].classList.remove('d-none');
         comment_div.appendChild(p);
         div.appendChild(comment_div);
     });
@@ -140,7 +171,7 @@ const fillModalImage = function (imageId) {
                 });
             }
             document.getElementById('modal_image_tags').dataset.imageId = imageId;
-            fillComments(result['comments'], document.getElementById('modal_image_comments'));
+            fillComments(result['comments'], result['logged_user_id']);
         }
     };
     xhr.send();
