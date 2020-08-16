@@ -22,6 +22,28 @@ class Image {
         return $result;
     }
 
+    // Get user's images ordered by date
+    public function getImagesByUser($userId, $loggedUserId = 0) {
+        $result = Db::queryAll(
+            'SELECT images.id, images.image_path, images.created_at,
+                images.user_id, users.login, users.picture,
+                (SELECT COUNT(id) FROM `likes` where likes.user_id = ? AND likes.image_id = images.id) AS user_liked,
+                (SELECT COUNT(id) FROM `comments` where comments.user_id = ? AND comments.image_id = images.id) AS user_commented,
+                COUNT(DISTINCT(likes.id)) AS `likes_amount`,
+                COUNT(DISTINCT(comments.id)) AS `comments_amount`
+                FROM `images`
+                LEFT JOIN `users` ON users.id = images.user_id
+                LEFT JOIN `likes` ON likes.image_id = images.id
+                LEFT JOIN `comments` ON comments.image_id = images.id
+                WHERE images.user_id = ?
+                GROUP BY images.id
+                ORDER BY `created_at` DESC',
+            [$loggedUserId, $loggedUserId, $userId]
+        );
+
+        return $result;
+    }
+
     // Get all images ordered by likes and comments
     public function getImagesByLikes($userId = 0) {
         $result = Db::queryAll(

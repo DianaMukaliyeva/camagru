@@ -29,6 +29,15 @@ class ImagesController extends Controller {
         }
     }
 
+    // Main page of app show our gallery
+    public function userGallery($userId) {
+        $this->isAjaxRequest();
+        $user = $this->getLoggedInUser();
+        $loggedUserId = $user ? $user['id'] : 0;
+        $images = $this->imageModel->getImagesByUser($userId, $loggedUserId);
+        echo json_encode($images);
+    }
+
     // Render given images
     public function download(...$param) {
         // Only works for ajax requests
@@ -42,6 +51,21 @@ class ImagesController extends Controller {
         }
 
         $this->renderView('images/gallery', ['images' => $images]);
+    }
+
+    // Render given images
+    public function loadUsersImage(...$param) {
+        // Only works for ajax requests
+        $this->onlyAjaxRequests();
+        $user = $this->getLoggedInUser();
+
+        $images = json_decode($_POST['images'], true);
+        foreach ($images as $key => $image) {
+            $images[$key]['tags'] = $this->imageModel->getTagsbyImageId($image['id']);
+            // $images[$key]['comments'] = $this->commentModel->getComments($image['id']);
+        }
+
+        $this->renderView('images/account', ['images' => $images]);
     }
 
     // Delete image from db

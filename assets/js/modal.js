@@ -106,13 +106,15 @@ const openModal = function (param) {
     event.preventDefault();
     if (param == 'editProfile') {
         fillModalProfile();
+        document.getElementById("settings").style.display = "block";
+        document.getElementById("settings").classList.add('show');
     } else {
         fillModalImage(param);
+        document.getElementById("exampleModal").style.display = "block";
+        document.getElementById("exampleModal").classList.add('show');
     }
 
     document.getElementById("backdrop").classList.remove('d-none');
-    document.getElementById("exampleModal").style.display = "block";
-    document.getElementById("exampleModal").classList.add('show');
 }
 
 // close modal window with image
@@ -120,13 +122,18 @@ const closeModal = function () {
     document.getElementById("backdrop").classList.add('d-none')
     document.getElementById("exampleModal").style.display = "none";
     document.getElementById("exampleModal").classList.remove("show");
+    if (document.getElementById("settings")) {
+        document.getElementById("settings").style.display = "none";
+        document.getElementById("settings").classList.remove("show");
+    }
 }
 
 const modal = document.getElementById('exampleModal');
+const modal2 = document.getElementById('settings');
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
-    if (event.target === modal) {
+    if (event.target === modal || event.target === modal2) {
         closeModal();
     }
 }
