@@ -41,4 +41,26 @@ class Follow {
 
         return $result['COUNT(`id`)'];
     }
+
+    // Get how many followers user has
+    public function getUserFollowed($userId) {
+        $result = Db::queryAll(
+            'SELECT `id`, `user_id_followed`, `user_id_follower`
+                FROM `followers` WHERE `user_id_follower` = ?',
+            [$userId]
+        );
+
+        return $result;
+    }
+
+    // Get how many users follow
+    public function getUserFollowers($userId) {
+        $result = Db::queryAll(
+            'SELECT `id`, `user_id_followed`, `user_id_follower`
+                FROM `followers` WHERE `user_id_followed` = ?',
+            [$userId]
+        );
+
+        return $result;
+    }
 }

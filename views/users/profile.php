@@ -39,9 +39,9 @@
             <div class="col-sm-4"></div>
             <div class="col-sm-8">
                 <div class="row pb-2">
-                    <div class="col text-center"><?= $data['images_amount'] ?> images</div>
-                    <div class="col text-center" id="profile_followers_amount"><?= $data['followers_amount'] ?> followers</div>
-                    <div class="col text-center"><?= $data['followed_amount'] ?> following</div>
+                    <div class="col text-center" role="button" onclick="switchtab(this.id)" id="images"><?= $data['images_amount'] ?> images</div>
+                    <div class="col text-center" role="button" onclick="switchtab(this.id)" id="profile_followers_amount"><?= $data['followers_amount'] ?> followers</div>
+                    <div class="col text-center" role="button" onclick="switchtab(this.id)" id="followed"><?= $data['followed_amount'] ?> following</div>
                 </div>
             </div>
         </div>
@@ -50,10 +50,23 @@
         <!-- gallery -->
         <div class="container article-list px-0 px-sm-4" id="image-list"></div>
 
+        <!-- followers -->
+        <div class="container d-none text-center" id="followers-list">
+            <h5>Users that follows <?= $data['login'] ?>:</h5>
+            <div></div>
+        </div>
+
+        <!-- followed -->
+        <div class="container d-none text-center" id="followed-list">
+            <h5>Users followed by <?= $data['login'] ?>:</h5>
+            <div></div>
+        </div>
+
         <!-- button in case of big screen -->
         <div class="text-center" id="load-more-container">
             <button class="btn btn-outline-info d-none" id="load-more-image" data-page="0">Load more</button>
         </div>
+
     <?php else : ?>
         <div class="text-center">
             <h1>User not found</h1>

@@ -36,4 +36,20 @@ class FollowersController extends Controller {
 
         echo json_encode($json);
     }
+
+    // All users that follow and followed by userId
+    public function getFollow($userId) {
+        $this->isAjaxRequest();
+        $followers = $this->followModel->getUserFollowers($userId);
+        $followed = $this->followModel->getUserFollowed($userId);
+        foreach ($followers as $key => $user) {
+            $followers[$key] = $this->userModel->getUserInfo($user['user_id_follower']);
+        }
+        foreach ($followed as $key => $user) {
+            $followed[$key] = $this->userModel->getUserInfo($user['user_id_followed']);
+        }
+        $json['followers'] = $followers;
+        $json['followed'] = $followed;
+        echo json_encode($json);
+    }
 }
