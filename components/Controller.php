@@ -15,7 +15,7 @@ class Controller {
         $header .= "Content-type: text/html; charset=utf-8 \r\n";
         $subject = "Camagru web application";
 
-        $message = "<div style=\"background-color:pink; text-align:center;\">";
+        $message = "<div style=\"background-color:#bbff99; text-align:center;\">";
         $message .= "<h2 style=\"text-align:center;\">Hello, " . $login . "!</h2>";
         $message .= $content;
         $message .= "<p><small>Camagru</p></div>";

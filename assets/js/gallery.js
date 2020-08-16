@@ -71,7 +71,7 @@ const sortImages = function (sorting) {
             }
         }
     }
-    xmlhttp.open("GET", "/" + urlpath + "/images/gallery/" + sorting, true);
+    xmlhttp.open("GET", urlpath + "/images/gallery/" + sorting, true);
     xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xmlhttp.send();
 };
@@ -106,7 +106,7 @@ const loadMore = function () {
                     hideLoadMore();
             }
         };
-        xhr.open('POST', '/' + urlpath + '/images/download', true);
+        xhr.open('POST', urlpath + '/images/download', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send('images=' + JSON.stringify(images.slice(page * imagesOnPage, next_page * imagesOnPage)));

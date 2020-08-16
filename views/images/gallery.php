@@ -5,9 +5,9 @@
             <div class="card h-100 bg-light image-card">
                 <!-- image's owner -->
                 <div class="media mt-3">
-                    <img class="rounded-circle media-img mx-3" src="<?= $image['picture'] ?>" alt="profile image">
+                    <img class="rounded-circle media-img mx-3" src="<?= URLROOT . '/' . $image['picture'] ?>" alt="profile image">
                     <div class="media-body">
-                        <a class="text-decoration-none" href="#">
+                        <a class="text-decoration-none" href="<?= URLROOT . '/account/profile/' . $image['login'] ?>">
                             <p class="pt-3 font-weight-bold"><?= $image['login'] ?></p>
                         </a>
                     </div>

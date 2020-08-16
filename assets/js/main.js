@@ -5,7 +5,7 @@ const nav = document.querySelector(burger.dataset.target);
 burger.addEventListener('click', function () { nav.classList.toggle('collapse'); })
 
 // the root location of our project
-const urlpath = window.location.pathname.split('/')[1];
+const urlpath = '/' + window.location.pathname.split('/')[1];
 let sendingComment = false;
 
 // add comment to database
@@ -43,7 +43,7 @@ const addComment = function (form) {
             // console.log('comment inserted');
         }
     };
-    xhr.open('POST', '/' + urlpath + '/comments/addComment', true);
+    xhr.open('POST', urlpath + '/comments/addComment', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('data=' + JSON.stringify(data));
@@ -66,7 +66,7 @@ const sendEmailAboutComment = function (form, data) {
             // console.log('email send');
         }
     };
-    newxhr.open('POST', '/' + urlpath + '/comments/sendCommentEmail', true);
+    newxhr.open('POST', urlpath + '/comments/sendCommentEmail', true);
     newxhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     newxhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     newxhr.send('data=' + JSON.stringify(data));
@@ -91,7 +91,7 @@ const deleteComment = function (data) {
             }
         }
     };
-    xhr.open('DELETE', '/' + urlpath + '/comments/delete/' + data, true);
+    xhr.open('DELETE', urlpath + '/comments/delete/' + data, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xhr.send();
@@ -102,7 +102,7 @@ const deleteImage = function (button) {
     imageId = button.dataset.imageId;
 
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', '/' + urlpath + '/images/delete/' + imageId, true);
+    xhr.open('GET', urlpath + '/images/delete/' + imageId, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function () {
@@ -142,10 +142,14 @@ const follow = function (button) {
                 button.classList.remove('btn-success');
                 button.classList.add('btn-outline-secondary');
             }
+            if (button.id && button.id == 'profile_follow') {
+                document.getElementById('profile_followers_amount').innerHTML =
+                    result['followers_amount'] + ' followers';
+            }
             button.innerHTML = result['success'];
         }
     };
-    xhr.open('GET', '/' + urlpath + '/followers/follow/' + userIdToFollow, true);
+    xhr.open('GET', urlpath + '/followers/follow/' + userIdToFollow, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send();
@@ -173,8 +177,13 @@ const like = function (button) {
             }
         }
     };
-    xhr.open('GET', '/' + urlpath + '/likes/like/' + imageId, true);
+    xhr.open('GET', urlpath + '/likes/like/' + imageId, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send();
+}
+
+const saveChanges = function() {
+    console.log('opened settings');
+
 }

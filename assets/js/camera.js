@@ -113,7 +113,7 @@ const takePhoto = function () {
             if (result['message']) {
                 alert(result['message']);
                 if (result['message'] == 'You should be logged in')
-                    window.location.replace('/' + urlpath);
+                    window.location.replace(urlpath);
                 return;
             }
             photoList.appendChild(createImageContainer(JSON.parse(this.responseText)));
@@ -121,7 +121,7 @@ const takePhoto = function () {
             changeImagesInPreview();
         }
     }
-    xmlhttp.open("POST", "/" + urlpath + "/camera/combine", true);
+    xmlhttp.open("POST", urlpath + "/camera/combine", true);
     xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xmlhttp.send('data=' + JSON.stringify(data));

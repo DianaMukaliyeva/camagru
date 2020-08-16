@@ -29,7 +29,7 @@ class FollowersController extends Controller {
                     $userIdToFollow
                 ) ? 'Unfollow' : 'db failed';
             }
-            // $json['followers_amount'] = $this->followModel->getFollowersAmount($userIdToFollow);
+            $json['followers_amount'] = $this->followModel->getFollowersAmount($userIdToFollow);
         } else {
             $json['message'] = 'User does not exists';
         }

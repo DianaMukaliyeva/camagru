@@ -1,6 +1,175 @@
 <?php
 class User {
 
+    // Get all user's information
+    public function getUserInfo($userLogin, $loggedUserId = false) {
+        if (!$loggedUserId) {
+            $result = Db::queryOne(
+                "SELECT users.id, users.login, users.first_name, users.last_name,
+                users.email, users.notify, users.picture,
+                (SELECT COUNT(`id`) FROM `followers`
+                WHERE `user_id_followed` = users.id) AS followers_amount,
+                (SELECT COUNT(`id`) FROM `followers`
+                WHERE `user_id_follower` = users.id) AS followed_amount,
+                (SELECT COUNT(`id`) FROM `images`
+                WHERE `user_id` = users.id) AS images_amount
+                FROM `users` WHERE users.login = ?",
+                [$userLogin]
+            );
+        } else {
+            $result = Db::queryOne(
+                "SELECT users.id, users.login, users.first_name, users.last_name,
+                users.email, users.notify, users.picture,
+                (SELECT COUNT(`id`) FROM `followers`
+                WHERE `user_id_followed` = users.id) AS followers_amount,
+                (SELECT COUNT(`id`) FROM `followers`
+                WHERE `user_id_follower` = users.id) AS followed_amount,
+                (SELECT COUNT(`id`) FROM `followers`
+                WHERE `user_id_followed` = users.id AND `user_id_follower` = ?) AS user_follow,
+                (SELECT COUNT(`id`) FROM `images`
+                WHERE `user_id` = users.id) AS images_amount
+                FROM `users` WHERE users.login = ?",
+                [$loggedUserId, $userLogin]
+            );
+        }
+        return isset($result[0]) ? $result[0] : $result;
+    }
+
+    // Get user by given parameter
+    // Ex: $data = ['id' => userid]
+    public function findUser($data) {
+        $result = Db::queryOne(
+            "SELECT `id`, `login`, `first_name`, `last_name`, `password`, `token`,
+            `email`, `notify`, `activated`, `picture`, `created_at`
+            FROM `users` WHERE `" . implode('`, `', array_keys($data)) . "` = ?",
+            array_values($data)
+        );
+
+        return isset($result[0]) ? $result[0] : $result;
+    }
+
+    // Create user
+    public function register($data) {
+        $errors = $this->validateRegisterData($data);
+
+        if (!$errors) {
+            $dataToInsert = [
+                'login' => $data['login'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'password' => hash('whirlpool', $data['password']),
+                'email' => $data['email']
+            ];
+            $result = Db::insert('users', $dataToInsert);
+            $this->updateToken(bin2hex(random_bytes(50)), $data['email']);
+        }
+
+        return ['errors' => $errors];
+    }
+
+    // Check all information of user
+    public function login($email, $password) {
+        $user = $this->findUser(['email' => $email]);
+        $errors = $this->validateExistingEmail($email, $user);
+
+        if (!$errors && $password != $user['password']) {
+            $errors['password_err'] = 'Password incorrect';
+        }
+        if (!$errors)
+            $this->updateToken(false, $email);
+
+        return $errors ? ['errors' => $errors] : ['user' => $user];
+    }
+
+    // Get user's email by login
+    public function getEmailByLogin($login) {
+        $result = Db::queryOne('SELECT `email` FROM `users` WHERE `login` = ?', [$login]);
+
+        return isset($result['email']) ? $result['email'] : $result;
+    }
+
+    // Get user's email by token
+    public function getEmailByToken($token) {
+
+        $result = Db::queryOne('SELECT `email` FROM `users` WHERE `token` = ?', [$token]);
+
+        return isset($result['email']) ? $result['email'] : $result;
+    }
+
+    // Get user's login by id
+    public function getLoginById($id) {
+        $result = Db::queryOne('SELECT `login` FROM `users` WHERE `id` = ?', [$id]);
+
+        return isset($result['login']) ? $result['login'] : $result;
+    }
+
+    // Activate user's account
+    public function activateAccountByEmail($email) {
+        $result = Db::query(
+            'UPDATE `users` SET `activated` = 1 WHERE `email` = ?',
+            [$email]
+        );
+        $this->updateToken(null, $email);
+
+        return $result;
+    }
+
+    // Get user's token
+    public function getToken($email) {
+        $result = Db::queryOne('SELECT `token` FROM `users` WHERE `email` = ?', [$email]);
+
+        return isset($result['token']) ? $result['token'] : '';
+    }
+
+    // Update user's password
+    public function updatePassword($email, $reset = false, $password = '', $confirm_password = '') {
+        if (!$reset) {
+            $user = $this->findUser(['email' => $email]);
+            $errors = $this->validateExistingEmail($email, $user);
+            if (!$errors) {
+                $this->updateToken(bin2hex(random_bytes(50)), $email);
+            }
+            return $errors ? ['errors' => $errors] : ['user' => $user];
+        }
+        $errors = $this->validatePassword($password, $confirm_password);
+
+        if (!$errors) {
+            Db::query(
+                'UPDATE `users` SET `password` = ? WHERE `email` = ?',
+                [hash('whirlpool', $password), $email]
+            );
+            $this->updateToken(null, $email);
+        }
+
+        return ['errors' => $errors];
+    }
+
+    // Update user's token
+    private function updateToken($token, $email) {
+        $token =  $token ? "camagru_token" . $token : false;
+        $result = Db::query(
+            'UPDATE `users` SET `token` = ? WHERE `email` = ?',
+            [$token, $email]
+        );
+
+        return $result;
+    }
+
+    // Check email
+    private function validateExistingEmail($email, $user) {
+        $errors = [];
+
+        if (empty($email)) {
+            $errors['email_err'] = 'Please enter email';
+        } else if (!$user) {
+            $errors['email_err'] = 'User with this email doesn\'t exists';
+        } else if ($user['activated'] == 0) {
+            $errors['email_err'] = 'Your account has not been activated yet.';
+        }
+
+        return $errors;
+    }
+
     // Check passwords match and correctness
     private function validatePassword($password, $confirm_password, $errors = []) {
         if (!$password || empty($password)) {
@@ -68,138 +237,5 @@ class User {
         );
 
         return $errors;
-    }
-
-    // Update user's token
-    private function updateToken($token, $email) {
-        $token =  $token ? "camagru_token" . $token : false;
-        $result = Db::query(
-            'UPDATE `users` SET `token` = ? WHERE `email` = ?',
-            [$token, $email]
-        );
-
-        return $result;
-    }
-
-    // Check email
-    private function validateExistingEmail($email, $user) {
-        $errors = [];
-
-        if (empty($email)) {
-            $errors['email_err'] = 'Please enter email';
-        } else if (!$user) {
-            $errors['email_err'] = 'User with this email doesn\'t exists';
-        } else if ($user['activated'] == 0) {
-            $errors['email_err'] = 'Your account has not been activated yet.';
-        }
-
-        return $errors;
-    }
-
-    // Get user by given parameter
-    // Ex: $data = ['id' => userid]
-    public function findUser($data) {
-        $result = Db::queryOne(
-            "SELECT `id`, `login`, `first_name`, `last_name`, `password`, `token`,
-            `email`, `notify`, `activated`, `picture`, `created_at`
-            FROM `users` WHERE `" . implode('`, `', array_keys($data)) . "` = ?",
-            array_values($data)
-        );
-
-        return isset($result[0]) ? $result[0] : $result;
-    }
-
-    // Create user
-    public function register($data) {
-        $errors = $this->validateRegisterData($data);
-
-        if (!$errors) {
-            $dataToInsert = [
-                'login' => $data['login'],
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'password' => hash('whirlpool', $data['password']),
-                'email' => $data['email']
-            ];
-            $result = Db::insert('users', $dataToInsert);
-            $this->updateToken(bin2hex(random_bytes(50)), $data['email']);
-        }
-
-        return ['errors' => $errors];
-    }
-
-    // Check all information of user
-    public function login($email, $password) {
-        $user = $this->findUser(['email' => $email]);
-        $errors = $this->validateExistingEmail($email, $user);
-
-        if (!$errors && $password != $user['password']) {
-            $errors['password_err'] = 'Password incorrect';
-        }
-
-        return $errors ? ['errors' => $errors] : ['user' => $user];
-    }
-
-    // Get user's email by login
-    public function getEmailByLogin($login) {
-        $result = Db::queryOne('SELECT `email` FROM `users` WHERE `login` = ?', [$login]);
-
-        return isset($result['email']) ? $result['email'] : $result;
-    }
-
-    // Get user's email by token
-    public function getEmailByToken($token) {
-
-        $result = Db::queryOne('SELECT `email` FROM `users` WHERE `token` = ?', [$token]);
-
-        return isset($result['email']) ? $result['email'] : $result;
-    }
-
-    // Get user's login by id
-    public function getLoginById($id) {
-        $result = Db::queryOne('SELECT `login` FROM `users` WHERE `id` = ?', [$id]);
-
-        return isset($result['login']) ? $result['login'] : $result;
-    }
-
-    // Activate user's account
-    public function activateAccountByEmail($email) {
-        $result = Db::query(
-            'UPDATE `users` SET `activated` = 1 WHERE `email` = ?',
-            [$email]
-        );
-        $this->updateToken(null, $email);
-
-        return $result;
-    }
-
-    // Get user's token
-    public function getToken($email) {
-        $result = Db::queryOne('SELECT `token` FROM `users` WHERE `email` = ?', [$email]);
-
-        return isset($result['token']) ? $result['token'] : '';
-    }
-
-    // Update user's password
-    public function updatePassword($email, $reset = false, $password = '', $confirm_password = '') {
-        if (!$reset) {
-            $user = $this->findUser(['email' => $email]);
-            $errors = $this->validateExistingEmail($email, $user);
-            if (!$errors) {
-                $this->updateToken(bin2hex(random_bytes(50)), $email);
-            }
-            return $errors ? ['errors' => $errors] : ['user' => $user];
-        }
-        $errors = $this->validatePassword($password, $confirm_password);
-
-        if (!$errors) {
-            Db::query(
-                'UPDATE `users` SET `password` = ? WHERE `email` = ?',
-                [hash('whirlpool', $password), $email]
-            );
-            $this->updateToken(null, $email);
-        }
-
-        return ['errors' => $errors];
     }
 }

@@ -1,7 +1,34 @@
+const fillModalProfile = function () {
+    // console.log(userId);
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', urlpath + '/account/userInfo/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            console.log(result);
+            if (result['message']) {
+                alert(result['message']);
+                return;
+            }
+            document.getElementById('profile-login').value = result['login'];
+            document.getElementById('profile-name').value = result['first_name'];
+            document.getElementById('profile-last-name').value = result['last_name'];
+            document.getElementById('profile-email').value = result['email'];
+            if (result['notify'] == 1)
+                document.getElementById('profile-notifications').checked = true;
+            else
+                document.getElementById('profile-notifications').checked = false;
+        }
+    };
+    xhr.send();
+}
+
 // get info about image and fill modal window with it
 const fillModalImage = function (imageId) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', '/' + urlpath + '/images/imageInfo/' + imageId, true);
+    xhr.open('GET', urlpath + '/images/imageInfo/' + imageId, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function () {
@@ -17,9 +44,10 @@ const fillModalImage = function (imageId) {
             } else {
                 document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
             }
-            document.getElementById('modal_profile_photo').src = result['picture'];
+            document.getElementById('modal_profile_photo').src = urlpath + '/' + result['picture'];
+            document.getElementById('modal_profile_login').parentElement.href = urlpath + '/account/profile/' + result['login'];
             document.getElementById('modal_profile_login').innerHTML = result['login'];
-            document.getElementById('modal_image').src = result['image_path'];
+            document.getElementById('modal_image').src = urlpath + '/' + result['image_path'];
             document.getElementById('modal_image_date').innerHTML = result['created_at'];
             document.getElementById('modal_like_button').childNodes[1].innerHTML = ' ' + result['like_amount'];
             document.getElementById('modal_like_button').dataset.imageId = imageId;
@@ -60,7 +88,7 @@ const fillComments = function (comments, loggedUserId) {
     comments.forEach(comment => {
         const comment_div = document.createElement('div');
         const p = document.createElement('p');
-        p.innerHTML = `<a href=''>${comment['login']}</a> (${comment['created_at']}) :
+        p.innerHTML = `<a href="${urlpath}/account/profile/${comment['login']}">${comment['login']}</a> (${comment['created_at']}) :
             <a role="button" onclick="deleteComment(this.dataset.dataId)" data-data-id="${comment['id']}?${comment['image_id']}?${comment['user_id']}'">
             <i class='fas fa-times-circle'></i></a>
             <br><i>${comment['comment']}</i>`;
@@ -74,10 +102,12 @@ const fillComments = function (comments, loggedUserId) {
 }
 
 // open modal window for image
-const openModal = function (imageId) {
+const openModal = function (param) {
     event.preventDefault();
-    if (imageId) {
-        fillModalImage(imageId);
+    if (param == 'editProfile') {
+        fillModalProfile();
+    } else {
+        fillModalImage(param);
     }
 
     document.getElementById("backdrop").classList.remove('d-none');

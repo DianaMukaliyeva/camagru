@@ -55,15 +55,32 @@ class AccountController extends Controller {
         $this->renderView('images/index');
     }
 
-    public function follow() {
-        if ($this->getLoggedInUser()) {
-            $this->renderView('users/account');
+    public function userInfo() {
+        // Only works only for ajax requests
+        $this->onlyAjaxRequests();
+        $user = $this->getLoggedInUser();
+        if (!$user) {
+            $json['message'] = 'You should be logged in';
+        } else {
+            $json = $user;
         }
-        $this->renderView('images/index');
+        echo json_encode($json);
     }
 
     public function profile(...$param) {
-        $user = empty($param) ? false : $param[0];
-        $this->renderView('users/profile', $user);
+        $loggedUser = $this->getLoggedInUser();
+        $login = empty($param) ? false : $param[0];
+        if (!$login) {
+            $this->renderView('images/index');
+        } else if (!$loggedUser) {
+            // not logged user looks at someone's profile
+            $userInfo = $this->userModel->getUserInfo($login);
+        } else {
+            // logged user looks at his or someone's profile
+            $userInfo = $this->userModel->getUserInfo($login, $loggedUser['id']);
+        }
+        // info pro followers/ all images / following / button follow / user itself
+        // $user = $this->userModel->getAllUserInfo($loggedUser['id'], $login);
+        $this->renderView('users/profile', $userInfo);
     }
 }

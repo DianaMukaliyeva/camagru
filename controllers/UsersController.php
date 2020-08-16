@@ -7,6 +7,7 @@ class UsersController extends Controller {
     }
 
     private function createUserSession($user) {
+        unset($user['password']);
         $_SESSION[APPNAME]['user'] = $user;
         $this->redirect('');
     }
