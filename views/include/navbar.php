@@ -18,7 +18,7 @@
                         <a class="nav-link" href="<?= URLROOT ?>/camera/takePhoto">Add photo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= URLROOT ?>/account/profile/<?= $_SESSION[APPNAME]['user']['login'] ?>">Profile</a>
+                        <a class="nav-link" href="<?= URLROOT ?>/account/profile/<?= $_SESSION[APPNAME]['user']['id'] ?>">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= URLROOT ?>/users/logout">Logout</a>

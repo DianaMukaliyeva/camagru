@@ -183,7 +183,44 @@ const like = function (button) {
     xhr.send();
 }
 
-const saveChanges = function() {
-    console.log('opened settings');
-
+const saveChanges = function(form) {
+    event.preventDefault();
+    // console.log(form.dataset.userId);
+    data = {
+        'id': form.dataset.userId,
+        'login': form.login.value,
+        'first_name': form.first_name.value,
+        'last_name': form.last_name.value,
+        'email': form.email.value,
+        'old_pswd': form.old_pswd.value,
+        'new_pswd': form.new_pswd.value,
+        'new_pswd_confirm': form.new_pswd_confirm.value,
+        'notify': form.notifications.checked
+    }
+    // console.log(data);
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            // console.log(result);
+            if (result['message']) {
+                alert(result['message']);
+                return;
+            }
+            document.getElementById('profile_login').innerHTML = data['login'];
+            document.getElementById('profile_name').innerHTML = data['first_name'] + ' ' + data['last_name'];
+            document.getElementById('profile_email').innerHTML = data['email'];
+            closeModal();
+            // button.childNodes[0].classList.toggle('user_act');
+            // button.childNodes[1].innerHTML = ' ' + result['likes_amount'];
+            // if (button.id == 'modal_like_button') {
+            //     document.getElementById('like_button_' + imageId).childNodes[0].classList.toggle('user_act');
+            //     document.getElementById('like_button_' + imageId).childNodes[1].innerHTML = ' ' + result['likes_amount'];
+            // }
+        }
+    };
+    xhr.open('POST', urlpath + '/account/update/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('data=' + JSON.stringify(data));
 }

@@ -7,19 +7,18 @@ const fillModalProfile = function () {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
-            console.log(result);
+            // console.log(result);
             if (result['message']) {
                 alert(result['message']);
                 return;
             }
-            document.getElementById('profile-login').value = result['login'];
-            document.getElementById('profile-name').value = result['first_name'];
-            document.getElementById('profile-last-name').value = result['last_name'];
-            document.getElementById('profile-email').value = result['email'];
-            if (result['notify'] == 1)
-                document.getElementById('profile-notifications').checked = true;
-            else
-                document.getElementById('profile-notifications').checked = false;
+            let form = document.getElementById('editForm');
+            form.setAttribute('data-user-id', result['id']);
+            form.login.value = result['login'];
+            form.first_name.value = result['first_name'];
+            form.last_name.value = result['last_name'];
+            form.email.value = result['email'];
+            form.notifications.checked = result['notify'] ? true : false;
         }
     };
     xhr.send();
@@ -45,7 +44,7 @@ const fillModalImage = function (imageId) {
                 document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
             }
             document.getElementById('modal_profile_photo').src = urlpath + '/' + result['picture'];
-            document.getElementById('modal_profile_login').parentElement.href = urlpath + '/account/profile/' + result['login'];
+            document.getElementById('modal_profile_login').parentElement.href = urlpath + '/account/profile/' + result['user_id'];
             document.getElementById('modal_profile_login').innerHTML = result['login'];
             document.getElementById('modal_image').src = urlpath + '/' + result['image_path'];
             document.getElementById('modal_image_date').innerHTML = result['created_at'];
@@ -88,7 +87,8 @@ const fillComments = function (comments, loggedUserId) {
     comments.forEach(comment => {
         const comment_div = document.createElement('div');
         const p = document.createElement('p');
-        p.innerHTML = `<a href="${urlpath}/account/profile/${comment['login']}">${comment['login']}</a> (${comment['created_at']}) :
+        // console.log(comment);
+        p.innerHTML = `<a href="${urlpath}/account/profile/${comment['user_id']}">${comment['login']}</a> (${comment['created_at']}) :
             <a role="button" onclick="deleteComment(this.dataset.dataId)" data-data-id="${comment['id']}?${comment['image_id']}?${comment['user_id']}'">
             <i class='fas fa-times-circle'></i></a>
             <br><i>${comment['comment']}</i>`;

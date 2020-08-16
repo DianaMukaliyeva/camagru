@@ -12,10 +12,10 @@
             <div class="col-8">
                 <div class="row">
                     <div class="col-sm-8">
-                        <h5 class="font-weight-bold mt-0"><?= $data['login'] ?></h5>
+                        <h5 class="font-weight-bold mt-0" id="profile_login"><?= $data['login'] ?></h5>
                     </div>
                     <div class="col-sm-4 px-0">
-                        <?php if (isset($_SESSION[APPNAME]['user']) && $_SESSION[APPNAME]['user']['login'] == $data['login']) : ?>
+                        <?php if (isset($_SESSION[APPNAME]['user']) && $_SESSION[APPNAME]['user']['id'] == $data['id']) : ?>
                             <button class="btn btn-outline-success float-right focus-btn" onclick="openModal('editProfile')"><i class="fas fa-user-edit"></i></button>
                         <?php else : ?>
                             <?php if ($data['user_follow'] == 0) : ?>
@@ -27,10 +27,10 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col py-2"><?= $data['first_name'] . " " . $data['last_name'] ?></div>
+                    <div class="col py-2" id="profile_name"><?= $data['first_name'] . " " . $data['last_name'] ?></div>
                 </div>
                 <div class="row">
-                    <div class="col py-2"><?= $data['email'] ?></div>
+                    <div class="col py-2" id="profile_email"><?= $data['email'] ?></div>
                 </div>
             </div>
         </div>
@@ -63,43 +63,40 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="editForm" onsubmit="saveChanges(this)">
                     <div class="row py-1">
                         <div class="col-sm-4">Login:</div>
-                        <div class="col-sm-8"><input type="text" class="form-control" id="profile-login"></div>
+                        <div class="col-sm-8"><input type="text" class="form-control" name="login" required></div>
                     </div>
                     <div class="row py-1">
                         <div class="col-sm-4">First name:</div>
-                        <div class="col-sm-8"><input type="text" class="form-control" id="profile-name"></div>
+                        <div class="col-sm-8"><input type="text" class="form-control" name="first_name" required></div>
                     </div>
                     <div class="row py-1">
                         <div class="col-sm-4">Last name:</div>
-                        <div class="col-sm-8"><input type="text" class="form-control" id="profile-last-name"></div>
+                        <div class="col-sm-8"><input type="text" class="form-control" name="last_name" required></div>
                     </div>
                     <div class="row py-1">
                         <div class="col-sm-4">email:</div>
-                        <div class="col-sm-8"><input type="text" class="form-control" id="profile-email"></div>
-                    </div>
-                    <div class="row py-1">
-                        <div class="col-sm-4">Old password:</div>
-                        <div class="col-sm-8"><input type="text" class="form-control" id="profile-old-password"></div>
+                        <div class="col-sm-8"><input type="text" class="form-control" name="email" required></div>
                     </div>
                     <div class="row py-1">
                         <div class="col-sm-4">New password:</div>
-                        <div class="col-sm-8"><input type="text" class="form-control" id="profile-new-password"></div>
-                    </div>
-                    <div class="row py-1">
-                        <div class="col-sm-4">Confirm new password:</div>
-                        <div class="col-sm-8"><input type="text" class="form-control" id="profile-new-password-confirm"></div>
+                        <div class="col-sm-4 pr-sm-1 pb-1 pb-sm-0"><input type="password" class="form-control" name="new_pswd" placeholder="new password"></div>
+                        <div class="col-sm-4 pl-sm-1 p"><input type="password" class="form-control" name="new_pswd_confirm" placeholder="confirm new password"></div>
                     </div>
                     <div class="custom-control custom-checkbox py-2 mx-3">
-                        <input type="checkbox" class="custom-control-input" id="profile-notifications">
+                        <input type="checkbox" class="custom-control-input" name="notifications" id="profile-notifications">
                         <label class="focus-btn custom-control-label" for="profile-notifications">Send me email notifications</label>
+                    </div>
+                    <div class="row py-1">
+                        <div class="col-sm-4">Password:*</div>
+                        <div class="col-sm-8"><input type="password" class="form-control" name="old_pswd" placeholder="Required to update account" required></div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="saveChanges()">Save changes</button>
+                <button type="submit" form="editForm" class="btn btn-success">Save changes</button>
                 <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
             </div>
         </div>

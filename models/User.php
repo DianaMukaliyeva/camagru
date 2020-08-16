@@ -2,23 +2,9 @@
 class User {
 
     // Get all user's information
-    public function getUserInfo($userLogin, $loggedUserId = false) {
-        if (!$loggedUserId) {
-            $result = Db::queryOne(
-                "SELECT users.id, users.login, users.first_name, users.last_name,
-                users.email, users.notify, users.picture,
-                (SELECT COUNT(`id`) FROM `followers`
-                WHERE `user_id_followed` = users.id) AS followers_amount,
-                (SELECT COUNT(`id`) FROM `followers`
-                WHERE `user_id_follower` = users.id) AS followed_amount,
-                (SELECT COUNT(`id`) FROM `images`
-                WHERE `user_id` = users.id) AS images_amount
-                FROM `users` WHERE users.login = ?",
-                [$userLogin]
-            );
-        } else {
-            $result = Db::queryOne(
-                "SELECT users.id, users.login, users.first_name, users.last_name,
+    public function getUserInfo($userId, $loggedUserId = 0) {
+        $result = Db::queryOne(
+            "SELECT users.id, users.login, users.first_name, users.last_name,
                 users.email, users.notify, users.picture,
                 (SELECT COUNT(`id`) FROM `followers`
                 WHERE `user_id_followed` = users.id) AS followers_amount,
@@ -28,10 +14,9 @@ class User {
                 WHERE `user_id_followed` = users.id AND `user_id_follower` = ?) AS user_follow,
                 (SELECT COUNT(`id`) FROM `images`
                 WHERE `user_id` = users.id) AS images_amount
-                FROM `users` WHERE users.login = ?",
-                [$loggedUserId, $userLogin]
-            );
-        }
+                FROM `users` WHERE users.id = ?",
+            [$loggedUserId, $userId]
+        );
         return isset($result[0]) ? $result[0] : $result;
     }
 
@@ -40,8 +25,8 @@ class User {
     public function findUser($data) {
         $result = Db::queryOne(
             "SELECT `id`, `login`, `first_name`, `last_name`, `password`, `token`,
-            `email`, `notify`, `activated`, `picture`, `created_at`
-            FROM `users` WHERE `" . implode('`, `', array_keys($data)) . "` = ?",
+                `email`, `notify`, `activated`, `picture`, `created_at`
+                FROM `users` WHERE `" . implode('`, `', array_keys($data)) . "` = ?",
             array_values($data)
         );
 
@@ -155,6 +140,65 @@ class User {
         return $result;
     }
 
+    // Update user's information
+    // $data keys = {'id', 'email', 'first_name', 'last_name', 'notify',
+    //              'login', 'old_pswd', 'new_pswd', 'new_pswd_confirm'}
+    public function updateInfo($data) {
+        $result = Db::query(
+            'UPDATE `users` SET `login` = ?, `first_name` = ?, `last_name` = ?,
+                `email` = ?, `notify` = ? WHERE `id` = ?',
+            [
+                $data['login'],
+                $data['first_name'],
+                $data['last_name'],
+                $data['email'],
+                $data['notify'],
+                $data['id']
+            ]
+        );
+        return $result;
+    }
+
+    public function validateInput($data, $errors = []) {
+        // Validate Email
+        if (!$data['email'] || empty($data['email'])) {
+            $errors['email_err'] = 'Please enter email';
+        } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email_err'] = 'Invalid mail';
+        }
+
+        // Validate First Name
+        if (!$data['first_name'] || empty($data['first_name'])) {
+            $errors['first_name_err'] = 'Please enter first name';
+        } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['first_name'])) {
+            $errors['first_name_err'] =
+                "Name must start with letter and include letters and numbers only";
+        } else if (strlen($data['first_name']) > 45) {
+            $errors['first_name_err'] =  "Name must be less than 45 characters";
+        }
+
+        // Validate Last Name
+        if (!$data['last_name'] || empty($data['last_name'])) {
+            $errors['last_name_err'] = 'Please enter last name';
+        } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['last_name'])) {
+            $errors['last_name_err'] =
+                "Last name must start with letter and include letters and numbers only";
+        } else if (strlen($data['last_name']) > 45) {
+            $errors['last_name_err'] =  "Last name must be less than 45 characters";
+        }
+
+        // Validate login
+        if (!$data['login'] || empty($data['login'])) {
+            $errors['login_err'] = 'Please enter login';
+        } else if (!preg_match('/^[A-Za-z0-9]{0,}$/', $data['login'])) {
+            $errors['login_err'] =  "Login must include letters and numbers only";
+        } else if (strlen($data['login']) > 25) {
+            $errors['login_err'] =  "Login must be less than 25 characters";
+        }
+
+        return $errors;
+    }
+
     // Check email
     private function validateExistingEmail($email, $user) {
         $errors = [];
@@ -171,7 +215,7 @@ class User {
     }
 
     // Check passwords match and correctness
-    private function validatePassword($password, $confirm_password, $errors = []) {
+    public function validatePassword($password, $confirm_password, $errors = []) {
         if (!$password || empty($password)) {
             $errors['password_err'] = 'Please enter password';
         } else if (strlen($password) < 3) {
@@ -188,7 +232,7 @@ class User {
     }
 
     // Check all given information
-    private function validateRegisterData($data) {
+    private function validateRegisterData($data, $validPsw = true) {
         $errors = [];
         // Validate Email
         if (!$data['email'] || empty($data['email'])) {
@@ -214,7 +258,7 @@ class User {
             $errors['last_name_err'] = 'Please enter last name';
         } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['last_name'])) {
             $errors['last_name_err'] =
-                "Last must start with letter and include letters and numbers only";
+                "Last name must start with letter and include letters and numbers only";
         } else if (strlen($data['last_name']) > 45) {
             $errors['last_name_err'] =  "Last name must be less than 45 characters";
         }

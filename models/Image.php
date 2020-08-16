@@ -5,17 +5,17 @@ class Image {
     public function getImagesByDate($userId = 0) {
         $result = Db::queryAll(
             'SELECT images.id, images.image_path, images.created_at,
-            images.user_id, users.login, users.picture,
-            (SELECT COUNT(id) FROM `likes` where likes.user_id = ? AND likes.image_id = images.id) AS user_liked,
-            (SELECT COUNT(id) FROM `comments` where comments.user_id = ? AND comments.image_id = images.id) AS user_commented,
-            COUNT(DISTINCT(likes.id)) AS `likes_amount`,
-            COUNT(DISTINCT(comments.id)) AS `comments_amount`
-            FROM `images`
-            LEFT JOIN `users` ON users.id = images.user_id
-            LEFT JOIN `likes` ON likes.image_id = images.id
-            LEFT JOIN `comments` ON comments.image_id = images.id
-            GROUP BY images.id
-            ORDER BY `created_at` DESC',
+                images.user_id, users.login, users.picture,
+                (SELECT COUNT(id) FROM `likes` where likes.user_id = ? AND likes.image_id = images.id) AS user_liked,
+                (SELECT COUNT(id) FROM `comments` where comments.user_id = ? AND comments.image_id = images.id) AS user_commented,
+                COUNT(DISTINCT(likes.id)) AS `likes_amount`,
+                COUNT(DISTINCT(comments.id)) AS `comments_amount`
+                FROM `images`
+                LEFT JOIN `users` ON users.id = images.user_id
+                LEFT JOIN `likes` ON likes.image_id = images.id
+                LEFT JOIN `comments` ON comments.image_id = images.id
+                GROUP BY images.id
+                ORDER BY `created_at` DESC',
             [$userId, $userId]
         );
 
@@ -26,17 +26,17 @@ class Image {
     public function getImagesByLikes($userId = 0) {
         $result = Db::queryAll(
             'SELECT images.id, images.image_path, images.created_at,
-            images.user_id, users.login, users.picture,
-            (SELECT COUNT(id) FROM `likes` where likes.user_id = ? AND image_id = images.id) AS user_liked,
-            (SELECT COUNT(id) FROM `comments` where comments.user_id = ? AND image_id = images.id) AS user_commented,
-            COUNT(DISTINCT(likes.id)) AS `likes_amount`,
-            COUNT(DISTINCT(comments.id)) AS `comments_amount`
-            FROM `images`
-            LEFT JOIN `users` ON users.id = images.user_id
-            LEFT JOIN `likes` ON likes.image_id = images.id
-            LEFT JOIN `comments` ON comments.image_id = images.id
-            GROUP BY images.id
-            ORDER BY `likes_amount` DESC, `comments_amount` DESC',
+                images.user_id, users.login, users.picture,
+                (SELECT COUNT(id) FROM `likes` where likes.user_id = ? AND image_id = images.id) AS user_liked,
+                (SELECT COUNT(id) FROM `comments` where comments.user_id = ? AND image_id = images.id) AS user_commented,
+                COUNT(DISTINCT(likes.id)) AS `likes_amount`,
+                COUNT(DISTINCT(comments.id)) AS `comments_amount`
+                FROM `images`
+                LEFT JOIN `users` ON users.id = images.user_id
+                LEFT JOIN `likes` ON likes.image_id = images.id
+                LEFT JOIN `comments` ON comments.image_id = images.id
+                GROUP BY images.id
+                ORDER BY `likes_amount` DESC, `comments_amount` DESC',
             [$userId, $userId]
         );
 

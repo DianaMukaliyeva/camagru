@@ -7,7 +7,7 @@
                 <div class="media mt-3">
                     <img class="rounded-circle media-img mx-3" src="<?= URLROOT . '/' . $image['picture'] ?>" alt="profile image">
                     <div class="media-body">
-                        <a class="text-decoration-none" href="<?= URLROOT . '/account/profile/' . $image['login'] ?>">
+                        <a class="text-decoration-none" href="<?= URLROOT . '/account/profile/' . $image['user_id'] ?>">
                             <p class="pt-3 font-weight-bold"><?= $image['login'] ?></p>
                         </a>
                     </div>

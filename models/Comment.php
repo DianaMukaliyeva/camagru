@@ -5,9 +5,9 @@ class Comment {
     public function getComments($imageId) {
         $result = Db::queryAll(
             'SELECT comments.id AS `id`, users.login, `comment`
-            ,comments.created_at AS `created_at`,
-            `user_id`, `image_id` FROM `comments`
-            LEFT JOIN `users` ON users.id = comments.user_id WHERE `image_id` = ?',
+                ,comments.created_at AS `created_at`,
+                `user_id`, `image_id` FROM `comments`
+                LEFT JOIN `users` ON users.id = comments.user_id WHERE `image_id` = ?',
             [$imageId]
         );
 
