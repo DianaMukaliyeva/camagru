@@ -37,8 +37,9 @@ const addComment = function (form) {
                 form.getElementsByTagName('button')[0].innerHTML = 'Sending';
                 sendEmailAboutComment(form, data);
             } else {
+                showMessage(result['message'], 'alert');
                 form.getElementsByTagName('input')[0].value = '';
-                alert(result['message']);
+                // alert(result['message']);
             }
             // console.log('comment inserted');
         }
@@ -56,7 +57,8 @@ const sendEmailAboutComment = function (form, data) {
         if (newxhr.readyState == 4 && newxhr.status == 200) {
             let result = JSON.parse(newxhr.responseText);
             if (result['message']) {
-                alert(result['message']);
+                showMessage(result['message'], 'alert');
+                // alert(result['message']);
             }
             sendingComment = false;
             form.getElementsByTagName('input')[0].disabled = false;
@@ -83,11 +85,13 @@ const deleteComment = function (data) {
             let result = JSON.parse(xhr.responseText);
             if (result['message'] == 'success') {
                 document.getElementById('comments_' + ids[1]).childNodes[1].innerHTML = ' ' + result['comments'].length;
-                if (!result['user_commented'])
+                if (!result['user_commented']) {
                     document.getElementById('comments_' + ids[1]).classList.remove('user_act');
+                }
                 fillComments(result['comments'], result['logged_user_id']);
             } else {
-                alert(result['message']);
+                showMessage(result['message'], 'alert');
+                // alert(result['message']);
             }
         }
     };
@@ -110,9 +114,12 @@ const deleteImage = function (button) {
             let result = JSON.parse(xhr.responseText);
             if (result['message'] == 'success') {
                 closeModal();
-                location.reload();
+                showMessage('Image successfully deleted');
+                setTimeout(function () { location.reload(); }, 1000);
+                // location.reload();
             } else {
-                alert(result['message']);
+                showMessage(result['message'], 'alert');
+                // alert(result['message']);
             }
         }
     };
@@ -132,12 +139,12 @@ const follow = function (button) {
             // console.log(result);
             if (result['message']) {
                 alert(result['message']);
+                // showMessage(result['message'], 'alert');
                 return;
             }
             if (result['success'] == 'Follow') {
                 button.classList.remove('btn-outline-secondary');
                 button.classList.add('btn-success');
-                button
             } else {
                 button.classList.remove('btn-success');
                 button.classList.add('btn-outline-secondary');
@@ -166,7 +173,8 @@ const like = function (button) {
             let result = JSON.parse(xhr.responseText);
             // console.log(result);
             if (result['message']) {
-                alert(result['message']);
+                showMessage(result['message'], 'alert');
+                // alert(result['message']);
                 return;
             }
             button.childNodes[0].classList.toggle('user_act');
@@ -183,7 +191,7 @@ const like = function (button) {
     xhr.send();
 }
 
-const saveChanges = function(form) {
+const saveChanges = function (form) {
     event.preventDefault();
     // console.log(form.dataset.userId);
     data = {
@@ -204,9 +212,11 @@ const saveChanges = function(form) {
             let result = JSON.parse(xhr.responseText);
             // console.log(result);
             if (result['message']) {
-                alert(result['message']);
+                showMessage(result['message'], 'alert');
+                // alert(result['message']);
                 return;
             }
+            showMessage('Your information is successfully updated');
             document.getElementById('profile_login').innerHTML = data['login'];
             document.getElementById('profile_name').innerHTML = data['first_name'] + ' ' + data['last_name'];
             document.getElementById('profile_email').innerHTML = data['email'];
@@ -223,4 +233,33 @@ const saveChanges = function(form) {
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('data=' + JSON.stringify(data));
+}
+
+// show toast message
+const showMessage = function (message, alert = false) {
+    console.log('toast');
+    let toast = document.getElementById('message');
+    let messages = message.split("\n");
+    console.log(messages);
+    if (alert) {
+        toast.className = "alert";
+        setTimeout(function () { toast.className = toast.className.replace("alert", ""); }, 4000);
+    } else {
+        toast.className = "show";
+        setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+    // console.log(toast.children);
+    toast.children[1].innerHTML = '';
+    messages.forEach(element => {
+        if (element != '') {
+            toast.children[1].innerHTML += element + "<br>";
+        }
+    });
+}
+
+
+// close toast message
+const closeMessage = function (button) {
+    button.parentElement.classList.remove('show');
+    button.parentElement.classList.add('d-none');
 }

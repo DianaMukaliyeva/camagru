@@ -9,7 +9,8 @@ const fillModalProfile = function () {
             let result = JSON.parse(xhr.responseText);
             // console.log(result);
             if (result['message']) {
-                alert(result['message']);
+                showMessage(result['message'], true);
+                // alert(result['message']);
                 return;
             }
             let form = document.getElementById('editForm');
@@ -19,6 +20,9 @@ const fillModalProfile = function () {
             form.last_name.value = result['last_name'];
             form.email.value = result['email'];
             form.notifications.checked = result['notify'] ? true : false;
+            form.old_pswd.value = '';
+            form.new_pswd.value = '';
+            form.new_pswd_confirm.value = '';
         }
     };
     xhr.send();
@@ -35,7 +39,8 @@ const fillModalImage = function (imageId) {
             let result = JSON.parse(xhr.responseText);
             // console.log(result);
             if (result['message']) {
-                alert(result['message']);
+                showMessage(result['message'], true);
+                // alert(result['message']);
                 return;
             }
             if (result['user_liked'] != 0) {

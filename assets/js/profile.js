@@ -46,7 +46,7 @@ const appendToContainer = function (div, users) {
                     </div>
                 </a>
             </div>`
-        console.log(element);
+        // console.log(element);
         innerDiv
         div.innerHTML += html;
     });
@@ -140,7 +140,6 @@ const loadMore = function () {
     request_in_progress = false;
 }
 
-
 window.addEventListener('DOMContentLoaded', function (event) {
     if (document.getElementById('profile_login')) {
         let profileId = document.getElementById('profile_login').dataset.userId;
@@ -149,7 +148,6 @@ window.addEventListener('DOMContentLoaded', function (event) {
         hideLoadMore();
     }
 });
-
 
 // show next page on scroll
 const scrollReaction = function () {
@@ -184,4 +182,3 @@ if (windowHeight < 1200) {
 } else {
     imagesOnPage = 20;
 }
-

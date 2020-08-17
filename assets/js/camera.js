@@ -111,14 +111,17 @@ const takePhoto = function () {
         if (this.readyState == 4 && this.status == 200) {
             let result = JSON.parse(xmlhttp.responseText);
             if (result['message']) {
-                alert(result['message']);
-                if (result['message'] == 'You should be logged in')
+                // alert(result['message']);
+                showMessage(result['message'], 'alert');
+                if (result['message'] == 'You should be logged in') {
                     window.location.replace(urlpath);
+                }
                 return;
             }
             photoList.appendChild(createImageContainer(JSON.parse(this.responseText)));
             imagesInCapture++;
             changeImagesInPreview();
+            showMessage('Photo added to preview window');
         }
     }
     xmlhttp.open("POST", urlpath + "/camera/combine", true);

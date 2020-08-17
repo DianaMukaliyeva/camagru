@@ -51,11 +51,13 @@ const saveImages = function () {
             // console.log(this.responseText);
             let result = JSON.parse(xmlhttp.responseText);
             if (result['message']) {
-                alert(result['message']);
+                showMessage(result['message'], true);
+                // alert(result['message']);
                 if (result['message'] == 'You should be logged in')
                     window.location.replace(urlpath);
                 return;
             }
+            showMessage('All images are successfully saved');
             deletePreview();
         }
     }
