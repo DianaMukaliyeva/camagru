@@ -231,34 +231,6 @@ const saveChanges = function (form) {
     xhr.send('data=' + JSON.stringify(data));
 }
 
-// show toast message
-const showMessage = function (message, alert = false) {
-    // console.log('toast');
-    let toast = document.getElementById('message');
-    let messages = message.split("\n");
-    // console.log(messages);
-    if (alert) {
-        toast.className = "alert";
-        setTimeout(function () { toast.className = toast.className.replace("alert", ""); }, 4000);
-    } else {
-        toast.className = "show";
-        setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000);
-    }
-    // console.log(toast.children);
-    toast.children[1].innerHTML = '';
-    messages.forEach(element => {
-        if (element != '') {
-            toast.children[1].innerHTML += element + "<br>";
-        }
-    });
-}
-
-// close toast message
-const closeMessage = function (button) {
-    button.parentElement.classList.remove('show');
-    button.parentElement.classList.add('d-none');
-}
-
 // change profile image
 const changeProfilePicture = function (button) {
     // console.log(button);

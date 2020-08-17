@@ -18,14 +18,6 @@
 
 <body>
     <div class="wrapper">
-        <!-- Toast message for different warnings or confirmations -->
-        <div class="d-flex justify-content-center align-items-center">
-            <div id="message">
-                <button type="button" class="close" onclick="closeMessage(this)">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class="toast-body"></div>
-            </div>
-        </div>
         <?php require 'views/include/navbar.php'; ?>
         <div class="content">
+            <?php require 'views/include/modal.php' ?>

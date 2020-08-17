@@ -1,3 +1,32 @@
+// show toast message
+const showMessage = function (message, alert = false) {
+    // console.log('toast');
+    let toast = document.getElementById('message');
+    let messages = message.split("\n");
+    // console.log(messages);
+    if (alert) {
+        toast.className = "alert";
+        setTimeout(function () { toast.className = toast.className.replace("alert", ""); }, 4000);
+    } else {
+        toast.className = "show";
+        setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+    // console.log(toast.children);
+    toast.children[1].innerHTML = '';
+    messages.forEach(element => {
+        if (element != '') {
+            toast.children[1].innerHTML += element + "<br>";
+        }
+    });
+}
+
+// close toast message
+const closeMessage = function (button) {
+    button.parentElement.classList.remove('show');
+    button.parentElement.classList.add('d-none');
+}
+
+// fill modal profile settings
 const fillModalProfile = function () {
     // console.log(userId);
     let xhr = new XMLHttpRequest();
@@ -43,15 +72,16 @@ const fillModalImage = function (imageId) {
                 // alert(result['message']);
                 return;
             }
+            document.getElementById('modal_image').src = urlpath + '/' + result['image_path'];
+            fillComments(result['comments'], result['logged_user_id']);
+            document.getElementById('modal_profile_photo').src = urlpath + '/' + result['picture'];
             if (result['user_liked'] != 0) {
                 document.getElementById('modal_like_button').childNodes[0].classList.add('user_act');
             } else {
                 document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
             }
-            document.getElementById('modal_profile_photo').src = urlpath + '/' + result['picture'];
             document.getElementById('modal_profile_login').parentElement.href = urlpath + '/account/profile/' + result['user_id'];
             document.getElementById('modal_profile_login').innerHTML = result['login'];
-            document.getElementById('modal_image').src = urlpath + '/' + result['image_path'];
             document.getElementById('modal_image_date').innerHTML = result['created_at'];
             document.getElementById('modal_like_button').childNodes[1].innerHTML = ' ' + result['like_amount'];
             document.getElementById('modal_like_button').dataset.imageId = imageId;
@@ -66,6 +96,7 @@ const fillModalImage = function (imageId) {
                 document.getElementById('modal_change_picture').setAttribute('data-user-id', result['user_id']);
                 document.getElementById('modal_change_picture').setAttribute('data-image-path', result['image_path']);
             } else {
+                document.getElementById('modal_change_picture').classList.add('d-none');
                 if (result['user_follow'] == 0) {
                     document.getElementById('modal_follow_button').classList.add('btn-success');
                     document.getElementById('modal_follow_button').innerHTML = "Follow";
@@ -82,7 +113,6 @@ const fillModalImage = function (imageId) {
                 });
             }
             document.getElementById('modal_image_tags').dataset.imageId = imageId;
-            fillComments(result['comments'], result['logged_user_id']);
         }
     };
     xhr.send();
@@ -130,18 +160,16 @@ const closeModal = function () {
     document.getElementById("backdrop").classList.add('d-none')
     document.getElementById("exampleModal").style.display = "none";
     document.getElementById("exampleModal").classList.remove("show");
-    if (document.getElementById("settings")) {
-        document.getElementById("settings").style.display = "none";
-        document.getElementById("settings").classList.remove("show");
-    }
+    document.getElementById("settings").style.display = "none";
+    document.getElementById("settings").classList.remove("show");
 }
 
-const modal = document.getElementById('exampleModal');
-const modal2 = document.getElementById('settings');
+const modalImage = document.getElementById('exampleModal');
+const modalSettings = document.getElementById('settings');
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
-    if (event.target === modal || event.target === modal2) {
+    if (event.target === modalImage || event.target === modalSettings) {
         closeModal();
     }
 }

@@ -1,3 +1,4 @@
+// switch between user's gallery/user's followers and followed users
 const switchtab = function (id) {
     let images = document.getElementById('image-list');
     let followers = document.getElementById('followers-list');
