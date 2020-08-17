@@ -70,7 +70,7 @@ footer {
 
 #message.alert {
     visibility: visible;
-    background-color: rgb(255, 52, 52);
+    background-color: rgb(230, 43, 43);
     -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
     animation: fadein 0.5s, fadeout 0.5s 4.5s;
 }

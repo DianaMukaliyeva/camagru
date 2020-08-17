@@ -17,6 +17,8 @@ class FollowersController extends Controller {
         $user = $this->getLoggedInUser();
         if (!$user) {
             $json['message'] = 'You should be logged in to follow an user';
+        } else if ($userIdToFollow == $user['id']) {
+            $json['message'] = 'You can\'t follow yourself';
         } else if ($userIdToFollow && $this->userModel->getLoginById($userIdToFollow)) {
             if ($this->followModel->isFollowing($user['id'], $userIdToFollow)) {
                 $json['success'] = $this->followModel->unfollowUser(

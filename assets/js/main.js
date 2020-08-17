@@ -6,14 +6,10 @@ burger.addEventListener('click', function () { nav.classList.toggle('collapse');
 
 // the root location of our project
 const urlpath = '/' + window.location.pathname.split('/')[1];
-let sendingComment = false;
 
 // add comment to database
 const addComment = function (form) {
     event.preventDefault();
-    if (sendingComment) {
-        return;
-    }
 
     const data = {};
     data['image_id'] = form.dataset.imageId;
@@ -31,10 +27,7 @@ const addComment = function (form) {
                     // console.log('this is from modal');
                     fillComments(result['comments'], result['logged_user_id']);
                 }
-                sendingComment = true;
-                form.getElementsByTagName('input')[0].disabled = true;
-                form.getElementsByTagName('button')[0].disabled = true;
-                form.getElementsByTagName('button')[0].innerHTML = 'Sending';
+                form.getElementsByTagName('input')[0].value = '';
                 sendEmailAboutComment(form, data);
             } else {
                 showMessage(result['message'], 'alert');
@@ -60,7 +53,6 @@ const sendEmailAboutComment = function (form, data) {
                 showMessage(result['message'], 'alert');
                 // alert(result['message']);
             }
-            sendingComment = false;
             form.getElementsByTagName('input')[0].disabled = false;
             form.getElementsByTagName('input')[0].value = '';
             form.getElementsByTagName('button')[0].disabled = false;
@@ -104,7 +96,11 @@ const deleteComment = function (data) {
 // delete image from db
 const deleteImage = function (button) {
     imageId = button.dataset.imageId;
-
+    let confirmation = confirm('Are you sure you want to delete this photo?');
+    console.log(confirmation);
+    if (!confirmation) {
+        return;
+    }
     let xhr = new XMLHttpRequest();
     xhr.open('GET', urlpath + '/images/delete/' + imageId, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -138,8 +134,8 @@ const follow = function (button) {
             let result = JSON.parse(xhr.responseText);
             // console.log(result);
             if (result['message']) {
-                alert(result['message']);
-                // showMessage(result['message'], 'alert');
+                // alert(result['message']);
+                showMessage(result['message'], 'alert');
                 return;
             }
             if (result['success'] == 'Follow') {
@@ -240,7 +236,7 @@ const showMessage = function (message, alert = false) {
     // console.log('toast');
     let toast = document.getElementById('message');
     let messages = message.split("\n");
-    console.log(messages);
+    // console.log(messages);
     if (alert) {
         toast.className = "alert";
         setTimeout(function () { toast.className = toast.className.replace("alert", ""); }, 4000);

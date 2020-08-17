@@ -59,6 +59,7 @@ const fillModalImage = function (imageId) {
             document.getElementById('modal_image_tags').innerHTML = '';
             document.getElementById('modal_follow_button').setAttribute('data-user-id', result['user_id']);
             if (result['login'] == result['logged_in_user']) {
+                document.getElementById('modal_follow_button').classList.add('d-none');
                 document.getElementById('modal_delete_button').classList.remove('d-none');
                 document.getElementById('modal_change_picture').classList.remove('d-none');
                 document.getElementById('modal_delete_button').dataset.imageId = imageId;
