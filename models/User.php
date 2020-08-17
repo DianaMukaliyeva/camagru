@@ -140,6 +140,16 @@ class User {
         return $result;
     }
 
+    // Update user's profile picture
+    public function updatePicture($userId, $pathToImage) {
+        $result = Db::query(
+            'UPDATE `users` SET `picture` = ? WHERE `id` = ?',
+            [$pathToImage, $userId]
+        );
+
+        return $result;
+    }
+
     // Update user's information
     // $data keys = {'id', 'email', 'first_name', 'last_name', 'notify',
     //              'login', 'old_pswd', 'new_pswd', 'new_pswd_confirm'}

@@ -23,7 +23,7 @@ class CommentsController extends Controller {
             $data = json_decode($_POST['data'], true);
             $json['comment'] = filter_var($data['comment'], FILTER_SANITIZE_STRING);
             if (strlen($json['comment']) > 255) {
-                $json['message'] = 'Comment should be less than 255 symbols';
+                $json['message'] = 'Comment is too long';
             } else if ($this->imageModel->getImagesOwnerId($data['image_id'])) {
                 $json['success'] = $this->commentModel->addComment(
                     $user['id'],

@@ -59,9 +59,11 @@ const fillModalImage = function (imageId) {
             document.getElementById('modal_image_tags').innerHTML = '';
             document.getElementById('modal_follow_button').setAttribute('data-user-id', result['user_id']);
             if (result['login'] == result['logged_in_user']) {
-                document.getElementById('modal_follow_button').classList.add('d-none');
                 document.getElementById('modal_delete_button').classList.remove('d-none');
-                document.getElementById('modal_delete_button').setAttribute('data-image-id', imageId);
+                document.getElementById('modal_change_picture').classList.remove('d-none');
+                document.getElementById('modal_delete_button').dataset.imageId = imageId;
+                document.getElementById('modal_change_picture').setAttribute('data-user-id', result['user_id']);
+                document.getElementById('modal_change_picture').setAttribute('data-image-path', result['image_path']);
             } else {
                 if (result['user_follow'] == 0) {
                     document.getElementById('modal_follow_button').classList.add('btn-success');

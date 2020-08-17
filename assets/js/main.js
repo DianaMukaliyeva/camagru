@@ -237,7 +237,7 @@ const saveChanges = function (form) {
 
 // show toast message
 const showMessage = function (message, alert = false) {
-    console.log('toast');
+    // console.log('toast');
     let toast = document.getElementById('message');
     let messages = message.split("\n");
     console.log(messages);
@@ -257,9 +257,33 @@ const showMessage = function (message, alert = false) {
     });
 }
 
-
 // close toast message
 const closeMessage = function (button) {
     button.parentElement.classList.remove('show');
     button.parentElement.classList.add('d-none');
+}
+
+// change profile image
+const changeProfilePicture = function (button) {
+    // console.log(button);
+    let data = {
+        'user_id': button.dataset.userId,
+        'image_path': button.dataset.imagePath
+    }
+    // console.log(data);
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            if (result['message']) {
+                showMessage(result['message'], 'alert');
+            } else {
+                showMessage('You successfully updated profile photo');
+            }
+        }
+    };
+    xhr.open('POST', urlpath + '/account/updatePicture/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('data=' + JSON.stringify(data));
 }

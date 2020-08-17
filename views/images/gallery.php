@@ -33,7 +33,7 @@
                 <form method="post" onsubmit="addComment(this)" data-image-id="<?= $image['id'] ?>">
                     <div class="form-row mx-auto">
                         <div class="col-8">
-                            <input type="text" class="form-control" placeholder="Comment..." required>
+                            <input type="text" class="form-control" placeholder="Comment..." required maxlength="150">
                         </div>
                         <div class="col-3">
                             <button type="submit" class="btn btn-success mb-2">Send</button>

@@ -3,8 +3,8 @@
 <!-- sorting buttons -->
 <div class="mt-3 input-group justify-content-center">
     <div id="radioBtn" class="btn-group">
-        <button class="sort_images focus-btn btn btn-light active" onclick="sortImages(this.dataset.title)" data-title="newest">Newest</button>
-        <button class="sort_images focus-btn btn btn-light" onclick="sortImages(this.dataset.title)" data-title="popular">Popular</button>
+        <button class="sort_images shadow-none btn btn-light active" onclick="sortImages(this.dataset.title)" data-title="newest">Newest</button>
+        <button class="sort_images shadow-none btn btn-light" onclick="sortImages(this.dataset.title)" data-title="popular">Popular</button>
     </div>
     <input type="hidden" name="sort_image" id="sort_image">
 </div>
@@ -25,7 +25,7 @@
                         </a>
                     </div>
                     <p class="my-auto mx-3">
-                        <button id="modal_follow_button" class="focus-btn btn btn-sm" data-dismiss="modal" onclick="follow(this)" data-user-id="0">Follow</button>
+                        <button id="modal_follow_button" class="shadow-none btn btn-sm" data-dismiss="modal" onclick="follow(this)" data-user-id="0">Follow</button>
                     </p>
                 </div>
                 <button class="close m-0" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
@@ -47,9 +47,12 @@
                         <div class="row">
                             <div class="card-body p-0 py-1">
                                 <button data-image-id="0" id="modal_like_button" onclick="like(this)" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg"></i><span> 5</span></button>
-                                <button type="submit" data-image-id="0" onclick="deleteImage(this)" id="modal_delete_button" class="btn py-0 shadow-none float-right d-none"><i class="fas fa-trash-alt fa-lg"></i></button>
+                                <button data-image-id="0" onclick="deleteImage(this)" id="modal_delete_button" class="btn py-0 shadow-none float-right d-none"><i class="fas fa-trash-alt fa-lg"></i></button>
                                 <div class="float-right" id="modal_image_date">created at</div>
                             </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button data-image-path="0" data-user-id="0" onclick="changeProfilePicture(this)" id="modal_change_picture" class="btn btn-outline-success py-0 shadow-none float-right d-none">Set as a profile photo</button>
                         </div>
                     </div>
                     <!-- comments -->
@@ -62,7 +65,7 @@
                             <form method="post" onsubmit="addComment(this)" id="modal_comment_form" data-image-id="0">
                                 <div class="form-row mx-auto">
                                     <div class="col-8">
-                                        <input type="text" class="form-control" placeholder="Comment..." required>
+                                        <input type="text" class="form-control" placeholder="Comment..." required  maxlength="150">
                                     </div>
                                     <div class="col-3">
                                         <button type="submit" class="btn btn-success mb-2">Send</button>

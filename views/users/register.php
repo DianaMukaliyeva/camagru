@@ -10,17 +10,17 @@
         <form action="<?= URLROOT ?>/users/register" method="post">
             <div class="form-group">
                 <label for="first_name">First name: </label>
-                <input type="text" name="first_name" class="form-control form-control-lg <?= isset($data['first_name_err']) ? 'is-invalid' : '' ?>" value="<?= isset($data['first_name']) ? $data['first_name'] : '' ?>">
+                <input type="text" name="first_name" class="form-control form-control-lg <?= isset($data['first_name_err']) ? 'is-invalid' : '' ?>" value="<?= isset($data['first_name']) ? $data['first_name'] : '' ?>" maxlength="25">
                 <span class="invalid-feedback"><?= isset($data['first_name_err']) ? $data['first_name_err'] : '' ?></span>
             </div>
             <div class="form-group">
                 <label for="last_name">Last name: </label>
-                <input type="text" name="last_name" class="form-control form-control-lg <?= isset($data['last_name_err']) ? 'is-invalid' : '' ?>" value="<?= isset($data['last_name']) ? $data['last_name'] : '' ?>">
+                <input type="text" name="last_name" class="form-control form-control-lg <?= isset($data['last_name_err']) ? 'is-invalid' : '' ?>" value="<?= isset($data['last_name']) ? $data['last_name'] : '' ?>" maxlength="35">
                 <span class="invalid-feedback"><?= isset($data['last_name_err']) ? $data['last_name_err'] : '' ?></span>
             </div>
             <div class="form-group">
                 <label for="login">Login: </label>
-                <input type="text" name="login" class="form-control form-control-lg <?= isset($data['login_err']) ? 'is-invalid' : '' ?>" value="<?= isset($data['login']) ? $data['login'] : '' ?>">
+                <input type="text" name="login" class="form-control form-control-lg <?= isset($data['login_err']) ? 'is-invalid' : '' ?>" value="<?= isset($data['login']) ? $data['login'] : '' ?>" maxlength="15">
                 <span class="invalid-feedback"><?= isset($data['login_err']) ? $data['login_err'] : '' ?></span>
             </div>
             <div class="form-group">
@@ -30,12 +30,12 @@
             </div>
             <div class="form-group">
                 <label for="password">Password: </label>
-                <input type="password" name="password" class="form-control form-control-lg <?= isset($data['password_err']) ? 'is-invalid' : '' ?>">
+                <input type="password" name="password" class="form-control form-control-lg <?= isset($data['password_err']) ? 'is-invalid' : '' ?>" maxlength="25">
                 <span class="invalid-feedback"><?= isset($data['password_err']) ? $data['password_err'] : '' ?></span>
             </div>
             <div class="form-group">
                 <label for="password">Confirm password: <sup>*</sup></label>
-                <input type="password" name="confirm_password" class="form-control form-control-lg <?= isset($data['confirm_password_err']) ? 'is-invalid' : '' ?>">
+                <input type="password" name="confirm_password" class="form-control form-control-lg <?= isset($data['confirm_password_err']) ? 'is-invalid' : '' ?>" maxlength="25">
                 <span class="invalid-feedback"><?= isset($data['confirm_password_err']) ? $data['confirm_password_err'] : '' ?></span>
             </div>
             <div class="row">

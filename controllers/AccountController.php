@@ -117,6 +117,29 @@ class AccountController extends Controller {
         echo json_encode($json);
     }
 
+    public function updatePicture() {
+        // Only works only for ajax requests
+        $this->onlyAjaxRequests();
+        $user = $this->getLoggedInUser();
+        $json = [];
+        if (!$user) {
+            $json['message'] = 'You should be logged in';
+        } else {
+            $postData = json_decode($_POST['data'], true);
+            $newPicturePath = 'assets/img/user_' . $user['id'] . '/profile.png';
+            if ($postData['user_id'] != $user['id']) {
+                $json['message'] = 'You can not update another user\s information';
+            } else if (!file_exists(APPROOT . '/' . $postData['image_path'])){
+                $json['message'] = 'Image does not exists';
+            } else if(!copy(APPROOT . '/' . $postData['image_path'], APPROOT . '/' . $newPicturePath)) {
+                $json['message'] = 'failed to copy image';
+            } else {
+                $this->userModel->updatePicture($postData['user_id'], $newPicturePath);
+            }
+        }
+        echo json_encode($json);
+    }
+
     public function profile(...$param) {
         $loggedUser = $this->getLoggedInUser();
         $id = empty($param) ? false : $param[0];

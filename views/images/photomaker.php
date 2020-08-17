@@ -27,7 +27,7 @@
             <!-- tags -->
             <div class="row py-3">
                 <div class="col-md-4 text-center"><label>Tags to image:</label></div>
-                <div class="col-md-8"><input class="w-100" id="tags" placeholder="Separated by space"></div>
+                <div class="col-md-8"><input class="w-100" id="tags" placeholder="Separated by space"  maxlength="50"></div>
             </div>
             <!-- buttons -->
             <div class="row py-3">
