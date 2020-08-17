@@ -71,7 +71,7 @@ const getUsersImages = function (userId) {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             images = JSON.parse(this.responseText);
-            // console.log(images)
+            // console.log(images);
             imgContainer.innerHTML = '';
             loadMoreButton.setAttribute('data-page', 0);
             hideLoadMore();

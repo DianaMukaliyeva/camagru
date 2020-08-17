@@ -31,9 +31,10 @@ const addPaginationPage = function (page) {
 // Add given images into container
 const appendToDiv = function (div, new_html, page) {
     const page_number = document.createElement('div');
-    const temp = document.createElement('div');
     page_number.id = getPageId(page);
     page_number.classList.add('article-list__page', 'row', 'row-cols-1', 'row-cols-md-3', 'pt-5');
+
+    const temp = document.createElement('div');
     temp.innerHTML = new_html;
 
     const class_name = temp.firstElementChild.className;
@@ -47,7 +48,7 @@ const appendToDiv = function (div, new_html, page) {
 }
 
 // Send request to server to get list of images sorted by sorting parameter
-const sortImages = function (sorting) {
+const getSortedImages = function (sorting) {
     document.querySelectorAll(".sort_images").forEach(function (item) {
         item.classList.remove('active');
         if (item.dataset.title == sorting) {
@@ -71,7 +72,7 @@ const sortImages = function (sorting) {
             }
         }
     }
-    xmlhttp.open("GET", urlpath + "/images/gallery/" + sorting, true);
+    xmlhttp.open("GET", urlpath + "/images/getImages/" + sorting, true);
     xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xmlhttp.send();
 };
@@ -106,7 +107,7 @@ const loadMore = function () {
                     hideLoadMore();
             }
         };
-        xhr.open('POST', urlpath + '/images/download', true);
+        xhr.open('POST', urlpath + '/images/gallery', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send('images=' + JSON.stringify(images.slice(page * imagesOnPage, next_page * imagesOnPage)));
@@ -124,14 +125,14 @@ const scrollReaction = function () {
         loadMore();
     }
     pagination.classList.add('fixed');
-    if (current_y >= content_height &&
-        images.length <= imagesOnPage * parseInt(loadMoreButton.getAttribute('data-page'))) {
-        pagination.classList.remove('fixed');
-    }
+    // if (current_y >= content_height &&
+    //     images.length <= imagesOnPage * parseInt(loadMoreButton.getAttribute('data-page'))) {
+    //     pagination.classList.remove('fixed');
+    // }
 }
 
 window.addEventListener('DOMContentLoaded', function (event) {
-    sortImages('newest');
+    getSortedImages('newest');
 
     loadMoreButton.addEventListener('click', loadMore);
     hideLoadMore();
@@ -142,9 +143,9 @@ let timeout;
 
 window.onscroll = function () {
     clearTimeout(timeout);
-    timeout = setTimeout(function () {
+    // timeout = setTimeout(function () {
         scrollReaction();
-    }, 50);
+    // }, 50);
 }
 
 let windowHeight = window.innerHeight + window.pageYOffset;
@@ -157,5 +158,5 @@ if (windowHeight < 1200) {
 } else if (windowHeight < 2500) {
     imagesOnPage = 12;
 } else {
-    imagesOnPage = 20;
+    imagesOnPage = 24;
 }

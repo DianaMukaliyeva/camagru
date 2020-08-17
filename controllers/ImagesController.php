@@ -13,7 +13,7 @@ class ImagesController extends Controller {
     }
 
     // Main page of app show our gallery
-    public function gallery(...$param) {
+    public function getImages(...$param) {
         $sort = !empty($param) ? $param[0] : '';
         $user = $this->getLoggedInUser();
         $userId = $user ? $user['id'] : 0;
@@ -39,7 +39,7 @@ class ImagesController extends Controller {
     }
 
     // Render given images
-    public function download(...$param) {
+    public function gallery(...$param) {
         // Only works for ajax requests
         $this->onlyAjaxRequests();
         $user = $this->getLoggedInUser();
@@ -47,7 +47,7 @@ class ImagesController extends Controller {
         $images = json_decode($_POST['images'], true);
         foreach ($images as $key => $image) {
             $images[$key]['tags'] = $this->imageModel->getTagsbyImageId($image['id']);
-            $images[$key]['comments'] = $this->commentModel->getComments($image['id']);
+            // $images[$key]['comments'] = $this->commentModel->getComments($image['id']);
         }
 
         $this->renderView('images/gallery', ['images' => $images]);
@@ -77,10 +77,11 @@ class ImagesController extends Controller {
 
         if (!$user) {
             $json['message'] = 'You should be logged in';
-        } else if (!$imageId || !$this->imageModel->getImagesOwnerId($imageId)) {
+        } else if (!$imageId || !$image = $this->imageModel->isImageExists($imageId)) {
             $json['message'] = 'Image does not exists';
         } else if ($this->imageModel->deleteImage($imageId)) {
             $json['message'] = 'success';
+            unlink(APPROOT . '/' . $image['image_path']);
         } else {
             $json['message'] = 'Something went wrong with database';
         }

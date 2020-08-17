@@ -66,8 +66,8 @@ class Image {
     }
 
     // Check if image exists
-    public function getImagesOwnerId($imageId) {
-        $result = Db::queryOne('SELECT `user_id` FROM `images` WHERE id = ?', [$imageId]);
+    public function isImageExists($imageId) {
+        $result = Db::queryOne('SELECT `user_id`, `image_path` FROM `images` WHERE id = ?', [$imageId]);
 
         return $result;
     }

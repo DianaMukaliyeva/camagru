@@ -17,7 +17,7 @@ class LikesController extends Controller {
         $user = $this->getLoggedInUser();
         if (!$user) {
             $json['message'] = 'You should be logged in to like a photo';
-        } else if ($imageId && $this->imageModel->getImagesOwnerId($imageId)) {
+        } else if ($imageId && $this->imageModel->isImageExists($imageId)) {
             if ($this->likeModel->isImageLiked($user['id'], $imageId)) {
                 $json['message'] = $this->likeModel->unlikeImage(
                     $user['id'],

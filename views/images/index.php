@@ -3,8 +3,8 @@
 <!-- sorting buttons -->
 <div class="mt-3 input-group justify-content-center">
     <div id="radioBtn" class="btn-group">
-        <button class="sort_images shadow-none btn btn-light active" onclick="sortImages(this.dataset.title)" data-title="newest">Newest</button>
-        <button class="sort_images shadow-none btn btn-light" onclick="sortImages(this.dataset.title)" data-title="popular">Popular</button>
+        <button class="sort_images shadow-none btn btn-light active" onclick="getSortedImages(this.dataset.title)" data-title="newest">Newest</button>
+        <button class="sort_images shadow-none btn btn-light" onclick="getSortedImages(this.dataset.title)" data-title="popular">Popular</button>
     </div>
     <input type="hidden" name="sort_image" id="sort_image">
 </div>

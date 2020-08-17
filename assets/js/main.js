@@ -97,7 +97,7 @@ const deleteComment = function (data) {
 const deleteImage = function (button) {
     imageId = button.dataset.imageId;
     let confirmation = confirm('Are you sure you want to delete this photo?');
-    console.log(confirmation);
+    // console.log(confirmation);
     if (!confirmation) {
         return;
     }

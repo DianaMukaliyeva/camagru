@@ -3,6 +3,7 @@
     <?php foreach ($data['images'] as $image) : ?>
         <div class="col px-md-1 px-lg-3 mb-4">
             <div class="card h-100 bg-light image-card">
+                <!-- it is from gallery-->
                 <!-- image's owner -->
                 <div class="media mt-3">
                     <img class="rounded-circle media-img mx-3" src="<?= URLROOT . '/' . $image['picture'] ?>" alt="profile image">
@@ -24,11 +25,12 @@
                     </div>
                 </div>
                 <!-- likes and comments -->
-                <div class="card-body px-sm-4 px-2 py-0">
+                <div class="card-body px-sm-4 px-2 py-0 pb-1">
                     <button data-image-id="<?= $image['id'] ?>" onclick="like(this)" id="like_button_<?= $image['id'] ?>" class="btn py-0 shadow-none"><i class="fas fa-heart icon-7x fa-lg <?= $image['user_liked'] ? 'user_act' : '' ?>"></i><span> <?= $image['likes_amount'] ?></span></button>
                     <button class="btn py-0 shadow-none" id="comments_<?= $image['id'] ?>" onclick="openModal(<?= $image['id'] ?>)"><i class="fas fa-comment icon-7x fa-lg <?= $image['user_commented'] ? 'user_act' : '' ?>"></i><span> <?= $image['comments_amount'] ?></span></button>
                     <div class="float-right"><?= $image['created_at'] ?></div>
                 </div>
+                <!-- if it is gallery -->
                 <!-- send comment form -->
                 <form method="post" onsubmit="addComment(this)" data-image-id="<?= $image['id'] ?>">
                     <div class="form-row mx-auto">

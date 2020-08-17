@@ -1,7 +1,7 @@
 <!-- check if we have images -->
 <?php if (isset($data['images'])) : ?>
     <?php foreach ($data['images'] as $image) : ?>
-        <div class="col mb-4">
+        <div class="col px-md-1 px-lg-3 mb-4">
             <div class="card h-100 bg-light image-card">
                 <!-- image with tags -->
                 <div class="m-1">

@@ -3,7 +3,7 @@ class Router {
     // Current controller
     protected $controller = 'ImagesController';
     // Current method of controller
-    protected $method = 'gallery';
+    protected $method = 'getImages';
     // Parameters
     protected $params = [];
 
@@ -49,7 +49,7 @@ class Router {
             // Call a callback with array of params
             call_user_func_array([$this->controller, $this->method], $this->params);
         } else {
-            $this->controller->redirect('images/gallery');
+            $this->controller->redirect('images/getImages');
         }
     }
 }

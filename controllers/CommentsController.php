@@ -24,7 +24,7 @@ class CommentsController extends Controller {
             $json['comment'] = filter_var($data['comment'], FILTER_SANITIZE_STRING);
             if (strlen($json['comment']) > 255) {
                 $json['message'] = 'Comment is too long';
-            } else if ($this->imageModel->getImagesOwnerId($data['image_id'])) {
+            } else if ($this->imageModel->isImageExists($data['image_id'])) {
                 $json['success'] = $this->commentModel->addComment(
                     $user['id'],
                     $data['image_id'],
@@ -55,7 +55,7 @@ class CommentsController extends Controller {
 
         if ($user && isset($_POST['data'])) {
             $data = json_decode($_POST['data'], true);
-            if ($image = $this->imageModel->getImagesOwnerId($data['image_id'])) {
+            if ($image = $this->imageModel->isImageExists($data['image_id'])) {
                 $imageOwner = $this->userModel->findUser(['id' => $image['user_id']]);
                 if ($imageOwner['notify'] && $imageOwner['login'] != $user['login']) {
                     $message = "<p>" . $user['login'] . " recently commented your photo:</p>";
