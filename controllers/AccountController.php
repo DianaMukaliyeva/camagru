@@ -59,44 +59,33 @@ class AccountController extends Controller {
                 'last_name' => trim(filter_var($postData['last_name'], FILTER_SANITIZE_STRING)),
                 'login' => trim(filter_var($postData['login'], FILTER_SANITIZE_STRING)),
                 'email' => filter_var($postData['email'], FILTER_SANITIZE_EMAIL),
+                'new_pswd' => $postData['new_pswd'],
+                'new_pswd_confirm' => $postData['new_pswd_confirm'],
                 'password' => $postData['old_pswd'],
                 'notify' => $postData['notify'] ? 1 : 0
             ];
+
             if ($userData['id'] != $user['id']) {
                 $json['message'] = 'You can not change another user\'s information';
             } else if (!$userFound = $this->userModel->findUser(['id' => $userData['id']])) {
                 $json['message'] = 'User does not exists';
-            } else if ($userFound['password'] != hash('whirlpool', $postData['old_pswd'])) {
-                $json['message'] = 'Password incorrect';
             } else {
-                if ($userData['login'] != $user['login'] && $this->userModel->getEmailByLogin($userData['login'])) {
-                    $json['message'] .= "This login has already been taken\n";
-                }
-                if ($userData['email'] != $user['email'] && $this->userModel->findUser(['email' => $userData['email']])) {
-                    $json['message'] = "This email has already been taken\n";
-                }
-                $errors = [];
-                $errors = $this->userModel->validateInput($userData, $errors);
-                if (!empty($postData['new_pswd'])) {
-                    $errors = $this->userModel->validatePassword($postData['new_pswd'], $postData['new_pswd_confirm'], $errors);
-                }
+                $errors = $this->userModel->validateUsersData($userData, true, $userFound);
+
                 if (!$errors) {
-                    if (!empty($postData['new_pswd'])) {
-                        $this->userModel->updatePassword($userFound['email'], true, $postData['new_pswd'], $postData['new_pswd_confirm']);
-                    }
                     $this->userModel->updateInfo($userData);
+                    // Update information of logged user
                     $_SESSION[APPNAME]['user']['login'] = $userData['login'];
                     $_SESSION[APPNAME]['user']['first_name'] = $userData['first_name'];
                     $_SESSION[APPNAME]['user']['last_name'] = $userData['last_name'];
                     $_SESSION[APPNAME]['user']['email'] = $userData['email'];
                     $_SESSION[APPNAME]['user']['notify'] = $userData['notify'];
                 } else {
-                    foreach ($errors as $error) {
-                        $json['message'] .= $error . "\n";
-                    }
+                    $json['errors'] = $errors;
                 }
             }
         }
+
         echo json_encode($json);
     }
 

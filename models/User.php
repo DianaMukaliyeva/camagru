@@ -35,7 +35,7 @@ class User {
 
     // Create user
     public function register($data) {
-        $errors = $this->validateRegisterData($data);
+        $errors = $this->validateUsersData($data);
 
         if (!$errors) {
             $dataToInsert = [
@@ -166,47 +166,12 @@ class User {
                 $data['id']
             ]
         );
+
+        if (!empty($data['new_pswd'])) {
+            $this->updatePassword($data['email'], true, $data['new_pswd'], $data['new_pswd_confirm']);
+        }
+
         return $result;
-    }
-
-    public function validateInput($data, $errors = []) {
-        // Validate Email
-        if (!$data['email'] || empty($data['email'])) {
-            $errors['email_err'] = 'Please enter email';
-        } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email_err'] = 'Invalid mail';
-        }
-
-        // Validate First Name
-        if (!$data['first_name'] || empty($data['first_name'])) {
-            $errors['first_name_err'] = 'Please enter first name';
-        } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['first_name'])) {
-            $errors['first_name_err'] =
-                "Name must start with letter and include letters and numbers only";
-        } else if (strlen($data['first_name']) > 45) {
-            $errors['first_name_err'] =  "Name must be less than 45 characters";
-        }
-
-        // Validate Last Name
-        if (!$data['last_name'] || empty($data['last_name'])) {
-            $errors['last_name_err'] = 'Please enter last name';
-        } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['last_name'])) {
-            $errors['last_name_err'] =
-                "Last name must start with letter and include letters and numbers only";
-        } else if (strlen($data['last_name']) > 45) {
-            $errors['last_name_err'] =  "Last name must be less than 45 characters";
-        }
-
-        // Validate login
-        if (!$data['login'] || empty($data['login'])) {
-            $errors['login_err'] = 'Please enter login';
-        } else if (!preg_match('/^[A-Za-z0-9]{0,}$/', $data['login'])) {
-            $errors['login_err'] =  "Login must include letters and numbers only";
-        } else if (strlen($data['login']) > 25) {
-            $errors['login_err'] =  "Login must be less than 25 characters";
-        }
-
-        return $errors;
     }
 
     // Check email
@@ -242,14 +207,14 @@ class User {
     }
 
     // Check all given information
-    private function validateRegisterData($data, $validPsw = true) {
+    public function validateUsersData($data, $update = false, $loggedUser = []) {
         $errors = [];
         // Validate Email
         if (!$data['email'] || empty($data['email'])) {
             $errors['email_err'] = 'Please enter email';
         } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email_err'] = 'Invalid mail';
-        } else if ($this->findUser(['email' => $data['email']])) {
+        } else if (!$update && $this->findUser(['email' => $data['email']])) {
             $errors['email_err'] = 'Email has been already taken';
         }
 
@@ -280,15 +245,26 @@ class User {
             $errors['login_err'] =  "Login must include letters and numbers only";
         } else if (strlen($data['login']) > 25) {
             $errors['login_err'] =  "Login must be less than 25 characters";
-        } else if ($this->getEmailByLogin($data['login'])) {
+        } else if (!$update && $this->getEmailByLogin($data['login'])) {
             $errors['login_err'] = 'This login has already been taken';
         }
 
-        $errors = $this->validatePassword(
-            $data['password'],
-            $data['confirm_password'],
-            $errors
-        );
+        if (!$update) {
+            $errors = $this->validatePassword($data['password'], $data['confirm_password'], $errors);
+        } else {
+            if ($loggedUser['password'] != hash('whirlpool', $data['password'])) {
+                $errors['pass_err'] = 'Password incorrect';
+            }
+            if ($data['login'] != $loggedUser['login'] && $this->getEmailByLogin($data['login'])) {
+                $errors['login_err'] = "This login has already been taken\n";
+            }
+            if ($data['email'] != $loggedUser['email'] && $this->findUser(['email' => $data['email']])) {
+                $errors['email_err'] = "This email has already been taken\n";
+            }
+            if (!empty($data['new_pswd']) || !empty($data['new_pswd_confirm'])) {
+                $errors = $this->validatePassword($data['new_pswd'], $data['new_pswd_confirm'], $errors);
+            }
+        }
 
         return $errors;
     }

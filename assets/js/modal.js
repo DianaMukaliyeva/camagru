@@ -2,7 +2,6 @@
 const showMessage = function (message, alert = false) {
     let toast = document.getElementById('message');
     let messages = message.split("\n");
-    // console.log(messages);
     if (alert) {
         toast.className = "alert";
         setTimeout(function () { toast.className = toast.className.replace("alert", ""); }, 4000);
@@ -26,15 +25,12 @@ const closeMessage = function (button) {
 
 // fill modal profile settings
 const fillModalProfile = function () {
-    // console.log(userId);
+    emptySettingErrors(document.getElementById('editForm'));
+
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', urlpath + '/account/userInfo/', true);
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
-            // console.log(result);
             if (result['message']) {
                 showMessage(result['message'], true);
                 return;
@@ -51,6 +47,8 @@ const fillModalProfile = function () {
             form.new_pswd_confirm.value = '';
         }
     };
+    xhr.open('GET', urlpath + '/account/userInfo/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.send();
 }
 
@@ -63,7 +61,6 @@ const fillModalImage = function (imageId) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
-            // console.log(result);
             if (result['message']) {
                 showMessage(result['message'], true);
                 return;
