@@ -19,22 +19,20 @@ const addComment = function (form) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
-            if (result['success']) {
-                document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments'].length;
-                document.getElementById('comments_' + data['image_id']).classList.add('user_act');
-                // console.log('form = ' + form.id);
-                if (form.id && form.id == 'modal_comment_form') {
-                    // console.log('this is from modal');
-                    fillComments(result['comments'], result['logged_user_id']);
-                }
-                form.getElementsByTagName('input')[0].value = '';
-                sendEmailAboutComment(form, data);
-            } else {
+            if (result['message']) {
                 showMessage(result['message'], 'alert');
-                form.getElementsByTagName('input')[0].value = '';
-                // alert(result['message']);
+                return;
             }
-            // console.log('comment inserted');
+            form.getElementsByTagName('input')[0].value = '';
+            document.getElementById('comments_' + data['image_id']).childNodes[1].innerHTML = ' ' + result['comments'].length;
+            document.getElementById('comments_' + data['image_id']).classList.add('user_act');
+            // console.log('form = ' + form.id);
+            if (form.id && form.id == 'modal_comment_form') {
+                // console.log('this is from modal');
+                fillComments(result['comments'], result['logged_user_id']);
+            }
+            form.getElementsByTagName('input')[0].value = '';
+            sendEmailAboutComment(form, data);
         }
     };
     xhr.open('POST', urlpath + '/comments/addComment', true);
@@ -75,16 +73,15 @@ const deleteComment = function (data) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
-            if (result['message'] == 'success') {
-                document.getElementById('comments_' + ids[1]).childNodes[1].innerHTML = ' ' + result['comments'].length;
-                if (!result['user_commented']) {
-                    document.getElementById('comments_' + ids[1]).classList.remove('user_act');
-                }
-                fillComments(result['comments'], result['logged_user_id']);
-            } else {
+            if (result['message']) {
                 showMessage(result['message'], 'alert');
-                // alert(result['message']);
+                return;
             }
+            document.getElementById('comments_' + ids[1]).childNodes[1].innerHTML = ' ' + result['comments'].length;
+            if (!result['user_commented']) {
+                document.getElementById('comments_' + ids[1]).classList.remove('user_act');
+            }
+            fillComments(result['comments'], result['logged_user_id']);
         }
     };
     xhr.open('DELETE', urlpath + '/comments/delete/' + data, true);
@@ -173,10 +170,19 @@ const like = function (button) {
                 // alert(result['message']);
                 return;
             }
+            if (result['success'] == 'liked') {
+                button.childNodes[0].classList.add('user_act');
+            } else {
+                button.childNodes[0].classList.remove('user_act');
+            }
             button.childNodes[0].classList.toggle('user_act');
             button.childNodes[1].innerHTML = ' ' + result['likes_amount'];
             if (button.id == 'modal_like_button') {
-                document.getElementById('like_button_' + imageId).childNodes[0].classList.toggle('user_act');
+                if (result['success'] == 'liked') {
+                    button.childNodes[0].classList.add('user_act');
+                } else {
+                    button.childNodes[0].classList.remove('user_act');
+                }
                 document.getElementById('like_button_' + imageId).childNodes[1].innerHTML = ' ' + result['likes_amount'];
             }
         }
@@ -246,6 +252,12 @@ const changeProfilePicture = function (button) {
             if (result['message']) {
                 showMessage(result['message'], 'alert');
             } else {
+                // change all visible profile picture on the page
+                const profilePhoto = document.getElementsByName('picture_' + data['user_id']);
+                // console.log(profilePhoto);
+                profilePhoto.forEach(element => {
+                    element.src = urlpath + '/' + result['path'];
+                });
                 showMessage('You successfully updated profile photo');
             }
         }

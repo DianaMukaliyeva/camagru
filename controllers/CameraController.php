@@ -12,6 +12,7 @@ class CameraController extends Controller {
     public function takePhoto(...$param) {
         // Check if user is logged in
         $this->checkUserSession();
+
         $filters = $this->filterModel->getFilters();
         $this->renderView('images/photomaker', $filters);
     }
@@ -95,13 +96,13 @@ class CameraController extends Controller {
             $json['photo'] = 'data:image/png;base64,' . base64_encode(ob_get_contents());
             ob_end_clean();
             imagedestroy($dest);
-            // delete all # characters before
+            // delete all # characters before tags
             $data['tags'] = str_replace('#', '', $data['tags']);
             $data['tags'] = filter_var($data['tags'], FILTER_SANITIZE_STRING);
             $json['tags'] = array_filter(explode(' ', $data['tags']));
             foreach ($json['tags'] as $tag) {
                 if (strlen($tag) > 45) {
-                    $json['message'] = 'Tags should be less than 45 characters';
+                    $json['message'] = 'One tag should be less than 15 characters';
                 }
             }
         } else {

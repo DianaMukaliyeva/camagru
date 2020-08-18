@@ -82,7 +82,7 @@ const getUsersImages = function (userId) {
             }
         }
     }
-    xmlhttp.open("GET", urlpath + "/images/userGallery/" + userId, true);
+    xmlhttp.open("GET", urlpath + "/images/getImages/" + userId, true);
     xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xmlhttp.send();
 }
@@ -133,10 +133,10 @@ const loadMore = function () {
                     hideLoadMore();
             }
         };
-        xhr.open('POST', urlpath + '/images/loadUsersImage', true);
+        xhr.open('POST', urlpath + '/images/gallery', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send('images=' + JSON.stringify(images.slice(page * imagesOnPage, next_page * imagesOnPage)));
+        xhr.send('images=' + JSON.stringify(images.slice(page * imagesOnPage, next_page * imagesOnPage)) + '&profile=true');
     }
     request_in_progress = false;
 }

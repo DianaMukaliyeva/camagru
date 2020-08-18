@@ -6,7 +6,7 @@
         <div class="row pb-3">
             <!-- profile image -->
             <div class="col-4">
-                <img src="<?= URLROOT . '/' . $data['picture'] ?>" class="account-img float-right" alt="Profile photo">
+                <img src="<?= URLROOT . '/' . $data['picture'] ?>" name="picture_<?= $data['id'] ?>" class="account-img float-right" alt="Profile photo">
             </div>
             <!-- profile info -->
             <div class="col-8">

@@ -1,6 +1,5 @@
 // show toast message
 const showMessage = function (message, alert = false) {
-    // console.log('toast');
     let toast = document.getElementById('message');
     let messages = message.split("\n");
     // console.log(messages);
@@ -11,7 +10,6 @@ const showMessage = function (message, alert = false) {
         toast.className = "show";
         setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000);
     }
-    // console.log(toast.children);
     toast.children[1].innerHTML = '';
     messages.forEach(element => {
         if (element != '') {
@@ -39,7 +37,6 @@ const fillModalProfile = function () {
             // console.log(result);
             if (result['message']) {
                 showMessage(result['message'], true);
-                // alert(result['message']);
                 return;
             }
             let form = document.getElementById('editForm');
@@ -69,12 +66,12 @@ const fillModalImage = function (imageId) {
             // console.log(result);
             if (result['message']) {
                 showMessage(result['message'], true);
-                // alert(result['message']);
                 return;
             }
             document.getElementById('modal_image').src = urlpath + '/' + result['image_path'];
             fillComments(result['comments'], result['logged_user_id']);
             document.getElementById('modal_profile_photo').src = urlpath + '/' + result['picture'];
+            document.getElementById('modal_profile_photo').name = 'picture_' + result['user_id'];
             if (result['user_liked'] != 0) {
                 document.getElementById('modal_like_button').childNodes[0].classList.add('user_act');
             } else {
@@ -125,7 +122,6 @@ const fillComments = function (comments, loggedUserId) {
     comments.forEach(comment => {
         const comment_div = document.createElement('div');
         const p = document.createElement('p');
-        // console.log(comment);
         p.innerHTML = `<a href="${urlpath}/account/profile/${comment['user_id']}">${comment['login']}</a> (${comment['created_at']}) :
             <a role="button" onclick="deleteComment(this.dataset.dataId)" data-data-id="${comment['id']}?${comment['image_id']}?${comment['user_id']}'">
             <i class='fas fa-times-circle'></i></a>

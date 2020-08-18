@@ -47,7 +47,7 @@ const startStream = function () {
                 video.play();
             })
             .catch(function (error) {
-                console.log("Something went wrong!" + error);
+                console.log("Something went wrong with video!" + error);
             });
     }
     video.addEventListener('canplay', function (ev) {
@@ -79,6 +79,7 @@ const toggleStream = function (confirmStart = true) {
         video.srcObject = null;
         videoStreamButton.innerHTML = "Start video";
         takePhotoButton.disabled = true;
+        streaming = false;
     } else if (video.srcObject === null && confirmStart) {
         // Check if we have uploaded image, delete it if have
         if (imageUploaded) {
@@ -94,10 +95,15 @@ const toggleStream = function (confirmStart = true) {
 const takePhoto = function () {
     let data = {};
     const canvas = document.createElement("canvas");
-    const imageToSend = imageUploaded ? document.getElementById('uploaded_photo') : video;
+    const imageToSend = !streaming ? document.getElementById('uploaded_photo') : video;
     canvas.width = width;
     canvas.height = height;
-    canvas.getContext('2d').drawImage(imageToSend, 0, 0, width, height);
+    try {
+        canvas.getContext('2d').drawImage(imageToSend, 0, 0, width, height);
+    } catch {
+        showMessage('Please, start video or upload an image', true);
+        return;
+    }
     data.img_data = canvas.toDataURL('image/png');
     data.width = width;
     data.height = height;
@@ -111,7 +117,6 @@ const takePhoto = function () {
         if (this.readyState == 4 && this.status == 200) {
             let result = JSON.parse(xmlhttp.responseText);
             if (result['message']) {
-                // alert(result['message']);
                 showMessage(result['message'], 'alert');
                 if (result['message'] == 'You should be logged in') {
                     window.location.replace(urlpath);

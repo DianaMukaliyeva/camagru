@@ -16,11 +16,11 @@ class UsersController extends Controller {
         $data = [];
 
         if ($this->getLoggedInUser()) {
-            $data = $this->addMessage(false, 'You need logout first!');
-        } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->logout('users/login');
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $email = trim($_POST['email']);
             $password = hash('whirlpool', $_POST['password']);
-
             $response = $this->model->login($email, $password);
 
             if ($response['errors']) {
@@ -49,6 +49,7 @@ class UsersController extends Controller {
 
             $response = $this->model->register($data);
             unset($data['password'], $data['confirm_password']);
+
             if ($response['errors']) {
                 $data = array_merge($data, $response['errors']);
             } else {

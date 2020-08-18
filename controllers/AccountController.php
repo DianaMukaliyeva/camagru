@@ -1,15 +1,9 @@
 <?php
 class AccountController extends Controller {
     private $userModel;
-    private $imageModel;
-    private $likeModel;
-    private $commentModel;
 
     public function __construct() {
         $this->userModel = $this->getModel('User');
-        $this->userModel = $this->getModel('User');
-        $this->likeModel = $this->getModel('Like');
-        $this->commentModel = $this->getModel('Comment');
     }
 
     // Check validity of token to reset password
@@ -51,8 +45,9 @@ class AccountController extends Controller {
     public function update() {
         // Only works only for ajax requests
         $this->onlyAjaxRequests();
-        $user = $this->getLoggedInUser();
+
         $json['message'] = '';
+        $user = $this->getLoggedInUser();
 
         if (!$user) {
             $json['message'] = 'You should be logged in';
@@ -108,20 +103,25 @@ class AccountController extends Controller {
     public function userInfo() {
         // Only works only for ajax requests
         $this->onlyAjaxRequests();
+
         $user = $this->getLoggedInUser();
+
         if (!$user) {
             $json['message'] = 'You should be logged in';
         } else {
             $json = $user;
         }
+
         echo json_encode($json);
     }
 
     public function updatePicture() {
         // Only works only for ajax requests
         $this->onlyAjaxRequests();
-        $user = $this->getLoggedInUser();
+
         $json = [];
+        $user = $this->getLoggedInUser();
+
         if (!$user) {
             $json['message'] = 'You should be logged in';
         } else {
@@ -129,20 +129,22 @@ class AccountController extends Controller {
             $newPicturePath = 'assets/img/user_' . $user['id'] . '/profile.png';
             if ($postData['user_id'] != $user['id']) {
                 $json['message'] = 'You can not update another user\s information';
-            } else if (!file_exists(APPROOT . '/' . $postData['image_path'])){
+            } else if (!file_exists(APPROOT . '/' . $postData['image_path'])) {
                 $json['message'] = 'Image does not exists';
-            } else if(!copy(APPROOT . '/' . $postData['image_path'], APPROOT . '/' . $newPicturePath)) {
-                $json['message'] = 'failed to copy image';
+            } else if (!copy(APPROOT . '/' . $postData['image_path'], APPROOT . '/' . $newPicturePath)) {
+                $json['message'] = 'Failed to copy image';
             } else {
                 $this->userModel->updatePicture($postData['user_id'], $newPicturePath);
+                $json['path'] = $newPicturePath;
             }
         }
         echo json_encode($json);
     }
 
     public function profile(...$param) {
-        $loggedUser = $this->getLoggedInUser();
         $id = empty($param) ? false : $param[0];
+        $loggedUser = $this->getLoggedInUser();
+
         if (!$id) {
             $this->renderView('images/index');
         } else if (!$loggedUser) {
@@ -152,8 +154,7 @@ class AccountController extends Controller {
             // logged user looks at his or someone's profile
             $userInfo = $this->userModel->getUserInfo($id, $loggedUser['id']);
         }
-        // info pro followers/ all images / following / button follow / user itself
-        // $user = $this->userModel->getAllUserInfo($loggedUser['id'], $login);
+
         $this->renderView('users/profile', $userInfo);
     }
 }

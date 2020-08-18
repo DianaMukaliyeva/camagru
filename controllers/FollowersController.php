@@ -15,21 +15,18 @@ class FollowersController extends Controller {
 
         $json = [];
         $user = $this->getLoggedInUser();
+
         if (!$user) {
             $json['message'] = 'You should be logged in to follow an user';
         } else if ($userIdToFollow == $user['id']) {
             $json['message'] = 'You can\'t follow yourself';
         } else if ($userIdToFollow && $this->userModel->getLoginById($userIdToFollow)) {
             if ($this->followModel->isFollowing($user['id'], $userIdToFollow)) {
-                $json['success'] = $this->followModel->unfollowUser(
-                    $user['id'],
-                    $userIdToFollow
-                ) ? 'Follow' : 'db failed';
+                $this->followModel->unfollowUser($user['id'], $userIdToFollow);
+                $json['success'] = 'Follow';
             } else {
-                $json['success'] = $this->followModel->followUser(
-                    $user['id'],
-                    $userIdToFollow
-                ) ? 'Unfollow' : 'db failed';
+                $this->followModel->followUser($user['id'], $userIdToFollow);
+                $json['success'] =  'Unfollow';
             }
             $json['followers_amount'] = $this->followModel->getFollowersAmount($userIdToFollow);
         } else {
@@ -41,7 +38,9 @@ class FollowersController extends Controller {
 
     // All users that follow and followed by userId
     public function getFollow($userId) {
-        $this->isAjaxRequest();
+        // Only works for ajax requests
+        $this->onlyAjaxRequests();
+
         $followers = $this->followModel->getUserFollowers($userId);
         $followed = $this->followModel->getUserFollowed($userId);
         foreach ($followers as $key => $user) {
@@ -52,6 +51,7 @@ class FollowersController extends Controller {
         }
         $json['followers'] = $followers;
         $json['followed'] = $followed;
+
         echo json_encode($json);
     }
 }

@@ -125,10 +125,10 @@ const scrollReaction = function () {
         loadMore();
     }
     pagination.classList.add('fixed');
-    // if (current_y >= content_height &&
-    //     images.length <= imagesOnPage * parseInt(loadMoreButton.getAttribute('data-page'))) {
-    //     pagination.classList.remove('fixed');
-    // }
+    if (current_y >= content_height &&
+        images.length <= imagesOnPage * parseInt(loadMoreButton.getAttribute('data-page'))) {
+        pagination.classList.remove('fixed');
+    }
 }
 
 window.addEventListener('DOMContentLoaded', function (event) {
@@ -143,9 +143,9 @@ let timeout;
 
 window.onscroll = function () {
     clearTimeout(timeout);
-    // timeout = setTimeout(function () {
+    timeout = setTimeout(function () {
         scrollReaction();
-    // }, 50);
+    }, 50);
 }
 
 let windowHeight = window.innerHeight + window.pageYOffset;
