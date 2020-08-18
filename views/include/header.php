@@ -20,4 +20,4 @@
     <div class="wrapper">
         <?php require 'views/include/navbar.php'; ?>
         <div class="content">
-            <?php require 'views/include/modal.php' ?>
+            <?php require 'views/modals/alert.php' ?>

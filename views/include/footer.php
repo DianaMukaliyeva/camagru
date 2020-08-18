@@ -1,3 +1,5 @@
+<!-- div for closing modal windows -->
+<div class="modal-backdrop fade show d-none" id="backdrop"></div>
 </div>
 <footer class="bg-dark pt-5 pb-3">
     <div class="text-center text-white font-weight-bolder">

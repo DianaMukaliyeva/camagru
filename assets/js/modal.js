@@ -189,14 +189,19 @@ const modalFollow = document.getElementById('follow');
 // close modal window with image
 const closeModal = function () {
     document.getElementById("backdrop").classList.add('d-none')
-    modalImage.style.display = "none";
-    modalImage.classList.remove("show");
-    modalSettings.style.display = "none";
-    modalSettings.classList.remove("show");
-    modalFollow.style.display = "none";
-    modalFollow.classList.remove("show");
+    if (modalImage) {
+        modalImage.style.display = "none";
+        modalImage.classList.remove("show");
+    }
+    if (modalSettings) {
+        modalSettings.style.display = "none";
+        modalSettings.classList.remove("show");
+    }
+    if (modalFollow) {
+        modalFollow.style.display = "none";
+        modalFollow.classList.remove("show");
+    }
 }
-
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {

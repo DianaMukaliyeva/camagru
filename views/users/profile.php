@@ -1,4 +1,7 @@
 <?php require 'views/include/header.php' ?>
+<?php require 'views/modals/image.php' ?>
+<?php require 'views/modals/follow.php' ?>
+<?php require 'views/modals/settings.php' ?>
 
 <!-- user's profile -->
 <div class="container pt-5 px-sm-5">
@@ -74,6 +77,5 @@
         </div>
     <?php endif ?>
 </div>
-
 
 <?php require 'views/include/footer.php' ?>

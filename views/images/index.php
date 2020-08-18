@@ -1,4 +1,5 @@
 <?php require 'views/include/header.php' ?>
+<?php require 'views/modals/image.php' ?>
 
 <!-- sorting buttons -->
 <div class="mt-3 input-group justify-content-center">
