@@ -54,6 +54,8 @@ class ImagesController extends Controller {
             $json['message'] = 'You should be logged in';
         } else if (!$imageId || !$image = $this->imageModel->isImageExists($imageId)) {
             $json['message'] = 'Image does not exists';
+        } else if ($image['user_id'] != $user['id']) {
+            $json['message'] = 'You can not delete another user\'s photo';
         } else if ($this->imageModel->deleteImage($imageId)) {
             $json['message'] = 'success';
             unlink(APPROOT . '/' . $image['image_path']);

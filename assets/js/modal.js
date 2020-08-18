@@ -85,12 +85,12 @@ const fillModalImage = function (imageId) {
             document.getElementById('modal_comment_form').dataset.imageId = imageId;
             document.getElementById('modal_image_tags').innerHTML = '';
             document.getElementById('modal_follow_button').setAttribute('data-user-id', result['user_id']);
+            document.getElementById('modal_change_picture').setAttribute('data-user-id', result['user_id']);
+            document.getElementById('modal_delete_button').dataset.imageId = imageId;
             if (result['login'] == result['logged_in_user']) {
                 document.getElementById('modal_follow_button').classList.add('d-none');
                 document.getElementById('modal_delete_button').classList.remove('d-none');
                 document.getElementById('modal_change_picture').classList.remove('d-none');
-                document.getElementById('modal_delete_button').dataset.imageId = imageId;
-                document.getElementById('modal_change_picture').setAttribute('data-user-id', result['user_id']);
                 document.getElementById('modal_change_picture').setAttribute('data-image-path', result['image_path']);
             } else {
                 document.getElementById('modal_change_picture').classList.add('d-none');
@@ -123,7 +123,7 @@ const fillComments = function (comments, loggedUserId) {
         const comment_div = document.createElement('div');
         const p = document.createElement('p');
         p.innerHTML = `<a href="${urlpath}/account/profile/${comment['user_id']}">${comment['login']}</a> (${comment['created_at']}) :
-            <a role="button" onclick="deleteComment(this.dataset.dataId)" data-data-id="${comment['id']}?${comment['image_id']}?${comment['user_id']}'">
+            <a role="button" onclick="deleteComment(this.dataset.dataId)" data-data-id="${comment['id']}?${comment['image_id']}?${comment['user_id']}">
             <i class='fas fa-times-circle'></i></a>
             <br><i>${comment['comment']}</i>`;
         if (comment['user_id'] != loggedUserId)

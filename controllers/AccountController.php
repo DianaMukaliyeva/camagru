@@ -128,7 +128,7 @@ class AccountController extends Controller {
             $postData = json_decode($_POST['data'], true);
             $newPicturePath = 'assets/img/user_' . $user['id'] . '/profile.png';
             if ($postData['user_id'] != $user['id']) {
-                $json['message'] = 'You can not update another user\s information';
+                $json['message'] = 'You can not update another user\'s information';
             } else if (!file_exists(APPROOT . '/' . $postData['image_path'])) {
                 $json['message'] = 'Image does not exists';
             } else if (!copy(APPROOT . '/' . $postData['image_path'], APPROOT . '/' . $newPicturePath)) {

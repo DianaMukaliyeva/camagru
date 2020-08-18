@@ -81,7 +81,7 @@ class CommentsController extends Controller {
             $json['message'] = 'You should be logged in';
         } else if (!$this->commentModel->isCommentExists($data[0])) {
             $json['message'] = 'Comment does not exists';
-        } else if ($data[2] == $user['id']) {
+        } else if ($data[2] != $user['id']) {
             $json['message'] = 'You can not delete another user\'s comment';
         } else if ($this->commentModel->deleteComment($data[0])) {
             $json['comments'] = $this->commentModel->getComments($data[1]);
