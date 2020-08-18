@@ -3,7 +3,9 @@ let request_in_progress = false;
 let imagesOnPage = 9;
 
 const imgContainer = document.getElementById('article-list');
-const pagination = document.getElementById('post-pagination');
+let pagination = false;
+if (document.getElementById('post-pagination'))
+    pagination = document.getElementById('post-pagination');
 const loadMoreButton = document.getElementById('load-more');
 
 const getPageId = function (n) { return 'article-page-' + n; }
@@ -21,10 +23,12 @@ const addPaginationPage = function (page) {
     listItem.className = 'article-list__pagination__item';
     listItem.appendChild(pageLink);
 
-    pagination.appendChild(listItem);
+    if (pagination) {
+        pagination.appendChild(listItem);
 
-    if (page === 2) {
-        pagination.classList.remove('article-list__pagination--inactive');
+        if (page === 2) {
+            pagination.classList.remove('article-list__pagination--inactive');
+        }
     }
 }
 
@@ -32,8 +36,9 @@ const addPaginationPage = function (page) {
 const appendToDiv = function (div, new_html, page) {
     const page_number = document.createElement('div');
     page_number.id = getPageId(page);
-    page_number.classList.add('article-list__page', 'row', 'row-cols-1', 'row-cols-md-3', 'pt-5');
-
+    page_number.classList.add('row', 'row-cols-1', 'row-cols-md-3', 'pt-5');
+    if (pagination)
+        page_number.classList.add('article-list__page');
     const temp = document.createElement('div');
     temp.innerHTML = new_html;
 
@@ -47,22 +52,30 @@ const appendToDiv = function (div, new_html, page) {
     div.appendChild(page_number);
 }
 
-// Send request to server to get list of images sorted by sorting parameter
-const getSortedImages = function (sorting) {
+const sortImages = function (sorting) {
     document.querySelectorAll(".sort_images").forEach(function (item) {
         item.classList.remove('active');
         if (item.dataset.title == sorting) {
             item.classList.add('active');
         }
     });
+    getSortedImages(sorting);
+}
+
+// Send request to server to get list of images sorted by sorting parameter
+const getSortedImages = function (sorting) {
 
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             images = JSON.parse(this.responseText);
             imgContainer.innerHTML = '';
-            pagination.innerHTML = '';
-            pagination.classList.add('article-list__pagination--inactive');
+
+            if (pagination) {
+                pagination.innerHTML = '';
+                pagination.classList.add('article-list__pagination--inactive');
+            }
+
             loadMoreButton.setAttribute('data-page', 0);
             hideLoadMore();
             if (images != '') {
@@ -110,7 +123,7 @@ const loadMore = function () {
         xhr.open('POST', urlpath + '/images/gallery', true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send('images=' + JSON.stringify(images.slice(page * imagesOnPage, next_page * imagesOnPage)));
+        xhr.send('images=' + JSON.stringify(images.slice(page * imagesOnPage, next_page * imagesOnPage)) + (pagination ? '' : '&profile=true'));
     }
     request_in_progress = false;
 }
@@ -124,15 +137,76 @@ const scrollReaction = function () {
     if (current_y >= content_height || images.length <= imagesOnPage) {
         loadMore();
     }
-    pagination.classList.add('fixed');
+    if (pagination)
+        pagination.classList.add('fixed');
     if (current_y >= content_height &&
         images.length <= imagesOnPage * parseInt(loadMoreButton.getAttribute('data-page'))) {
-        pagination.classList.remove('fixed');
+        if (pagination)
+            pagination.classList.remove('fixed');
     }
 }
 
+// switch between user's gallery/user's followers and followed users
+const switchtab = function (id) {
+    let images = document.getElementById('article-list');
+    let followers = document.getElementById('followers-list');
+    let followed = document.getElementById('followed-list');
+    followed.classList.add('d-none');
+    followers.classList.add('d-none');
+    images.classList.add('d-none');
+    hideLoadMore();
+    let userId = document.getElementById('profile_login').dataset.userId;
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let result = JSON.parse(this.responseText);
+            // console.log(result)
+            if (id == 'images') {
+                images.classList.remove('d-none');
+                showLoadMore();
+            } else if (id == 'followed') {
+                followed.classList.remove('d-none');
+                appendToContainer(followed.children[1], result['followed']);
+            } else {
+                followers.classList.remove('d-none');
+                appendToContainer(followers.children[1], result['followers']);
+            }
+        }
+    }
+    xmlhttp.open("GET", urlpath + "/followers/getFollow/" + userId, true);
+    xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xmlhttp.send();
+}
+
+const appendToContainer = function (div, users) {
+    div.innerHTML = '';
+    let innerDiv = document.createElement('div');
+    div.classList.add('row', 'row-cols-1', 'row-cols-md-3', 'row-cols-lg-5', 'justify-content-center');
+    users.forEach(element => {
+        let html = `
+            <div class="col border m-2">
+                <a class="text-decoration-none" href="${urlpath}/account/profile/${element['id']}">
+                    <div class="media my-3">
+                        <img class="rounded-circle media-img mx-2" src="${urlpath}/${element['picture']}" alt="profile image">
+                        <div class="media-body">
+                            <div class="font-weight-bold">${element['login']}</div>
+                            <div>${element['first_name']} ${element['last_name']}</div>
+                        </div>
+                    </div>
+                </a>
+            </div>`
+        // console.log(element);
+        innerDiv
+        div.innerHTML += html;
+    });
+}
+
 window.addEventListener('DOMContentLoaded', function (event) {
-    getSortedImages('newest');
+    if (document.getElementById('profile_login')) {
+        getSortedImages(document.getElementById('profile_login').dataset.userId);
+    } else {
+        sortImages('newest');
+    }
 
     loadMoreButton.addEventListener('click', loadMore);
     hideLoadMore();
