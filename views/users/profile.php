@@ -67,6 +67,7 @@
             <button class="btn btn-outline-info d-none" id="load-more" data-page="0">Load more</button>
         </div>
 
+        <script src="<?php echo URLROOT; ?>/assets/js/gallery.js"></script>
     <?php else : ?>
         <div class="text-center">
             <h1>User not found</h1>
@@ -74,6 +75,5 @@
     <?php endif ?>
 </div>
 
-<script src="<?php echo URLROOT; ?>/assets/js/gallery.js"></script>
 
 <?php require 'views/include/footer.php' ?>

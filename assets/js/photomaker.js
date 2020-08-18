@@ -48,7 +48,7 @@ const saveImages = function () {
             if (result['message']) {
                 showMessage(result['message'], true);
                 if (result['message'] == 'You should be logged in')
-                    window.location.replace(urlpath);
+                    window.location = urlpath + '/users/login';
                 return;
             }
             showMessage('All images are successfully saved');

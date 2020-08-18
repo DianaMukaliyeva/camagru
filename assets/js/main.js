@@ -94,10 +94,10 @@ const deleteComment = function (data) {
 const deleteImage = function (button) {
     imageId = button.dataset.imageId;
     let confirmation = confirm('Are you sure you want to delete this photo?');
-    // console.log(confirmation);
     if (!confirmation) {
         return;
     }
+
     let xhr = new XMLHttpRequest();
     xhr.open('GET', urlpath + '/images/delete/' + imageId, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -108,11 +108,9 @@ const deleteImage = function (button) {
             if (result['message'] == 'success') {
                 closeModal();
                 showMessage('Image successfully deleted');
-                setTimeout(function () { location.reload(); }, 1000);
-                // location.reload();
+                setTimeout(function () { window.location.reload(); }, 1000);
             } else {
                 showMessage(result['message'], 'alert');
-                // alert(result['message']);
             }
         }
     };
@@ -194,20 +192,11 @@ const like = function (button) {
 }
 
 const emptySettingErrors = function (form) {
-    form.login.classList.remove('is-invalid');
-    form.login.nextElementSibling.innerHTML = '';
-    form.first_name.classList.remove('is-invalid');
-    form.first_name.nextElementSibling.innerHTML = '';
-    form.last_name.classList.remove('is-invalid');
-    form.last_name.nextElementSibling.innerHTML = '';
-    form.email.classList.remove('is-invalid');
-    form.email.nextElementSibling.innerHTML = '';
-    form.old_pswd.classList.remove('is-invalid');
-    form.old_pswd.nextElementSibling.innerHTML = '';
-    form.new_pswd.classList.remove('is-invalid');
-    form.new_pswd.nextElementSibling.innerHTML = '';
-    form.new_pswd_confirm.classList.remove('is-invalid');
-    form.new_pswd_confirm.nextElementSibling.innerHTML = '';
+    let inputs = form.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+        inputs[i].classList.remove('is-invalid');
+        inputs[i].nextElementSibling.innerHTML = '';
+    }
 }
 
 const saveChanges = function (form) {
@@ -231,20 +220,19 @@ const saveChanges = function (form) {
             let result = JSON.parse(xhr.responseText);
             if (result['message']) {
                 showMessage(result['message'], 'alert');
-                return;
             } else if (result['errors']) {
                 for (let key in result['errors']) {
                     let span = document.getElementById('modal_' + key);
                     span.previousElementSibling.classList.add('is-invalid');
                     span.innerHTML = result['errors'][key];
                 }
-                return;
+            } else {
+                showMessage('Your information is successfully updated');
+                document.getElementById('profile_login').innerHTML = data['login'];
+                document.getElementById('profile_name').innerHTML = data['first_name'] + ' ' + data['last_name'];
+                document.getElementById('profile_email').innerHTML = data['email'];
+                closeModal();
             }
-            showMessage('Your information is successfully updated');
-            document.getElementById('profile_login').innerHTML = data['login'];
-            document.getElementById('profile_name').innerHTML = data['first_name'] + ' ' + data['last_name'];
-            document.getElementById('profile_email').innerHTML = data['email'];
-            closeModal();
         }
     };
     xhr.open('POST', urlpath + '/account/update/', true);
@@ -279,6 +267,148 @@ const changeProfilePicture = function (button) {
         }
     };
     xhr.open('POST', urlpath + '/account/updatePicture/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('data=' + JSON.stringify(data));
+}
+
+const login = function (form) {
+    event.preventDefault();
+    data = {
+        'email': form.email.value,
+        'password': form.password.value
+    };
+    emptySettingErrors(form);
+
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            if (result['errors']) {
+                for (let key in result['errors']) {
+                    let span = document.getElementsByName(key)[0];
+                    span.previousElementSibling.classList.add('is-invalid');
+                    span.innerHTML = result['errors'][key];
+                }
+            } else {
+                window.location.reload();
+            }
+        }
+    };
+    xhr.open('POST', urlpath + '/users/login/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('data=' + JSON.stringify(data));
+}
+
+let processRegister = false;
+
+const register = function (form) {
+    event.preventDefault();
+    if (processRegister) {
+        showMessage('Registration in process');
+        return;
+    }
+    processRegister = true;
+    document.getElementById('registerButton').disabled = true;
+
+    data = {
+        'login': form.login.value,
+        'first_name': form.first_name.value,
+        'last_name': form.last_name.value,
+        'email': form.email.value,
+        'password': form.password.value,
+        'confirm_password': form.confirm_password.value
+    };
+    emptySettingErrors(form);
+
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            processRegister = false;
+            document.getElementById('registerButton').disabled = false;
+            showMessage(result['message']);
+            for (let key in result['errors']) {
+                let span = document.getElementsByName(key)[0];
+                span.previousElementSibling.classList.add('is-invalid');
+                span.innerHTML = result['errors'][key];
+            }
+            if (Object.keys(result['errors']).length == 0) {
+                setTimeout(function () { window.location = urlpath + '/users/login'; }, 1000);
+            }
+        }
+    };
+    xhr.open('POST', urlpath + '/users/register/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('data=' + JSON.stringify(data));
+}
+
+const resetPassword = function (form) {
+    event.preventDefault();
+    data = {
+        'email': form.dataset.email,
+        'password': form.password.value,
+        'confirm_password': form.confirm_password.value
+    }
+    emptySettingErrors(form);
+
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            showMessage(result['message']);
+            for (let key in result['errors']) {
+                let span = document.getElementsByName(key)[0];
+                span.previousElementSibling.classList.add('is-invalid');
+                span.innerHTML = result['errors'][key];
+            }
+            if (Object.keys(result['errors']).length == 0) {
+                setTimeout(function () { window.location = urlpath + '/users/login'; }, 1000);
+            }
+        }
+    }
+    xhr.open('POST', urlpath + '/account/resetPassword/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('data=' + JSON.stringify(data));
+}
+
+let sendingResetPassword = false;
+
+const forgetPassword = function (form) {
+    event.preventDefault();
+
+    if (sendingResetPassword) {
+        showMessage('Sending email');
+        return;
+    }
+
+    data = { 'email': form.email.value }
+    emptySettingErrors(form);
+
+    sendingResetPassword = true;
+    document.getElementById('forgetPasswordButton').disabled = true;
+
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            sendingResetPassword = false;
+            document.getElementById('forgetPasswordButton').disabled = false;
+            showMessage(result['message']);
+            for (let key in result['errors']) {
+                let span = document.getElementsByName(key)[0];
+                span.previousElementSibling.classList.add('is-invalid');
+                span.innerHTML = result['errors'][key];
+            }
+            if (Object.keys(result['errors']).length == 0) {
+                setTimeout(function () { window.location = urlpath + '/users/login'; }, 2000);
+            }
+        }
+    }
+    xhr.open('POST', urlpath + '/users/forgetPassword/', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('data=' + JSON.stringify(data));

@@ -79,7 +79,6 @@ const toggleStream = function (confirmStart = true) {
         video.srcObject = null;
         videoStreamButton.innerHTML = "Start video";
         takePhotoButton.disabled = true;
-        streaming = false;
     } else if (video.srcObject === null && confirmStart) {
         // Check if we have uploaded image, delete it if have
         if (imageUploaded) {
@@ -95,15 +94,14 @@ const toggleStream = function (confirmStart = true) {
 const takePhoto = function () {
     let data = {};
     const canvas = document.createElement("canvas");
-    const imageToSend = !streaming ? document.getElementById('uploaded_photo') : video;
+    const imageToSend = imageUploaded ? document.getElementById('uploaded_photo') : video;
     canvas.width = width;
     canvas.height = height;
-    try {
-        canvas.getContext('2d').drawImage(imageToSend, 0, 0, width, height);
-    } catch {
+    if (!imageToSend) {
         showMessage('Please, start video or upload an image', true);
         return;
     }
+    canvas.getContext('2d').drawImage(imageToSend, 0, 0, width, height);
     data.img_data = canvas.toDataURL('image/png');
     data.width = width;
     data.height = height;
@@ -119,7 +117,7 @@ const takePhoto = function () {
             if (result['message']) {
                 showMessage(result['message'], 'alert');
                 if (result['message'] == 'You should be logged in') {
-                    window.location.replace(urlpath);
+                    window.location = urlpath + '/users/login';
                 }
                 return;
             }

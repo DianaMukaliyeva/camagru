@@ -8,18 +8,26 @@ class AccountController extends Controller {
 
     // Check validity of token to reset password
     public function resetPassword($token = '') {
-        $data = [];
+        if ($this->isAjaxRequest()) {
+            $postData = json_decode($_POST['data'], true);
+            $email = trim($postData['email']);
+            $json = $this->userModel->updatePassword($email, $postData['password'], $postData['confirm_password']);
 
-        if (!empty($token)) {
-            $data['email'] = $this->userModel->getEmailByToken("camagru_token" . $token);
-            if ($data['email']) {
-                $data['reset'] = true;
-            } else {
-                $data = $this->addMessage(false, 'Your token is invalid!', $data);
+            if (!$json['errors']) {
+                $json['message'] = 'Password has been successfully changed.';
             }
+            echo json_encode($json);
+        } else {
+            if (!empty($token)) {
+                $data['email'] = $this->userModel->getEmailByToken("camagru_token" . $token);
+                if ($data['email']) {
+                    $data = $this->addMessage(true, 'You can change your password', $data);
+                    $this->renderView('users/resetPassword', $data);
+                }
+            }
+            $data = $this->addMessage(false, 'Your token is invalid!', $data);
+            $this->renderView('users/resetPassword', $data);
         }
-
-        $this->renderView('users/resetPassword', $data);
     }
 
     // Check validity of token for account activation
@@ -42,6 +50,7 @@ class AccountController extends Controller {
         $this->renderView('users/login', $data);
     }
 
+    // Update user\'s information
     public function update() {
         // Only works only for ajax requests
         $this->onlyAjaxRequests();
@@ -89,6 +98,7 @@ class AccountController extends Controller {
         echo json_encode($json);
     }
 
+    // Get all information about logged in user
     public function userInfo() {
         // Only works only for ajax requests
         $this->onlyAjaxRequests();
@@ -104,6 +114,7 @@ class AccountController extends Controller {
         echo json_encode($json);
     }
 
+    // Update profile picture of user
     public function updatePicture() {
         // Only works only for ajax requests
         $this->onlyAjaxRequests();
@@ -130,6 +141,7 @@ class AccountController extends Controller {
         echo json_encode($json);
     }
 
+    // Show user profile
     public function profile(...$param) {
         $id = empty($param) ? false : $param[0];
         $loggedUser = $this->getLoggedInUser();

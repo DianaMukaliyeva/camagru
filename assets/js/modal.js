@@ -1,5 +1,8 @@
 // show toast message
-const showMessage = function (message, alert = false) {
+const showMessage = function (message = '', alert = false) {
+    if (message == '') {
+        return;
+    }
     let toast = document.getElementById('message');
     let messages = message.split("\n");
     if (alert) {

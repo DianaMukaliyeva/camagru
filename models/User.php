@@ -106,16 +106,18 @@ class User {
         return isset($result['token']) ? $result['token'] : '';
     }
 
-    // Update user's password
-    public function updatePassword($email, $reset = false, $password = '', $confirm_password = '') {
-        if (!$reset) {
-            $user = $this->findUser(['email' => $email]);
-            $errors = $this->validateExistingEmail($email, $user);
-            if (!$errors) {
-                $this->updateToken(bin2hex(random_bytes(50)), $email);
-            }
-            return $errors ? ['errors' => $errors] : ['user' => $user];
+    // Reset user\'s password
+    public function resetPassword($email) {
+        $user = $this->findUser(['email' => $email]);
+        $errors = $this->validateExistingEmail($email, $user);
+        if (!$errors) {
+            $this->updateToken(bin2hex(random_bytes(50)), $email);
         }
+        return $errors ? ['errors' => $errors] : ['user' => $user];
+    }
+
+    // Update user's password
+    public function updatePassword($email, $password, $confirm_password) {
         $errors = $this->validatePassword($password, $confirm_password);
 
         if (!$errors) {
@@ -168,7 +170,7 @@ class User {
         );
 
         if (!empty($data['new_pswd'])) {
-            $this->updatePassword($data['email'], true, $data['new_pswd'], $data['new_pswd_confirm']);
+            $this->updatePassword($data['email'], $data['new_pswd'], $data['new_pswd_confirm']);
         }
 
         return $result;

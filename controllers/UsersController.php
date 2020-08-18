@@ -13,93 +13,79 @@ class UsersController extends Controller {
     }
 
     public function login() {
-        $data = [];
+        if ($this->isAjaxRequest()) {
+            $postData = json_decode($_POST['data'], true);
+            $email = trim($postData['email']);
+            $password = hash('whirlpool', $postData['password']);
+            $json = $this->model->login($email, $password);
 
-        if ($this->getLoggedInUser()) {
-            $this->logout('users/login');
-        }
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email = trim($_POST['email']);
-            $password = hash('whirlpool', $_POST['password']);
-            $response = $this->model->login($email, $password);
-
-            if ($response['errors']) {
-                $data = array_merge(['email' => $email], $response['errors']);
-            } else if ($response['user']) {
-                $this->createUserSession($response['user']);
+            if (isset($json['user'])) {
+                $this->createUserSession($json['user']);
             }
+            echo json_encode($json);
+        } else {
+            if ($this->getLoggedInUser()) {
+                $this->redirect('');
+            }
+            $this->renderView('users/login');
         }
-
-        $this->renderView('users/login', $data);
     }
 
     public function register() {
-        $data = [];
-        if ($this->getLoggedInUser()) {
-            $this->logout('users/register');
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data['login'] = trim(filter_var($_POST['login'], FILTER_SANITIZE_STRING));
-            $data['first_name'] = trim(filter_var($_POST['first_name'], FILTER_SANITIZE_STRING));
-            $data['last_name'] = trim(filter_var($_POST['last_name'], FILTER_SANITIZE_STRING));
-            $data['email'] = trim(filter_var($_POST['email'], FILTER_SANITIZE_EMAIL));
-            $data['password'] = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
-            $data['confirm_password'] = filter_var($_POST['confirm_password'], FILTER_SANITIZE_STRING);
-
-            $response = $this->model->register($data);
+        if ($this->isAjaxRequest()) {
+            $postData = json_decode($_POST['data'], true);
+            $data = [
+                'login' => trim(filter_var($postData['login'], FILTER_SANITIZE_STRING)),
+                'first_name' => trim(filter_var($postData['first_name'], FILTER_SANITIZE_STRING)),
+                'last_name' => trim(filter_var($postData['last_name'], FILTER_SANITIZE_STRING)),
+                'email' => trim(filter_var($postData['email'], FILTER_SANITIZE_EMAIL)),
+                'password' => $postData['password'],
+                'confirm_password' => $postData['confirm_password']
+            ];
+            $json = $this->model->register($data);
             unset($data['password'], $data['confirm_password']);
 
-            if ($response['errors']) {
-                $data = array_merge($data, $response['errors']);
-            } else {
+            if (empty($json['errors'])) {
                 $token = str_replace('camagru_token', '', $this->model->getToken($data['email']));
                 $message = "<p>Thank you for joining Camagru</p>";
                 $message .= "<p>To activate your account click ";
                 $message .= "<a href=\"" . URLROOT . "/account/activateAccount/" . $token . "\">here</a></p>";
                 $message .= "<p><small>If you have any questions do not hesitate to contact us.</p>";
-                $dataToSend = $this->addMessage(false, 'Could not sent an email to ' . $data['email']);
+                $json['message'] = 'Could not sent an email to ' . $data['email'];
                 if ($this->sendEmail($data['email'], $data['login'], $message)) {
-                    $dataToSend = $this->addMessage(true, 'Confirmation email sent to ' . $data['email']);
+                    $json['message'] = 'Confirmation email sent to ' . $data['email'];
                 }
-                $this->renderView('users/login', $dataToSend);
             }
+            echo json_encode($json);
+        } else {
+            if ($this->getLoggedInUser()) {
+                $this->redirect('');
+            }
+            $this->renderView('users/register');
         }
-        $this->renderView('users/register', $data);
     }
 
-    public function resetPassword() {
-        $data = [];
+    public function forgetPassword() {
+        if ($this->isAjaxRequest()) {
+            $json['errors'] = [];
+            $postData = json_decode($_POST['data'], true);
+            $email = trim($postData['email']);
+            $result = $this->model->resetPassword($email);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (isset($_POST['email']) && !isset($_POST['password'])) {
-                $data['email'] = trim($_POST['email']);
-                $response = $this->model->updatePassword($data['email']);
-
-                if (!isset($response['errors']) && isset($response['user'])) {
-                    $token = str_replace('camagru_token', '', $this->model->getToken($data['email']));
-                    $message = "<p>To reset your password click ";
-                    $message .= "<a href=\"" . URLROOT . "/account/resetPassword/" . $token . "\">here</a></p>";
-                    if ($this->sendEmail($data['email'], $response['user']['login'], $message))
-                        $data = $this->addMessage(true, 'An email was sent to ' . $data['email']);
-                    else
-                        $data = $this->addMessage(false, 'Could not sent an email to ' . $data['email']);
-                    $this->renderView('users/login', $data);
-                }
-                $data = array_merge($data, $response['errors']);
-            } else if (isset($_POST['password']) && isset($_POST['confirm_password'])) {
-                $data['email'] = trim($_POST['email']);
-                $response = $this->model->updatePassword($data['email'], true, $_POST['password'], $_POST['confirm_password']);
-
-                if (!$response['errors']) {
-                    $data['reset'] = true;
-                    $data = $this->addMessage(true, 'Password has been successfully changed.', $data);
-                    $this->renderView('users/login', $data);
-                }
-                $data = array_merge($data, $response['errors']);
+            if (isset($result['errors'])) {
+                $json['errors'] = $result['errors'];
+            } else if (isset($result['user'])) {
+                $token = str_replace('camagru_token', '', $this->model->getToken($email));
+                $message = "<p>To reset your password click ";
+                $message .= "<a href=\"" . URLROOT . "/account/resetPassword/" . $token . "\">here</a></p>";
+                if ($this->sendEmail($email, $result['user']['login'], $message))
+                    $json['message'] = 'An email was sent to ' . $email;
             }
+
+            echo json_encode($json);
+        } else {
+            $this->renderView('users/forgetPassword');
         }
-        $this->renderView('users/resetPassword', $data);
     }
 
     public function logout($url = '') {
