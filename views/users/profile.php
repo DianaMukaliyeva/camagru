@@ -39,9 +39,9 @@
             <div class="col-sm-4"></div>
             <div class="col-sm-8">
                 <div class="row pb-2">
-                    <div class="col text-center" role="button" onclick="switchtab(this.id)" id="images"><?= $data['images_amount'] ?> images</div>
-                    <div class="col text-center" role="button" onclick="switchtab(this.id)" id="profile_followers_amount"><?= $data['followers_amount'] ?> followers</div>
-                    <div class="col text-center" role="button" onclick="switchtab(this.id)" id="followed"><?= $data['followed_amount'] ?> following</div>
+                    <div class="col text-center" role="button" id="images"><?= $data['images_amount'] ?> images</div>
+                    <div class="col text-center" role="button" onclick="openModal(this.id)" id="followers"><?= $data['followers_amount'] ?> followers</div>
+                    <div class="col text-center" role="button" onclick="openModal(this.id)" id="following"><?= $data['followed_amount'] ?> following</div>
                 </div>
             </div>
         </div>

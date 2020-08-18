@@ -141,7 +141,7 @@ const follow = function (button) {
                 button.classList.add('btn-outline-secondary');
             }
             if (button.id && button.id == 'profile_follow') {
-                document.getElementById('profile_followers_amount').innerHTML =
+                document.getElementById('followers').innerHTML =
                     result['followers_amount'] + ' followers';
             }
             button.innerHTML = result['success'];

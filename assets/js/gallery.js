@@ -132,8 +132,6 @@ const loadMore = function () {
 const scrollReaction = function () {
     let content_height = imgContainer.offsetHeight;
     let current_y = window.innerHeight + window.pageYOffset;
-    // console.log('content heigh: ' + content_height);
-    // console.log('current_y: ' + current_y);
     if (current_y >= content_height || images.length <= imagesOnPage) {
         loadMore();
     }
@@ -146,45 +144,11 @@ const scrollReaction = function () {
     }
 }
 
-// switch between user's gallery/user's followers and followed users
-const switchtab = function (id) {
-    let images = document.getElementById('article-list');
-    let followers = document.getElementById('followers-list');
-    let followed = document.getElementById('followed-list');
-    followed.classList.add('d-none');
-    followers.classList.add('d-none');
-    images.classList.add('d-none');
-    hideLoadMore();
-    let userId = document.getElementById('profile_login').dataset.userId;
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            let result = JSON.parse(this.responseText);
-            // console.log(result)
-            if (id == 'images') {
-                images.classList.remove('d-none');
-                showLoadMore();
-            } else if (id == 'followed') {
-                followed.classList.remove('d-none');
-                appendToContainer(followed.children[1], result['followed']);
-            } else {
-                followers.classList.remove('d-none');
-                appendToContainer(followers.children[1], result['followers']);
-            }
-        }
-    }
-    xmlhttp.open("GET", urlpath + "/followers/getFollow/" + userId, true);
-    xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xmlhttp.send();
-}
-
 const appendToContainer = function (div, users) {
     div.innerHTML = '';
-    let innerDiv = document.createElement('div');
-    div.classList.add('row', 'row-cols-1', 'row-cols-md-3', 'row-cols-lg-5', 'justify-content-center');
     users.forEach(element => {
         let html = `
-            <div class="col border m-2">
+            <div class="row">
                 <a class="text-decoration-none" href="${urlpath}/account/profile/${element['id']}">
                     <div class="media my-3">
                         <img class="rounded-circle media-img mx-2" src="${urlpath}/${element['picture']}" alt="profile image">
@@ -194,9 +158,7 @@ const appendToContainer = function (div, users) {
                         </div>
                     </div>
                 </a>
-            </div>`
-        // console.log(element);
-        innerDiv
+            </div>`;
         div.innerHTML += html;
     });
 }

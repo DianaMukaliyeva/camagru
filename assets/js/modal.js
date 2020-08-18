@@ -27,6 +27,33 @@ const closeMessage = function (button) {
 }
 
 // fill modal profile settings
+const fillModalFollow = function (param) {
+    let userId = document.getElementById('profile_login').dataset.userId;
+    document.getElementById('follow-title').innerHTML = param;
+    let div = document.getElementById('list-user');
+    div.innerHTML = '';
+    let xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let result = JSON.parse(this.responseText);
+            // console.log(result)
+            if (param == 'followers') {
+                // followed.classList.remove('d-none');
+                appendToContainer(div, result['followers']);
+            } else {
+                appendToContainer(div, result['followed']);
+                // followers.classList.remove('d-none');
+                // appendToContainer(followers.children[1], result['followers']);
+            }
+        }
+    }
+    xmlhttp.open("GET", urlpath + "/followers/getFollow/" + userId, true);
+    xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xmlhttp.send();
+}
+
+// fill modal profile settings
 const fillModalProfile = function () {
     emptySettingErrors(document.getElementById('editForm'));
 
@@ -140,8 +167,12 @@ const openModal = function (param) {
     event.preventDefault();
     if (param == 'editProfile') {
         fillModalProfile();
-        document.getElementById("settings").style.display = "block";
-        document.getElementById("settings").classList.add('show');
+        modalSettings.style.display = "block";
+        modalSettings.classList.add('show');
+    } else if (param == 'followers' || param == 'following') {
+        fillModalFollow(param);
+        modalFollow.style.display = "block";
+        modalFollow.classList.add('show');
     } else {
         fillModalImage(param);
         document.getElementById("exampleModal").style.display = "block";
@@ -151,21 +182,26 @@ const openModal = function (param) {
     document.getElementById("backdrop").classList.remove('d-none');
 }
 
+const modalImage = document.getElementById('exampleModal');
+const modalSettings = document.getElementById('settings');
+const modalFollow = document.getElementById('follow');
+
 // close modal window with image
 const closeModal = function () {
     document.getElementById("backdrop").classList.add('d-none')
-    document.getElementById("exampleModal").style.display = "none";
-    document.getElementById("exampleModal").classList.remove("show");
-    document.getElementById("settings").style.display = "none";
-    document.getElementById("settings").classList.remove("show");
+    modalImage.style.display = "none";
+    modalImage.classList.remove("show");
+    modalSettings.style.display = "none";
+    modalSettings.classList.remove("show");
+    modalFollow.style.display = "none";
+    modalFollow.classList.remove("show");
 }
 
-const modalImage = document.getElementById('exampleModal');
-const modalSettings = document.getElementById('settings');
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
-    if (event.target === modalImage || event.target === modalSettings) {
+    if (event.target === modalImage || event.target === modalSettings ||
+        event.target === modalFollow) {
         closeModal();
     }
 }
