@@ -77,7 +77,7 @@ const fillModalProfile = function () {
             form.new_pswd_confirm.value = '';
         }
     };
-    xhr.open('GET', urlpath + '/account/userInfo/', true);
+    xhr.open('GET', urlpath + '/users/userInfo/', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.send();
 }

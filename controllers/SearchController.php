@@ -1,11 +1,9 @@
 <?php
 class SearchController extends Controller {
-    private $imageModel;
     private $userModel;
     private $tagModel;
 
     public function __construct() {
-        $this->imageModel = $this->getModel('Image');
         $this->userModel = $this->getModel('User');
         $this->tagModel = $this->getModel('Tag');
     }

@@ -69,27 +69,47 @@ class UsersController extends Controller {
         }
     }
 
-    public function forgetPassword() {
-        if ($this->isAjaxRequest()) {
-            $json['errors'] = [];
-            $postData = json_decode($_POST['data'], true);
-            $email = trim($postData['email']);
-            $result = $this->model->resetPassword($email);
+    // Get all information about logged in user
+    public function userInfo() {
+        // Only works only for ajax requests
+        $this->onlyAjaxRequests();
 
-            if (isset($result['errors'])) {
-                $json['errors'] = $result['errors'];
-            } else if (isset($result['user'])) {
-                $token = str_replace('camagru_token', '', $this->model->getToken($email));
-                $message = "<p>To reset your password click ";
-                $message .= "<a href=\"" . URLROOT . "/account/resetPassword/" . $token . "\">here</a></p>";
-                if ($this->sendEmail($email, $result['user']['login'], $message))
-                    $json['message'] = 'An email was sent to ' . $email;
-            }
+        $user = $this->getLoggedInUser();
 
-            echo json_encode($json);
+        if (!$user) {
+            $json['message'] = 'You should be logged in';
         } else {
-            $this->renderView('users/forgetPassword');
+            $json = $user;
         }
+
+        echo json_encode($json);
+    }
+
+    // Update profile picture of user
+    public function updatePicture() {
+        // Only works only for ajax requests
+        $this->onlyAjaxRequests();
+
+        $json = [];
+        $user = $this->getLoggedInUser();
+
+        if (!$user) {
+            $json['message'] = 'You should be logged in';
+        } else {
+            $postData = json_decode($_POST['data'], true);
+            $newPicturePath = 'assets/img/user_' . $user['id'] . '/profile.png';
+            if ($postData['user_id'] != $user['id']) {
+                $json['message'] = 'You can not update another user\'s information';
+            } else if (!file_exists(APPROOT . '/' . $postData['image_path'])) {
+                $json['message'] = 'Image does not exists';
+            } else if (!copy(APPROOT . '/' . $postData['image_path'], APPROOT . '/' . $newPicturePath)) {
+                $json['message'] = 'Failed to copy image';
+            } else {
+                $this->model->updatePicture($postData['user_id'], $newPicturePath);
+                $json['path'] = $newPicturePath;
+            }
+        }
+        echo json_encode($json);
     }
 
     public function logout($url = '') {

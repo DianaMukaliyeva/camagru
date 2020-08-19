@@ -6,30 +6,6 @@ class AccountController extends Controller {
         $this->userModel = $this->getModel('User');
     }
 
-    // Check validity of token to reset password
-    public function resetPassword($token = '') {
-        if ($this->isAjaxRequest()) {
-            $postData = json_decode($_POST['data'], true);
-            $email = trim($postData['email']);
-            $json = $this->userModel->updatePassword($email, $postData['password'], $postData['confirm_password']);
-
-            if (!$json['errors']) {
-                $json['message'] = 'Password has been successfully changed.';
-            }
-            echo json_encode($json);
-        } else {
-            if (!empty($token)) {
-                $data['email'] = $this->userModel->getEmailByToken("camagru_token" . $token);
-                if ($data['email']) {
-                    $data = $this->addMessage(true, 'You can change your password', $data);
-                    $this->renderView('users/resetPassword', $data);
-                }
-            }
-            $data = $this->addMessage(false, 'Your token is invalid!', $data);
-            $this->renderView('users/resetPassword', $data);
-        }
-    }
-
     // Check validity of token for account activation
     public function activateAccount($token = '') {
         $data = [];
@@ -98,47 +74,51 @@ class AccountController extends Controller {
         echo json_encode($json);
     }
 
-    // Get all information about logged in user
-    public function userInfo() {
-        // Only works only for ajax requests
-        $this->onlyAjaxRequests();
+    public function forgetPassword() {
+        if ($this->isAjaxRequest()) {
+            $json['errors'] = [];
+            $postData = json_decode($_POST['data'], true);
+            $email = trim($postData['email']);
+            $result = $this->userModel->resetPassword($email);
 
-        $user = $this->getLoggedInUser();
+            if (isset($result['errors'])) {
+                $json['errors'] = $result['errors'];
+            } else if (isset($result['user'])) {
+                $token = str_replace('camagru_token', '', $this->userModel->getToken($email));
+                $message = "<p>To reset your password click ";
+                $message .= "<a href=\"" . URLROOT . "/account/resetPassword/" . $token . "\">here</a></p>";
+                if ($this->sendEmail($email, $result['user']['login'], $message))
+                    $json['message'] = 'An email was sent to ' . $email;
+            }
 
-        if (!$user) {
-            $json['message'] = 'You should be logged in';
+            echo json_encode($json);
         } else {
-            $json = $user;
+            $this->renderView('users/forgetPassword');
         }
-
-        echo json_encode($json);
     }
 
-    // Update profile picture of user
-    public function updatePicture() {
-        // Only works only for ajax requests
-        $this->onlyAjaxRequests();
-
-        $json = [];
-        $user = $this->getLoggedInUser();
-
-        if (!$user) {
-            $json['message'] = 'You should be logged in';
-        } else {
+    // Check validity of token to reset password
+    public function resetPassword($token = '') {
+        if ($this->isAjaxRequest()) {
             $postData = json_decode($_POST['data'], true);
-            $newPicturePath = 'assets/img/user_' . $user['id'] . '/profile.png';
-            if ($postData['user_id'] != $user['id']) {
-                $json['message'] = 'You can not update another user\'s information';
-            } else if (!file_exists(APPROOT . '/' . $postData['image_path'])) {
-                $json['message'] = 'Image does not exists';
-            } else if (!copy(APPROOT . '/' . $postData['image_path'], APPROOT . '/' . $newPicturePath)) {
-                $json['message'] = 'Failed to copy image';
-            } else {
-                $this->userModel->updatePicture($postData['user_id'], $newPicturePath);
-                $json['path'] = $newPicturePath;
+            $email = trim($postData['email']);
+            $json = $this->userModel->updatePassword($email, $postData['password'], $postData['confirm_password']);
+
+            if (!$json['errors']) {
+                $json['message'] = 'Password has been successfully changed.';
             }
+            echo json_encode($json);
+        } else {
+            if (!empty($token)) {
+                $data['email'] = $this->userModel->getEmailByToken("camagru_token" . $token);
+                if ($data['email']) {
+                    $data = $this->addMessage(true, 'You can change your password', $data);
+                    $this->renderView('users/resetPassword', $data);
+                }
+            }
+            $data = $this->addMessage(false, 'Your token is invalid!', $data);
+            $this->renderView('users/resetPassword', $data);
         }
-        echo json_encode($json);
     }
 
     // Show user profile

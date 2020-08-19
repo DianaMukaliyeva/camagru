@@ -346,7 +346,7 @@ const changeProfilePicture = function (button) {
             }
         }
     };
-    xhr.open('POST', urlpath + '/account/updatePicture/', true);
+    xhr.open('POST', urlpath + '/users/updatePicture/', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('data=' + JSON.stringify(data));
@@ -431,6 +431,9 @@ const register = function (form) {
 
 const resetPassword = function (form) {
     event.preventDefault();
+    if (!passwordValid) {
+        return;
+    }
     data = {
         'email': form.dataset.email,
         'password': form.password.value,
@@ -492,7 +495,7 @@ const forgetPassword = function (form) {
             }
         }
     }
-    xhr.open('POST', urlpath + '/users/forgetPassword/', true);
+    xhr.open('POST', urlpath + '/account/forgetPassword/', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('data=' + JSON.stringify(data));

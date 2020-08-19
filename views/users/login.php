@@ -20,7 +20,7 @@
                     <button type="submit" class="btn btn-success btn-block">Login</button>
                 </div>
                 <div class="col">
-                    <a href="<?= URLROOT ?>/users/forgetPassword" class="btn btn-light btn-block">Forgot password? Reset</a>
+                    <a href="<?= URLROOT ?>/account/forgetPassword" class="btn btn-light btn-block">Forgot password? Reset</a>
                 </div>
             </div>
         </form>

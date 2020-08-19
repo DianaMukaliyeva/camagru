@@ -1,10 +1,11 @@
 <?php
+if (isset($_SESSION['last_activity']) && $_SESSION['last_activity'] < time() - $_SESSION['expire_time']) {
     // logout if user inactive for the given expire_time
-    if (isset($_SESSION['last_activity']) && $_SESSION['last_activity'] < time() - $_SESSION['expire_time']) {
-        unset($_SESSION[APPNAME]['user']);
-    } else {
-        $_SESSION['last_activity'] = time();
-    }
+    unset($_SESSION[APPNAME]['user']);
+} else {
+    // set the moment of last activity
+    $_SESSION['last_activity'] = time();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
