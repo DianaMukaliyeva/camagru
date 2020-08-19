@@ -207,8 +207,8 @@ class User {
     public function validatePassword($password, $confirm_password, $errors = []) {
         if (!$password || empty($password)) {
             $errors['password_err'] = 'Please enter password';
-        } else if (strlen($password) < 3) {
-            $errors['password_err'] = 'Password must be at least 6 characters';
+        } else if (strlen($password) < 8 || !preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/', $password)) {
+            $errors['password_err'] = 'Password must be at least 8 characters and contain at least 1 uppercase, 1 lowercase letter and at least 1 number';
         }
 
         if (!$confirm_password || empty($confirm_password)) {

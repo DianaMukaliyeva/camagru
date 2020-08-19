@@ -6,7 +6,7 @@
         <form onsubmit="forgetPassword(this)" method="post">
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" name="email" class="form-control form-control-lg">
+                <input type="email" name="email" class="shadow-none form-control form-control-lg">
                 <span name="email_err" class="invalid-feedback"></span>
             </div>
             <div class="row">

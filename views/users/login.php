@@ -7,12 +7,12 @@
         <form onsubmit="login(this)" method="post">
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" name="email" class="form-control form-control-lg" value="">
+                <input type="email" name="email" class="shadow-none form-control form-control-lg" value="">
                 <span name="email_err" class="invalid-feedback"></span>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" name="password" class="form-control form-control-lg">
+                <input type="password" name="password" class="shadow-none form-control form-control-lg">
                 <span name="password_err" class="invalid-feedback"></span>
             </div>
             <div class="row">

@@ -10,12 +10,12 @@
         <form onsubmit="resetPassword(this)" method="post" data-email="<?= isset($data['email']) ? $data['email'] : '' ?>">
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" name="password" class="form-control form-control-lg31/">
+                <input type="password" onkeyup="checkPasswordStrength(this)" name="password" class="shadow-none form-control form-control-lg" maxlength="128" required>
                 <span name="password_err" class="invalid-feedback"></span>
             </div>
             <div class="form-group">
                 <label for="confirm_password">Confirm password:</label>
-                <input type="password" name="confirm_password" class="form-control form-control-lg">
+                <input type="password" name="confirm_password" class="shadow-none form-control form-control-lg" maxlength="128" required>
                 <span name="confirm_password_err" class="invalid-feedback"></span>
             </div>
             <div class="row">

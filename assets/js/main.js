@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 });
 
-const showImagesByTag = function(div) {
+const showImagesByTag = function (div) {
     let tag = div.firstElementChild.innerHTML;
     tag = tag.substring(1);
 
@@ -382,9 +382,13 @@ const login = function (form) {
 }
 
 let processRegister = false;
+let passwordValid = false;
 
 const register = function (form) {
     event.preventDefault();
+    if (!passwordValid) {
+        return;
+    }
     if (processRegister) {
         showMessage('Registration in process');
         return;
@@ -494,4 +498,30 @@ const forgetPassword = function (form) {
     xhr.send('data=' + JSON.stringify(data));
 }
 
+const checkPasswordStrength = function (input) {
+    let mediumRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
+    let numberRegex = new RegExp("^(?=.*[0-9])");
+    let uppercaseRegex = new RegExp("^(?=.*[A-Z])");
+    let lowercaseRegex = new RegExp("^(?=.*[a-z])");
+    let value = input.value;
 
+    let requirements = '';
+    input.classList.remove('is-invalid');
+    input.setAttribute("style", "border: 1px solid #ced4da");
+    input.nextElementSibling.innerHTML = '';
+    passwordValid = true;
+    if (value != '' && !mediumRegex.test(value)) {
+        passwordValid = false;
+        input.setAttribute("style", "border: 2px solid red;");
+        input.classList.add('is-invalid');
+        if (value.length < 8)
+            requirements += "Password must have at least 8 characters<br>";
+        if (!uppercaseRegex.test(value))
+            requirements += "Password must have at least 1 uppercase letter<br>";
+        if (!lowercaseRegex.test(value))
+            requirements += "Password must have at least 1 lowercase letter<br>";
+        if (!numberRegex.test(value))
+            requirements += "Password must have at least 1 number<br>";
+        input.nextElementSibling.innerHTML = requirements.replace(/<br>\s*$/, "");
+    }
+}
