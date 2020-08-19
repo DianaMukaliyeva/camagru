@@ -14,7 +14,7 @@
                 <div class="col-lg-2 filter_container px-0">
                     <div id="filters">
                         <input type="checkbox" onclick="toggleFilter(this.id)" id="filter_0" class='d-none' checked>
-                        <label for="filter_0" class="border label-filter">No filters</label>
+                        <label for="filter_0" class="border label-filter">Reset filters</label>
                         <?php if ($data) : ?>
                             <?php foreach ($data as $filter) : ?>
                                 <input type="checkbox" onclick="toggleFilter(this.id)" id="filter_<?= $filter['id'] ?>" class='d-none' data-path="<?= URLROOT . $filter['path'] ?>">
@@ -35,7 +35,7 @@
                     <button class="btn btn-success btn-block" id="video_stream">Stop video</button>
                 </div>
                 <div class="col pt-3 px-1 text-center">
-                    <button class="btn btn-block btn-info" id="take_photo"><img src="<?= URLROOT ?>/assets/img/images/camera.png" alt="Take photo"></button>
+                    <button class="btn btn-block btn-info" id="take_photo" disabled><img src="<?= URLROOT ?>/assets/img/images/camera.png" alt="Take photo"></button>
                 </div>
                 <div class="col pt-3 px-0 d-flex justify-content-center">
                     <input id="upload_photo" type="file" class="d-none" accept="image/*">

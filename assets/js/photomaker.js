@@ -90,6 +90,7 @@ const toggleFilter = function (id) {
             }
         }
         filters[0].checked = true;
+        takePhotoButton.disabled = !imageUploaded ? true : false;
     } else {
         document.getElementById('filter_0').checked = false;
         let filter = document.getElementById(id);
@@ -104,6 +105,7 @@ const toggleFilter = function (id) {
             videoContainer.appendChild(img);
             appliedFilters.push(filter.dataset.path);
         }
+        takePhotoButton.disabled = appliedFilters.length == 0 && !imageUploaded ? true : false;
     }
 }
 

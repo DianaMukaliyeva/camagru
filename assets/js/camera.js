@@ -78,7 +78,6 @@ const toggleStream = function (confirmStart = true) {
         }
         video.srcObject = null;
         videoStreamButton.innerHTML = "Start video";
-        takePhotoButton.disabled = true;
     } else if (video.srcObject === null && confirmStart) {
         // Check if we have uploaded image, delete it if have
         if (imageUploaded) {
@@ -86,8 +85,8 @@ const toggleStream = function (confirmStart = true) {
         }
         startStream();
         videoStreamButton.innerHTML = "Stop video";
-        takePhotoButton.disabled = false;
     }
+    takePhotoButton.disabled = appliedFilters.length == 0 && !imageUploaded ? true : false;
 }
 
 // Sends taken photo with filters on server, receives combined image
