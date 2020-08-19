@@ -2,10 +2,12 @@
 class ImagesController extends Controller {
     private $imageModel;
     private $commentModel;
+    private $tagModel;
 
     public function __construct() {
         $this->imageModel = $this->getModel('Image');
         $this->commentModel = $this->getModel('Comment');
+        $this->tagModel = $this->getModel('Tag');
     }
 
     // Return sorted images
@@ -38,7 +40,7 @@ class ImagesController extends Controller {
         $images = json_decode($_POST['images'], true);
         $profile = isset($_POST['profile']) ? true : false;
         foreach ($images as $key => $image) {
-            $images[$key]['tags'] = $this->imageModel->getTagsbyImageId($image['id']);
+            $images[$key]['tags'] = $this->tagModel->getTagsbyImageId($image['id']);
         }
 
         $this->renderView('images/gallery', ['images' => $images, 'profile' => $profile]);
@@ -49,7 +51,7 @@ class ImagesController extends Controller {
         if (!$tag)
             $this->redirect('');
 
-        $this->renderView('images/tagImages', ['tag' => $tag]);
+        $this->renderView('images/search', ['tag' => $tag]);
     }
 
     // Delete image from db
@@ -86,7 +88,7 @@ class ImagesController extends Controller {
         $json = $this->imageModel->getImageFullInfo($imageId, $loggedUserId);
 
         if ($json) {
-            $json['tags'] = $this->imageModel->getTagsbyImageId($imageId);
+            $json['tags'] = $this->tagModel->getTagsbyImageId($imageId);
             $json['comments'] = $this->commentModel->getComments($imageId);
             $json['logged_in_user'] = $user ? $user['login'] : false;
             $json['logged_user_id'] = $loggedUserId;

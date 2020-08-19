@@ -133,49 +133,4 @@ class Image {
 
         return $result;
     }
-
-    // Add comment to image
-    public function addTag($imageId, $tag) {
-        $dataToInsert = [
-            'image_id' => $imageId,
-            'tag' => filter_var($tag, FILTER_SANITIZE_STRING)
-        ];
-        $result = Db::insert('tags', $dataToInsert);
-
-        return $result;
-    }
-
-    // Get all tags of image
-    public function getTagsbyImageId($imageId) {
-        $result = Db::queryAll(
-            'SELECT tag FROM `tags`
-            LEFT JOIN `images` ON images.id = tags.image_id WHERE `image_id` = ?',
-            [$imageId]
-        );
-
-        return $result;
-    }
-
-    // Search tags
-    public function searchTags($search) {
-        $search = '%' . $search . '%';
-        $result = Db::queryAll(
-            "SELECT * FROM `tags`
-            WHERE `tag` LIKE ?",
-            [$search]
-        );
-
-        return $result;
-    }
-
-    // Search tags
-    public function tagExists($tag) {
-        $result = Db::query(
-            "SELECT * FROM `tags`
-            WHERE `tag` LIKE ?",
-            [$tag]
-        );
-
-        return $result;
-    }
 }

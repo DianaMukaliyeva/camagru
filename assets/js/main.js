@@ -7,7 +7,6 @@ let searchRequest = null;
 document.addEventListener("DOMContentLoaded", function (event) {
     burger.addEventListener('click', function () { nav.classList.toggle('collapse'); })
     search.addEventListener('search', function () {
-        console.log('close');
         document.getElementById('live_search_columns').classList.add('d-none');
     });
     search.addEventListener('keyup', function () {
@@ -31,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         searchRequest.onreadystatechange = function () {
             if (searchRequest.readyState == 4 && searchRequest.status == 200) {
                 let result = JSON.parse(searchRequest.responseText);
-                console.log(result);
+                // console.log(result);
                 searchResultContainer.classList.remove('d-none');
                 // console.log(searchResultContainer.classList);
                 if (result['message']) {
@@ -39,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 } else if (result['users']) {
                     fillSearchUsersResult(searchResultContainer, result['users']);
                 } else if (result['tags']) {
-                    console.log('search by tag');
+                    // console.log('search by tag');
                     result['tags'].forEach(tag => {
                         let html = `
                         <div role="button" class="row py-1 on-hover" onclick="showImagesByTag(this)">

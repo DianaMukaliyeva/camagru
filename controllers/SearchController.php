@@ -2,10 +2,12 @@
 class SearchController extends Controller {
     private $imageModel;
     private $userModel;
+    private $tagModel;
 
     public function __construct() {
         $this->imageModel = $this->getModel('Image');
         $this->userModel = $this->getModel('User');
+        $this->tagModel = $this->getModel('Tag');
     }
 
     // Like or unlike image
@@ -29,7 +31,7 @@ class SearchController extends Controller {
         $search = $_POST['data'];
         $json['tags'] = [];
         if ($search != '') {
-            $json['tags'] = $this->imageModel->searchTags($search);
+            $json['tags'] = $this->tagModel->searchTags($search);
         }
 
         if (!$json['tags'] && $search != '' )

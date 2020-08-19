@@ -2,10 +2,12 @@
 class CameraController extends Controller {
     private $imageModel;
     private $filterModel;
+    private $tagModel;
 
     public function __construct() {
         $this->imageModel = $this->getModel('Image');
         $this->filterModel = $this->getModel('Filter');
+        $this->tagModel = $this->getModel('Tag');
     }
 
     // Render view of page with camera
@@ -45,7 +47,7 @@ class CameraController extends Controller {
                     $imageId = Db::getLastId();
                     $json['tags'] = array_filter(explode('#', $image['tags']));
                     foreach ($json['tags'] as $tag) {
-                        $this->imageModel->addTag($imageId, $tag);
+                        $this->tagModel->addTag($imageId, $tag);
                     }
                 } else {
                     $json['message'] = "You can't upload something else than images";
