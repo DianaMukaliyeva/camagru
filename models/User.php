@@ -5,8 +5,7 @@ class User {
     public function searchUsers($search) {
         $search = '%' . $search . '%';
         $result = Db::queryAll(
-            "SELECT * FROM `users`
-            WHERE `login` LIKE ? OR `first_name` LIKE ? OR `last_name` LIKE ? ",
+            "SELECT * FROM `users` WHERE `login` LIKE ? OR `first_name` LIKE ? OR `last_name` LIKE ? ",
             [$search, $search, $search]
         );
 
@@ -25,15 +24,14 @@ class User {
                 (SELECT COUNT(`id`) FROM `followers`
                 WHERE `user_id_followed` = users.id AND `user_id_follower` = ?) AS user_follow,
                 (SELECT COUNT(`id`) FROM `images`
-                WHERE `user_id` = users.id) AS images_amount
-                FROM `users` WHERE users.id = ?",
+                WHERE `user_id` = users.id) AS images_amount FROM `users` WHERE users.id = ?",
             [$loggedUserId, $userId]
         );
         return isset($result[0]) ? $result[0] : $result;
     }
 
     // Get user by given parameter
-    // Ex: $data = ['id' => userid]
+    // Example of data: $data = ['id' => userid]
     public function findUser($data) {
         $result = Db::queryOne(
             "SELECT `id`, `login`, `first_name`, `last_name`, `password`, `token`,
@@ -87,7 +85,6 @@ class User {
 
     // Get user's email by token
     public function getEmailByToken($token) {
-
         $result = Db::queryOne('SELECT `email` FROM `users` WHERE `token` = ?', [$token]);
 
         return isset($result['email']) ? $result['email'] : $result;
@@ -122,9 +119,11 @@ class User {
     public function resetPassword($email) {
         $user = $this->findUser(['email' => $email]);
         $errors = $this->validateExistingEmail($email, $user);
+
         if (!$errors) {
             $this->updateToken(bin2hex(random_bytes(50)), $email);
         }
+
         return $errors ? ['errors' => $errors] : ['user' => $user];
     }
 
@@ -208,7 +207,8 @@ class User {
         if (!$password || empty($password)) {
             $errors['password_err'] = 'Please enter password';
         } else if (strlen($password) < 8 || !preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/', $password)) {
-            $errors['password_err'] = 'Password must be at least 8 characters and contain at least 1 uppercase, 1 lowercase letter and at least 1 number';
+            $errors['password_err'] = 'Password must be at least 8 characters and contain at least 1 uppercase,
+                1 lowercase letter and at least 1 number';
         }
 
         if (!$confirm_password || empty($confirm_password)) {

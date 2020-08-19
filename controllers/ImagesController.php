@@ -28,7 +28,8 @@ class ImagesController extends Controller {
             }
             echo json_encode($images);
         } else {
-            $this->renderView('images/index');
+            $tag = $this->tagModel->isExistTag($sort);
+            $this->renderView('images/index', ['tag' => $tag]);
         }
     }
 
@@ -44,14 +45,6 @@ class ImagesController extends Controller {
         }
 
         $this->renderView('images/gallery', ['images' => $images, 'profile' => $profile]);
-    }
-
-    public function imagesByTag(...$param) {
-        $tag = isset($param[0]) ? $param[0] : false;
-        if (!$tag)
-            $this->redirect('');
-
-        $this->renderView('images/search', ['tag' => $tag]);
     }
 
     // Delete image from db

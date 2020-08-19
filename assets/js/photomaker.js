@@ -2,6 +2,8 @@ const videoContainer = document.getElementById('video_container');
 const uploadImageButton = document.getElementById('upload');
 let appliedFilters = [];
 
+uploadImageButton.addEventListener('click', toggleUploadImage);
+
 // show how many Images in preview
 const changeImagesInPreview = function () {
     document.getElementById('images_header').innerHTML = "Preview (" + imagesInCapture + ")";
@@ -141,5 +143,3 @@ const toggleUploadImage = function () {
         }
     }
 }
-
-uploadImageButton.addEventListener('click', toggleUploadImage);

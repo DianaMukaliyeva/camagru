@@ -34,4 +34,15 @@ class Tag {
 
         return $result;
     }
+
+    // Check if tag exists
+    public function isExistTag($tag) {
+        $result = Db::queryOne(
+            "SELECT `tag` FROM `tags`
+            WHERE `tag` LIKE ?",
+            [$tag]
+        );
+
+        return isset($result['tag']) ? $result['tag'] : $result;
+    }
 }

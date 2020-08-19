@@ -60,7 +60,7 @@ const showImagesByTag = function (div) {
     let tag = div.firstElementChild.innerHTML;
     tag = tag.substring(1);
 
-    window.location = urlpath + '/images/imagesByTag/' + tag;
+    window.location = urlpath + '/images/getImages/' + tag;
 };
 
 const fillSearchUsersResult = function (div, users) {
