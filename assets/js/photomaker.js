@@ -120,14 +120,14 @@ const toggleUploadImage = function () {
         document.getElementById('upload_photo').onchange = function () {
             imageUploaded = true;
             toggleStream(false);
-            uploadImageButton.value = "Delete photo";
-            takePhotoButton.disabled = false;
             const img = document.getElementById('upload_photo').files[0];
             const reader = new FileReader();
             reader.onload = function () {
                 const img = new Image();
                 img.onload = function () {
                     const img = document.createElement('img');
+                    uploadImageButton.value = "Delete photo";
+                    takePhotoButton.disabled = false;
                     img.src = this.src;
                     img.classList.add("video_overlay", "embed-responsive-item");
                     img.id = "uploaded_photo";
