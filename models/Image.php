@@ -44,6 +44,29 @@ class Image {
         return $result;
     }
 
+    // Get user's images ordered by date
+    public function getImagesByTag($tag, $loggedUserId = 0) {
+        $result = Db::queryAll(
+            'SELECT images.id, images.image_path, images.created_at,
+                images.user_id, users.login, users.picture,
+                (SELECT COUNT(id) FROM `likes` where likes.user_id = ? AND likes.image_id = images.id) AS user_liked,
+                (SELECT COUNT(id) FROM `comments` where comments.user_id = ? AND comments.image_id = images.id) AS user_commented,
+                COUNT(DISTINCT(likes.id)) AS `likes_amount`,
+                COUNT(DISTINCT(comments.id)) AS `comments_amount`
+                FROM `images`
+                LEFT JOIN `users` ON users.id = images.user_id
+                LEFT JOIN `likes` ON likes.image_id = images.id
+                LEFT JOIN `comments` ON comments.image_id = images.id
+                LEFT JOIN `tags` ON tags.image_id = images.id
+                WHERE tags.tag = ?
+                GROUP BY images.id
+                ORDER BY `created_at` DESC',
+            [$loggedUserId, $loggedUserId, $tag]
+        );
+
+        return $result;
+    }
+
     // Get all images ordered by likes and comments
     public function getImagesByLikes($userId = 0) {
         $result = Db::queryAll(
@@ -128,6 +151,29 @@ class Image {
             'SELECT tag FROM `tags`
             LEFT JOIN `images` ON images.id = tags.image_id WHERE `image_id` = ?',
             [$imageId]
+        );
+
+        return $result;
+    }
+
+    // Search tags
+    public function searchTags($search) {
+        $search = '%' . $search . '%';
+        $result = Db::queryAll(
+            "SELECT * FROM `tags`
+            WHERE `tag` LIKE ?",
+            [$search]
+        );
+
+        return $result;
+    }
+
+    // Search tags
+    public function tagExists($tag) {
+        $result = Db::query(
+            "SELECT * FROM `tags`
+            WHERE `tag` LIKE ?",
+            [$tag]
         );
 
         return $result;

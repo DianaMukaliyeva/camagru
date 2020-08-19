@@ -63,8 +63,7 @@ const sortImages = function (sorting) {
 }
 
 // Send request to server to get list of images sorted by sorting parameter
-const getSortedImages = function (sorting) {
-
+const getSortedImages = function (sorting, tag = false) {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -85,7 +84,10 @@ const getSortedImages = function (sorting) {
             }
         }
     }
-    xmlhttp.open("GET", urlpath + "/images/getImages/" + sorting, true);
+    if (tag)
+        xmlhttp.open("GET", urlpath + "/images/getImages/" + sorting + "/tag", true);
+    else
+        xmlhttp.open("GET", urlpath + "/images/getImages/" + sorting, true);
     xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xmlhttp.send();
 };
@@ -148,7 +150,7 @@ const appendToContainer = function (div, users) {
     div.innerHTML = '';
     users.forEach(element => {
         let html = `
-            <div class="row">
+            <div class="row on-hover">
                 <a class="text-decoration-none" href="${urlpath}/account/profile/${element['id']}">
                     <div class="media my-3">
                         <img class="rounded-circle media-img mx-2" src="${urlpath}/${element['picture']}" alt="profile image">
@@ -166,6 +168,8 @@ const appendToContainer = function (div, users) {
 window.addEventListener('DOMContentLoaded', function (event) {
     if (document.getElementById('profile_login')) {
         getSortedImages(document.getElementById('profile_login').dataset.userId);
+    } else if (document.getElementById('tagImages')) {
+        getSortedImages(document.getElementById('tagImages').dataset.tag, true);
     } else {
         sortImages('newest');
     }

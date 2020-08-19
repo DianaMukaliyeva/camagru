@@ -1,8 +1,89 @@
 // set up work of navigation menu on mobile screen
 const burger = document.querySelector('.navbar-toggler');
 const nav = document.querySelector(burger.dataset.target);
+const search = document.getElementById('search');
+let searchRequest = null;
 
-burger.addEventListener('click', function () { nav.classList.toggle('collapse'); })
+document.addEventListener("DOMContentLoaded", function (event) {
+    burger.addEventListener('click', function () { nav.classList.toggle('collapse'); })
+    search.addEventListener('search', function () {
+        console.log('close');
+        document.getElementById('live_search_columns').classList.add('d-none');
+    });
+    search.addEventListener('keyup', function () {
+        let value = this.value;
+        let search = 'users';
+        const searchResultContainer = document.getElementById('live_search_columns');
+        searchResultContainer.innerHTML = '';
+        if (searchRequest)
+            searchRequest.abort();
+        if (value == '') {
+            searchResultContainer.classList.add('d-none');
+            return;
+        }
+        if (value.substring(0, 1) == '#') {
+            if (value.length == 1)
+                return;
+            value = value.substring(1);
+            search = 'tags';
+        }
+        searchRequest = new XMLHttpRequest();
+        searchRequest.onreadystatechange = function () {
+            if (searchRequest.readyState == 4 && searchRequest.status == 200) {
+                let result = JSON.parse(searchRequest.responseText);
+                console.log(result);
+                searchResultContainer.classList.remove('d-none');
+                // console.log(searchResultContainer.classList);
+                if (result['message']) {
+                    searchResultContainer.innerHTML = 'No results';
+                } else if (result['users']) {
+                    fillSearchUsersResult(searchResultContainer, result['users']);
+                } else if (result['tags']) {
+                    console.log('search by tag');
+                    result['tags'].forEach(tag => {
+                        let html = `
+                        <div role="button" class="row py-1 on-hover" onclick="showImagesByTag(this)">
+                            <span>#${tag['tag']}</span>
+                        </div>`;
+                        searchResultContainer.innerHTML += html;
+                    });
+                }
+            }
+        };
+        searchRequest.open('POST', urlpath + '/search/' + search, true);
+        searchRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        searchRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        searchRequest.send('data=' + value);
+    });
+});
+
+const showImagesByTag = function(div) {
+    let tag = div.firstElementChild.innerHTML;
+    tag = tag.substring(1);
+
+    window.location = urlpath + '/images/imagesByTag/' + tag;
+};
+
+const fillSearchUsersResult = function (div, users) {
+    div.innerHTML = '';
+    const innerDiv = document.createElement('div');
+    users.forEach(element => {
+        let html = `
+            <div class="row on-hover">
+                <a class="text-decoration-none" href="${urlpath}/account/profile/${element['id']}">
+                    <div class="media my-3">
+                        <img class="rounded-circle media-img mx-2" src="${urlpath}/${element['picture']}" alt="profile image">
+                        <div class="media-body">
+                            <div class="font-weight-bold">${element['login']}</div>
+                            <div>${element['first_name']} ${element['last_name']}</div>
+                        </div>
+                    </div>
+                </a>
+            </div>`;
+        innerDiv.innerHTML += html;
+    });
+    div.appendChild(innerDiv);
+}
 
 // the root location of our project
 const urlpath = '/' + window.location.pathname.split('/')[1];
@@ -169,11 +250,11 @@ const like = function (button) {
                 return;
             }
             if (result['success'] == 'liked') {
-                button.childNodes[0].classList.add('user_act');
+                document.getElementById('like_button_' + imageId).childNodes[0].classList.add('user_act');
             } else {
-                button.childNodes[0].classList.remove('user_act');
+                document.getElementById('like_button_' + imageId).childNodes[0].classList.remove('user_act');
             }
-            button.childNodes[0].classList.toggle('user_act');
+            // button.childNodes[0].classList.toggle('user_act');
             button.childNodes[1].innerHTML = ' ' + result['likes_amount'];
             if (button.id == 'modal_like_button') {
                 if (result['success'] == 'liked') {
@@ -413,3 +494,5 @@ const forgetPassword = function (form) {
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('data=' + JSON.stringify(data));
 }
+
+

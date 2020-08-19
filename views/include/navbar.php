@@ -1,4 +1,4 @@
-<nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="fixed-top navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="<?= URLROOT ?>">
             <img src="<?= URLROOT ?>/assets/img/images/logo1.png" alt="Logo" style="height:40px;">
@@ -8,9 +8,9 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <form class="form-inline my-2 mx-5 my-lg-0 ml-auto">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+            <form class="form-inline my-2 mx-5 my-lg-0 ml-auto position-relative" autocomplete="off">
+                <input class="form-control" id="search" type="search" placeholder="Search" aria-label="Search">
+                <div class="live_search position-absolute rounded p-2 d-none" id="live_search_columns"></div>
             </form>
             <ul class="navbar-nav">
                 <?php if (isset($_SESSION[APPNAME]['user'])) : ?>

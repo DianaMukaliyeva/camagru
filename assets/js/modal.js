@@ -84,6 +84,12 @@ const fillModalProfile = function () {
 
 // get info about image and fill modal window with it
 const fillModalImage = function (imageId) {
+    document.getElementById('modal_image').src = urlpath + '/assets/img/images/loading.png';
+    document.getElementById('modal_delete_button').classList.add('d-none');
+    document.getElementById('modal_image_tags').innerHTML = '';
+    document.getElementById('modal_change_picture').classList.add('d-none');
+    document.getElementById('modal_follow_button').classList.add('d-none');
+    document.getElementById('modal_image_comments').innerHTML = '';
     let xhr = new XMLHttpRequest();
     xhr.open('GET', urlpath + '/images/imageInfo/' + imageId, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -95,7 +101,6 @@ const fillModalImage = function (imageId) {
                 showMessage(result['message'], true);
                 return;
             }
-            document.getElementById('modal_image').src = urlpath + '/' + result['image_path'];
             fillComments(result['comments'], result['logged_user_id']);
             document.getElementById('modal_profile_photo').src = urlpath + '/' + result['picture'];
             document.getElementById('modal_profile_photo').name = 'picture_' + result['user_id'];
@@ -136,6 +141,7 @@ const fillModalImage = function (imageId) {
                     document.getElementById('modal_image_tags').innerHTML += '#' + element['tag'] + ' ';
                 });
             }
+            document.getElementById('modal_image').src = urlpath + '/' + result['image_path'];
             document.getElementById('modal_image_tags').dataset.imageId = imageId;
         }
     };

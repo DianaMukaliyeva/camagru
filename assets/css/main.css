@@ -40,6 +40,23 @@ footer {
     padding: 70px 0 160px;
 }
 
+.live_search {
+    max-height: 350px;
+    width: 100%;
+    background-color: white;
+    color: black;
+    top: 45px;
+    overflow: auto;
+}
+
+.minus-ml {
+    margin-left: -25px;
+}
+
+.on-hover:hover {
+    background-color: rgb(223, 222, 222);
+}
+
 .row {
     margin: 0;
 }
@@ -81,6 +98,11 @@ footer {
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
+#search {
+    background: white url('../img/images/search.png') no-repeat scroll left center;
+    padding-left: 35px;
+}
+
 @-webkit-keyframes fadein {
     from {top: 0; opacity: 0;}
     to {top: 100px; opacity: 1;}
@@ -99,4 +121,10 @@ footer {
 @keyframes fadeout {
     from {top: 100px; opacity: 1;}
     to {top: 0; opacity: 0;}
+}
+
+@media only screen and (min-device-width: 576px) and (max-device-width: 767px) {
+    .live_search {
+        width: 50%;
+    }
 }

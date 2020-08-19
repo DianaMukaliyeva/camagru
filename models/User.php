@@ -1,6 +1,18 @@
 <?php
 class User {
 
+    // Search user's
+    public function searchUsers($search) {
+        $search = '%' . $search . '%';
+        $result = Db::queryAll(
+            "SELECT * FROM `users`
+            WHERE `login` LIKE ? OR `first_name` LIKE ? OR `last_name` LIKE ? ",
+            [$search, $search, $search]
+        );
+
+        return $result;
+    }
+
     // Get all user's information
     public function getUserInfo($userId, $loggedUserId = 0) {
         $result = Db::queryOne(

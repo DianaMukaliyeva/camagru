@@ -19,6 +19,8 @@ class ImagesController extends Controller {
                 $images = $this->imageModel->getImagesByLikes($userId);
             } else if ($sort == 'newest') {
                 $images = $this->imageModel->getImagesByDate($userId);
+            } else if (isset($param[1]) && $param[1] == 'tag') {
+                $images = $this->imageModel->getImagesByTag($sort, $userId);
             } else {
                 $images = $this->imageModel->getImagesByUser($sort, $userId);
             }
@@ -40,6 +42,14 @@ class ImagesController extends Controller {
         }
 
         $this->renderView('images/gallery', ['images' => $images, 'profile' => $profile]);
+    }
+
+    public function imagesByTag(...$param) {
+        $tag = isset($param[0]) ? $param[0] : false;
+        if (!$tag)
+            $this->redirect('');
+
+        $this->renderView('images/tagImages', ['tag' => $tag]);
     }
 
     // Delete image from db
