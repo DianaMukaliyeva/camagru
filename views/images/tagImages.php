@@ -1,7 +1,10 @@
 <?php require 'views/include/header.php' ?>
 <?php require 'views/modals/image.php' ?>
 
-<div id="tagImages" data-tag=<?= isset($data['tag']) ? $data['tag'] : ''?>></div>
+<div class="text-center" id="tagImages" data-tag="<?= $data['tag'] ?>">
+<h2 class="py-3">All images with tag #<?= $data['tag'] ?></h2>
+
+</div>
 
 <!-- gallery -->
 <div class="container article-list px-0 px-sm-4" id="article-list"></div>
