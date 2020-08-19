@@ -2,8 +2,7 @@
 <?php require 'views/modals/image.php' ?>
 
 <div class="text-center" id="tagImages" data-tag="<?= $data['tag'] ?>">
-<h2 class="py-3">All images with tag #<?= $data['tag'] ?></h2>
-
+    <h2 class="py-3">All images with tag #<?= $data['tag'] ?></h2>
 </div>
 
 <!-- gallery -->

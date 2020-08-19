@@ -88,6 +88,7 @@ class Controller {
 
     // Redirect if request is not ajax
     public function onlyAjaxRequests() {
+        $_SESSION['last_activity'] = time(); //user's last activity
         if (!$this->isAjaxRequest()) {
             $this->redirect('');
         }

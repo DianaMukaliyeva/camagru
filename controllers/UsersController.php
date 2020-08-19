@@ -7,6 +7,10 @@ class UsersController extends Controller {
     }
 
     private function createUserSession($user) {
+        // set user's last activity
+        $_SESSION['last_activity'] = time();
+        // set expare time of inactive
+        $_SESSION['expire_time'] = 30 * 60;
         unset($user['password']);
         $_SESSION[APPNAME]['user'] = $user;
         $this->redirect('');
