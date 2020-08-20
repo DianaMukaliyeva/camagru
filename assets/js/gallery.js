@@ -143,12 +143,12 @@ const loadMore = function () {
         return;
     }
 
-    request_in_progress = true;
     let page = parseInt(loadMoreButton.getAttribute('data-page'));
     let size = images ? images.length : 0;
     let next_page = page + 1;
     if (size > page * imagesOnPage) {
         addPaginationPage(next_page);
+        request_in_progress = true;
 
         let xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {

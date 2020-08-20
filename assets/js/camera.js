@@ -82,6 +82,7 @@ const toggleStream = function (confirmStart = true) {
             track.stop();
         }
         video.srcObject = null;
+        streaming = false;
         videoStreamButton.innerHTML = "Start video";
     } else if (video.srcObject === null && confirmStart) {
         // Check if we have uploaded image, delete it if have
@@ -98,9 +99,13 @@ const toggleStream = function (confirmStart = true) {
 const takePhoto = function () {
     let data = {};
     const canvas = document.createElement("canvas");
-    const imageToSend = imageUploaded ? document.getElementById('uploaded_photo') : video;
+    const imageToSend = !streaming ? document.getElementById('uploaded_photo') : video;
     canvas.width = width;
     canvas.height = height;
+    if (appliedFilters.length == 0 && streaming) {
+        showMessage('Please, apply filters', true);
+        return;
+    }
     if (!imageToSend) {
         showMessage('Please, start video or upload an image', true);
         return;
@@ -139,12 +144,12 @@ const takePhoto = function () {
 
 // Upload/remove image
 const toggleUploadImage = function () {
+    takePhotoButton.disabled = true;
     if (imageUploaded) {
         imageUploaded = false;
         document.getElementById('uploaded_photo').remove();
         document.getElementById('upload_photo').value = '';
         uploadImageButton.value = "Upload photo";
-        takePhotoButton.disabled = true;
     } else {
         document.getElementById('upload_photo').click();
         document.getElementById('upload_photo').onchange = function () {

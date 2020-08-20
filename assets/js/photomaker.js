@@ -99,6 +99,7 @@ const toggleFilter = function (id) {
         if (appliedFilters.includes(filter.dataset.path)) {
             appliedFilters = appliedFilters.filter(item => item !== filter.dataset.path);
             document.getElementById('applied_' + id).remove();
+            console.log('1');
         } else {
             const img = document.createElement('img');
             img.id = "applied_" + id;
@@ -106,7 +107,14 @@ const toggleFilter = function (id) {
             img.classList.add("video_overlay", "embed-responsive-item");
             videoContainer.appendChild(img);
             appliedFilters.push(filter.dataset.path);
+            console.log('2');
         }
-        takePhotoButton.disabled = appliedFilters.length == 0 && !imageUploaded ? true : false;
+        console.log('3');
+        if ((appliedFilters.length == 0 && !imageUploaded) || (!imageUploaded && !streaming)) {
+            takePhotoButton.disabled = true;
+        } else {
+            takePhotoButton.disabled = false;
+        }
+        // takePhotoButton.disabled = appliedFilters.length == 0 && !imageUploaded ? true : false;
     }
 }
