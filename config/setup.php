@@ -140,6 +140,7 @@ try {
     }
 
     echo "db_created.";
+    header('Location: /' . basename(dirname(dirname($_SERVER['PHP_SELF']))));
 } catch (Exception $e) {
     die($e->getMessage());
 }

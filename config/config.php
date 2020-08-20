@@ -11,11 +11,6 @@ $_SESSION['expire_time'] = 60 * 30;
 
 require_once('database.php');
 
-// Autoload Components
-spl_autoload_register(function ($class) {
-    require_once 'components/' . $class . '.php';
-});
-
 // Application URL
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
     $urlroot = "https://";
@@ -33,4 +28,11 @@ define('APPNAME', basename(dirname($_SERVER['PHP_SELF'])));
 // Define the whole path to application root folder
 define('APPROOT', dirname(dirname(__FILE__)));
 
-Db::connect($DB_DSN, $DB_USER, $DB_PASSWORD, $DB_NAME);
+// Autoload Components
+spl_autoload_register(function ($class) {
+    require_once APPROOT . '/components/' . $class . '.php';
+});
+
+if ($ex = Db::connect($DB_DSN, $DB_USER, $DB_PASSWORD, $DB_NAME)) {
+    exit('You have database error: ' . $ex->getMessage());
+}

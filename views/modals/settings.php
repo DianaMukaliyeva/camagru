@@ -41,7 +41,7 @@
                     <div class="row py-1">
                         <div class="col-sm-4">New password:</div>
                         <div class="col-sm-4 pr-sm-1 pb-1 pb-sm-0">
-                            <input type="password" class="form-control" name="new_pswd" placeholder="new password" maxlength="25">
+                            <input type="password" onkeyup="checkPasswordStrength(this)" class="form-control" name="new_pswd" placeholder="new password" maxlength="25">
                             <span id="modal_password_err" class="invalid-feedback"></span>
                         </div>
                         <div class="col-sm-4 pl-sm-1">

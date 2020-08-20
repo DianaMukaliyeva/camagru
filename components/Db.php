@@ -14,10 +14,20 @@ final class Db {
 
     // Connects to the database using given credentials
     public static function connect($host, $user, $password, $db_name = '') {
-        if (!isset(self::$conn)) {
-            $dsn = $host . ';dbname=' . $db_name;
-            self::$conn = new PDO($dsn, $user, $password, self::$settings);
+        try {
+            if (!isset(self::$conn)) {
+                $dsn = $host . ';dbname=' . $db_name;
+                self::$conn = new PDO($dsn, $user, $password, self::$settings);
+            }
+            return false;
+        } catch (Exception $e) {
+            if ($e->getCode() == 1049) {
+                header('Location: '  . URLROOT . '/config/setup.php');
+                return false;
+            }
+            return $e;
         }
+
     }
 
     // Executes a query and returns the number of affected rows

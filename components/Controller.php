@@ -2,7 +2,7 @@
 class Controller {
 
     // Redirect to the given address
-    public function redirect($url) {
+    public function redirect($url = '') {
         header("Location: " . URLROOT . "/$url");
         header('Connection: close');
         exit;
@@ -83,7 +83,6 @@ class Controller {
         }
         $data = $this->addMessage(false, 'You need log in first');
         $this->renderView('users/login', $data);
-        exit();
     }
 
     // Redirect if request is not ajax

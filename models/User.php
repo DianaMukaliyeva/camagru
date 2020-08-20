@@ -235,30 +235,28 @@ class User {
         // Validate First Name
         if (!$data['first_name'] || empty($data['first_name'])) {
             $errors['first_name_err'] = 'Please enter first name';
-        } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['first_name'])) {
-            $errors['first_name_err'] =
-                "Name must start with letter and include letters and numbers only";
+        } else if (!preg_match('/^[A-Za-z0-9]{0,}$/', $data['first_name'])) {
+            $errors['first_name_err'] = "Name must include letters and numbers only";
         } else if (strlen($data['first_name']) > 45) {
-            $errors['first_name_err'] =  "Name must be less than 45 characters";
+            $errors['first_name_err'] = "Name must be less than 45 characters";
         }
 
         // Validate Last Name
         if (!$data['last_name'] || empty($data['last_name'])) {
             $errors['last_name_err'] = 'Please enter last name';
-        } else if (!preg_match('/^[a-zA-z]+([ \'-][a-zA-Z]+)*$/', $data['last_name'])) {
-            $errors['last_name_err'] =
-                "Last name must start with letter and include letters and numbers only";
+        } else if (!preg_match('/^[A-Za-z0-9]{0,}$/', $data['last_name'])) {
+            $errors['last_name_err'] = "Last name must include letters and numbers only";
         } else if (strlen($data['last_name']) > 45) {
-            $errors['last_name_err'] =  "Last name must be less than 45 characters";
+            $errors['last_name_err'] = "Last name must be less than 45 characters";
         }
 
         // Validate login
         if (!$data['login'] || empty($data['login'])) {
             $errors['login_err'] = 'Please enter login';
         } else if (!preg_match('/^[A-Za-z0-9]{0,}$/', $data['login'])) {
-            $errors['login_err'] =  "Login must include letters and numbers only";
+            $errors['login_err'] = "Login must include letters and numbers only";
         } else if (strlen($data['login']) > 25) {
-            $errors['login_err'] =  "Login must be less than 25 characters";
+            $errors['login_err'] = "Login must be less than 25 characters";
         } else if (!$update && $this->getEmailByLogin($data['login'])) {
             $errors['login_err'] = 'This login has already been taken';
         }

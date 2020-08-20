@@ -6,14 +6,6 @@ class UsersController extends Controller {
         $this->model = $this->getModel('User');
     }
 
-    private function createUserSession($user) {
-        // set user's last activity
-        $_SESSION['user-' . $user['id']]['last_activity'] = time();
-        unset($user['password']);
-        $_SESSION[APPNAME]['user'] = $user;
-        $this->redirect('');
-    }
-
     public function login() {
         if ($this->isAjaxRequest()) {
             $postData = json_decode($_POST['data'], true);
@@ -22,7 +14,11 @@ class UsersController extends Controller {
             $json = $this->model->login($email, $password);
 
             if (isset($json['user'])) {
-                $this->createUserSession($json['user']);
+                // set user's last activity
+                $_SESSION['user-' . $json['user']['id']]['last_activity'] = time();
+                unset($$json['user']['password']);
+                $_SESSION[APPNAME]['user'] = $json['user'];
+                $this->redirect('');
             }
             echo json_encode($json);
         } else {

@@ -9,7 +9,8 @@ class AccountController extends Controller {
     // Check validity of token for account activation
     public function activateAccount($token = '') {
         $data = [];
-
+        if (isset($_SESSION[APPNAME]['user']))
+            $this->redirect('');
         if (!empty($token)) {
             $data['email'] = $this->userModel->getEmailByToken("camagru_token" . $token);
             if ($data['email'] && $this->userModel->activateAccountByEmail($data['email'])) {
@@ -109,6 +110,7 @@ class AccountController extends Controller {
             }
             echo json_encode($json);
         } else {
+            $data = [];
             if (!empty($token)) {
                 $data['email'] = $this->userModel->getEmailByToken("camagru_token" . $token);
                 if ($data['email']) {
@@ -127,7 +129,7 @@ class AccountController extends Controller {
         $loggedUser = $this->getLoggedInUser();
 
         if (!$id) {
-            $this->renderView('images/index');
+            $this->redirect('');
         } else if (!$loggedUser) {
             // not logged user looks at someone's profile
             $userInfo = $this->userModel->getUserInfo($id);
