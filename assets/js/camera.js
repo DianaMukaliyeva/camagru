@@ -30,6 +30,12 @@ const photoList = document.getElementById("photo_list");
 const videoStreamButton = document.getElementById('video_stream');
 const takePhotoButton = document.getElementById('take_photo');
 
+window.addEventListener('DOMContentLoaded', function () {
+    startStream();
+    videoStreamButton.addEventListener('click', toggleStream);
+    takePhotoButton.addEventListener('click', takePhoto);
+})
+
 let streaming = false;
 let imageUploaded = false;
 let imagesInCapture = 0;
@@ -131,6 +137,35 @@ const takePhoto = function () {
     xmlhttp.send('data=' + JSON.stringify(data));
 }
 
-startStream();
-videoStreamButton.addEventListener('click', toggleStream);
-takePhotoButton.addEventListener('click', takePhoto);
+// Upload/remove image
+const toggleUploadImage = function () {
+    if (imageUploaded) {
+        imageUploaded = false;
+        document.getElementById('uploaded_photo').remove();
+        document.getElementById('upload_photo').value = '';
+        uploadImageButton.value = "Upload photo";
+        takePhotoButton.disabled = true;
+    } else {
+        document.getElementById('upload_photo').click();
+        document.getElementById('upload_photo').onchange = function () {
+            imageUploaded = true;
+            toggleStream(false);
+            const img = document.getElementById('upload_photo').files[0];
+            const reader = new FileReader();
+            reader.onload = function () {
+                const img = new Image();
+                img.onload = function () {
+                    const img = document.createElement('img');
+                    uploadImageButton.value = "Delete photo";
+                    takePhotoButton.disabled = false;
+                    img.src = this.src;
+                    img.classList.add("video_overlay", "embed-responsive-item");
+                    img.id = "uploaded_photo";
+                    videoContainer.insertBefore(img, videoContainer.firstChild);
+                };
+                img.src = this.result;
+            };
+            reader.readAsDataURL(img);
+        }
+    }
+}

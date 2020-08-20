@@ -110,36 +110,3 @@ const toggleFilter = function (id) {
         takePhotoButton.disabled = appliedFilters.length == 0 && !imageUploaded ? true : false;
     }
 }
-
-// Upload/remove image
-const toggleUploadImage = function () {
-    if (imageUploaded) {
-        imageUploaded = false;
-        document.getElementById('uploaded_photo').remove();
-        document.getElementById('upload_photo').value = '';
-        uploadImageButton.value = "Upload photo";
-        takePhotoButton.disabled = true;
-    } else {
-        document.getElementById('upload_photo').click();
-        document.getElementById('upload_photo').onchange = function () {
-            imageUploaded = true;
-            toggleStream(false);
-            const img = document.getElementById('upload_photo').files[0];
-            const reader = new FileReader();
-            reader.onload = function () {
-                const img = new Image();
-                img.onload = function () {
-                    const img = document.createElement('img');
-                    uploadImageButton.value = "Delete photo";
-                    takePhotoButton.disabled = false;
-                    img.src = this.src;
-                    img.classList.add("video_overlay", "embed-responsive-item");
-                    img.id = "uploaded_photo";
-                    videoContainer.insertBefore(img, videoContainer.firstChild);
-                };
-                img.src = this.result;
-            };
-            reader.readAsDataURL(img);
-        }
-    }
-}
