@@ -91,6 +91,9 @@ class Controller {
         if (!$this->isAjaxRequest()) {
             $this->redirect('');
         }
-        $_SESSION['last_activity'] = time(); //user's last activity
+        $user = $this->getLoggedInUser();
+        if ($user) {
+            $_SESSION['user-' . $user['id']]['last_activity'] = time(); // set user's last activity
+        }
     }
 }

@@ -35,8 +35,21 @@
                 <div class="row overflow-auto">
                     <div class="col py-2" id="profile_email"><?= $data['email'] ?></div>
                 </div>
+                <!-- last activity -->
+                <div class="row overflow-auto">
+                    <div class="col py-2" id="profile_email">
+                        <?php if (isset($_SESSION['user-' . $data['id']]['last_activity'])) : ?>
+                            <?php if ($_SESSION['user-' . $data['id']]['last_activity'] == time()) : ?>
+                                <span class="text-info">Online</span>
+                            <?php else : ?>
+                                <span class="text-info">Last seen: <?= date('d M Y H:i:s', $_SESSION['user-' . $data['id']]['last_activity']); ?></span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
+
         <!-- amount of images, followed users and following users -->
         <div class="row">
             <div class="col-sm-4"></div>

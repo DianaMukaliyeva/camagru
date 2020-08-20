@@ -1,11 +1,13 @@
 <?php
-if (isset($_SESSION['last_activity']) && $_SESSION['last_activity'] < time() - $_SESSION['expire_time']) {
-    // logout if user inactive for the given expire_time
-    unset($_SESSION[APPNAME]['user']);
-    unset($_SESSION['last_activity']);
-} else {
-    // set the moment of last activity
-    $_SESSION['last_activity'] = time();
+if (isset($_SESSION[APPNAME]['user'])) {
+    $userIdHeader = $_SESSION[APPNAME]['user']['id'];
+    if (isset($_SESSION['user-' . $userIdHeader]['last_activity']) && $_SESSION['user-' . $userIdHeader]['last_activity'] >= time() - $_SESSION['expire_time']) {
+        // set the moment of last activity
+        $_SESSION['user-' . $userIdHeader]['last_activity'] = time();
+    } else {
+        // logout if user inactive for the given expire_time
+        unset($_SESSION[APPNAME]['user']);
+    }
 }
 ?>
 <!DOCTYPE html>
