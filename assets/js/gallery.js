@@ -54,7 +54,7 @@ const scrollReaction = function () {
     }
     if (pagination) {
         pagination.classList.add('fixed');
-        if (current_y >= content_height || images.length <= imagesOnPage * parseInt(loadMoreButton.getAttribute('data-page'))) {
+        if (current_y >= content_height && images.length <= imagesOnPage * parseInt(loadMoreButton.getAttribute('data-page'))) {
             pagination.classList.remove('fixed');
         }
     }
