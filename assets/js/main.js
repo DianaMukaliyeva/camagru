@@ -115,20 +115,29 @@ const follow = function (button) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let result = JSON.parse(xhr.responseText);
+            let profileFollowButton = document.getElementById('profile_follow');
             if (result['message']) {
                 showMessage(result['message'], 'alert');
                 return;
             }
             if (result['success'] == 'Follow') {
+                if (profileFollowButton) {
+                    profileFollowButton.classList.remove('btn-outline-secondary');
+                    profileFollowButton.classList.add('btn-success');
+                }
                 button.classList.remove('btn-outline-secondary');
                 button.classList.add('btn-success');
             } else {
+                if (profileFollowButton) {
+                    profileFollowButton.classList.remove('btn-success');
+                    profileFollowButton.classList.add('btn-outline-secondary');
+                }
                 button.classList.remove('btn-success');
                 button.classList.add('btn-outline-secondary');
             }
-            if (button.id && button.id == 'profile_follow') {
-                document.getElementById('followers').innerHTML =
-                    result['followers_amount'] + ' followers';
+            if (profileFollowButton) {
+                document.getElementById('followers').innerHTML = result['followers_amount'] + ' followers';
+                profileFollowButton.innerHTML = result['success'];
             }
             button.innerHTML = result['success'];
         }

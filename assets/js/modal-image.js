@@ -16,10 +16,10 @@ const cleanModalImage = function (imageId) {
     modalImageTags.innerHTML = '';
     modalImageTags.dataset.imageId = imageId;
     modalChangePicture.classList.add('d-none');
-    modalFollowButton.classList.add('d-none', 'btn-outline-secondary');
-    modalFollowButton.innerHTML = "Unfollow";
     modalLikeButton.dataset.imageId = imageId;
     modalLikeButton.childNodes[0].classList.remove('user_act');
+    modalFollowButton.classList.remove('btn-outline-secondary', 'btn-success');
+    modalFollowButton.classList.add('d-none');
     modalImageComments.innerHTML = '';
     document.getElementById('modal_comment_form').dataset.imageId = imageId;
 }
@@ -41,6 +41,9 @@ const fillModalImageResult = function (imageId, result) {
         if (result['user_follow'] == 0) {
             modalFollowButton.classList.add('btn-success');
             modalFollowButton.innerHTML = "Follow";
+        } else {
+            modalFollowButton.classList.add('btn-outline-secondary');
+            modalFollowButton.innerHTML = "Unfollow";
         }
         modalFollowButton.classList.remove('d-none');
     }

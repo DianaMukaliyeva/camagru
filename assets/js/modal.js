@@ -11,6 +11,8 @@ window.addEventListener('click', function (event) {
 // Show toast message
 const showMessage = function (message = '', alert = false) {
     let toast = document.getElementById('message');
+    if (message == '')
+        return;
     let messages = message.split("\n");
     if (alert) {
         toast.className = "alert";
@@ -76,7 +78,7 @@ const fillModalFollow = function (param) {
 const fillModalProfile = function () {
     let form = document.getElementById('editForm');
     emptySettingErrors(form);
-
+    form.notifications.nextElementSibling.innerHTML = 'Send me email notifications';
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
