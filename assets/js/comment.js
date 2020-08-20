@@ -1,7 +1,6 @@
 // Fill modal window with comments
 const fillComments = function (comments, loggedUserId) {
-    const div = document.getElementById('modal_image_comments');
-    div.innerHTML = "<h5 class='text-center py-2'>Comments</h5>";
+    modalImageComments.innerHTML = "<h5 class='text-center py-2'>Comments</h5>";
 
     comments.forEach(comment => {
         const comment_div = document.createElement('div');
@@ -20,7 +19,7 @@ const fillComments = function (comments, loggedUserId) {
             p.getElementsByTagName('a')[1].classList.add('d-none');
 
         comment_div.appendChild(p);
-        div.appendChild(comment_div);
+        modalImageComments.appendChild(comment_div);
     });
 }
 

@@ -101,66 +101,6 @@ const fillModalProfile = function () {
     xhr.send();
 }
 
-// Get info about image and fill modal window with it
-const fillModalImage = function (imageId) {
-    document.getElementById('modal_image').src = urlpath + '/assets/img/images/loading.png';
-    document.getElementById('modal_delete_button').classList.add('d-none');
-    document.getElementById('modal_image_tags').innerHTML = '';
-    document.getElementById('modal_change_picture').classList.add('d-none');
-    document.getElementById('modal_follow_button').classList.add('d-none');
-    document.getElementById('modal_like_button').childNodes[0].classList.remove('user_act');
-    document.getElementById('modal_image_comments').innerHTML = '';
-    document.getElementById('modal_follow_button').classList.add('btn-outline-secondary');
-    document.getElementById('modal_follow_button').innerHTML = "Unfollow";
-
-    let xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            let result = JSON.parse(xhr.responseText);
-            if (result['message']) {
-                showMessage(result['message'], true);
-                return;
-            }
-            if (result['user_liked'] != 0) {
-                document.getElementById('modal_like_button').childNodes[0].classList.add('user_act');
-            }
-            if (result['tags'].length > 0) {
-                result['tags'].forEach(element => {
-                    document.getElementById('modal_image_tags').innerHTML += '#' + element['tag'] + ' ';
-                });
-            }
-            if (result['login'] == result['logged_in_user']) {
-                document.getElementById('modal_delete_button').classList.remove('d-none');
-                document.getElementById('modal_change_picture').classList.remove('d-none');
-            } else {
-                if (result['user_follow'] == 0) {
-                    document.getElementById('modal_follow_button').classList.add('btn-success');
-                    document.getElementById('modal_follow_button').innerHTML = "Follow";
-                }
-                document.getElementById('modal_follow_button').classList.remove('d-none');
-            }
-            document.getElementById('modal_profile_photo').src = urlpath + '/' + result['picture'];
-            document.getElementById('modal_profile_photo').name = 'picture_' + result['user_id'];
-            document.getElementById('modal_profile_login').parentElement.href = urlpath + '/account/profile/' + result['user_id'];
-            document.getElementById('modal_profile_login').innerHTML = result['login'];
-            document.getElementById('modal_image_date').innerHTML = result['created_at'];
-            document.getElementById('modal_like_button').childNodes[1].innerHTML = ' ' + result['like_amount'];
-            document.getElementById('modal_like_button').dataset.imageId = imageId;
-            document.getElementById('modal_comment_form').dataset.imageId = imageId;
-            document.getElementById('modal_follow_button').setAttribute('data-user-id', result['user_id']);
-            document.getElementById('modal_change_picture').setAttribute('data-user-id', result['user_id']);
-            document.getElementById('modal_change_picture').setAttribute('data-image-path', result['image_path']);
-            document.getElementById('modal_image_tags').dataset.imageId = imageId;
-            document.getElementById('modal_image').src = urlpath + '/' + result['image_path'];
-            document.getElementById('modal_delete_button').dataset.imageId = imageId;
-            fillComments(result['comments'], result['logged_user_id']);
-        }
-    };
-    xhr.open('GET', urlpath + '/images/imageInfo/' + imageId, true);
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xhr.send();
-}
-
 // Open modal window for image
 const openModal = function (param) {
     event.preventDefault();

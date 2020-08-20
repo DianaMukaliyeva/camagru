@@ -9,7 +9,9 @@
 </footer>
 </div>
 <script src="<?php echo URLROOT; ?>/assets/js/main.js"></script>
+<script src="<?php echo URLROOT; ?>/assets/js/form.js"></script>
 <script src="<?php echo URLROOT; ?>/assets/js/modal.js"></script>
+<script src="<?php echo URLROOT; ?>/assets/js/modal-image.js"></script>
 <script src="<?php echo URLROOT; ?>/assets/js/comment.js"></script>
 </body>
 
