@@ -44,7 +44,7 @@
             </div>
         </div>
         <!-- captured images -->
-        <div class="text-center col-md-4 h-70 ml-auto">
+        <div class="text-center col-md-4 h-70 ml-auto minus-mb">
             <h4 class="pb-3" id="images_header">Preview (0)</h4>
             <div class="d-none" id="display_list">
                 <div id="photo_list"></div>

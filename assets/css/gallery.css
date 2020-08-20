@@ -41,6 +41,10 @@
         position: absolute;
     }
 
+    .minus-mb {
+        margin-top: -40px;
+    }
+
     .comment_box {
         max-height: 420px;
     }

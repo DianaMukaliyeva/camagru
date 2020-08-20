@@ -2,7 +2,7 @@
 
 #photo_list {
     overflow-y: auto;
-    height: 42vh;
+    height: 50vh;
     border: 1px solid #333;
     padding: 10px 0;
 }

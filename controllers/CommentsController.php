@@ -22,9 +22,11 @@ class CommentsController extends Controller {
             $json['message'] = 'You should be logged in to comment a photo';
         } else {
             $data = json_decode($_POST['data'], true);
-            $json['comment'] = filter_var($data['comment'], FILTER_SANITIZE_STRING);
+            $json['comment'] = htmlspecialchars($data['comment']);
 
-            if (strlen($json['comment']) > 255) {
+            if (strlen($json['comment']) < 1) {
+                $json['message'] = 'Comment is empty';
+            } else if (strlen($json['comment']) > 255) {
                 $json['message'] = 'Comment is too long';
             } else if (!$this->imageModel->isImageExists($data['image_id'])) {
                 $json['message'] = 'Image does not exists';
