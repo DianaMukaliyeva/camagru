@@ -9,8 +9,6 @@ class UsersController extends Controller {
     private function createUserSession($user) {
         // set user's last activity
         $_SESSION['last_activity'] = time();
-        // set expare time of inactive
-        $_SESSION['expire_time'] = 30 * 60;
         unset($user['password']);
         $_SESSION[APPNAME]['user'] = $user;
         $this->redirect('');
@@ -113,6 +111,7 @@ class UsersController extends Controller {
     }
 
     public function logout($url = '') {
+        unset($_SESSION['last_activity']);
         unset($_SESSION[APPNAME]['user']);
         $this->redirect($url);
     }

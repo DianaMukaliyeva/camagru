@@ -50,7 +50,7 @@ class FollowersController extends Controller {
             $followed[$key] = $this->userModel->getUserInfo($user['user_id_followed']);
         }
         $json['followers'] = $followers;
-        $json['followed'] = $followed;
+        $json['following'] = $followed;
 
         echo json_encode($json);
     }

@@ -37,7 +37,7 @@ let imagesInCapture = 0;
 let width = 320; // We will scale the photo width to this
 let height = 0; // This will be computed based on the input stream
 
-// starts video stream
+// Starts video stream
 const startStream = function () {
     // ensure that our media-related code only works if getUserMedia is actually supported
     if (navigator.mediaDevices.getUserMedia) {
@@ -65,7 +65,6 @@ const startStream = function () {
         }
     }, false);
 }
-
 
 // Stop/start webcam stream
 const toggleStream = function (confirmStart = true) {

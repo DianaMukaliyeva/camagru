@@ -1,10 +1,10 @@
+let appliedFilters = [];
 const videoContainer = document.getElementById('video_container');
 const uploadImageButton = document.getElementById('upload');
-let appliedFilters = [];
 
 uploadImageButton.addEventListener('click', toggleUploadImage);
 
-// show how many Images in preview
+// Show how many Images in preview
 const changeImagesInPreview = function () {
     document.getElementById('images_header').innerHTML = "Preview (" + imagesInCapture + ")";
     if (imagesInCapture == 0)
@@ -13,14 +13,14 @@ const changeImagesInPreview = function () {
         document.getElementById('display_list').classList.remove('d-none');
 }
 
-// delete Image from preview
+// Delete Image from preview
 const deleteImageContainer = function (div) {
     this.parentElement.remove();
     imagesInCapture--;
     changeImagesInPreview();
 }
 
-// delete all images in preview
+// Delete all images in preview
 const deletePreview = function () {
     while (photoList.firstChild) {
         photoList.removeChild(photoList.firstChild);

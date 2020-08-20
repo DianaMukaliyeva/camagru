@@ -6,6 +6,9 @@ ini_set('display_startup_errors', 1);
 // Start session
 session_start();
 
+// set expare time of user's session
+$_SESSION['expire_time'] = 60 * 30;
+
 require_once('database.php');
 
 // Autoload Components

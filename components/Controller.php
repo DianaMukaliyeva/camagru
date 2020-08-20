@@ -58,8 +58,6 @@ class Controller {
 
     // Check if request is ajax or not
     public function isAjaxRequest() {
-        $_SESSION['last_activity'] = time(); //user's last activity
-
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
             $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
     }
@@ -93,5 +91,6 @@ class Controller {
         if (!$this->isAjaxRequest()) {
             $this->redirect('');
         }
+        $_SESSION['last_activity'] = time(); //user's last activity
     }
 }
