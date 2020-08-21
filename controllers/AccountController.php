@@ -22,6 +22,7 @@ class AccountController extends Controller {
             } else {
                 $data = $this->addMessage(false, 'Your token is invalid!');
             }
+            $this->renderView('users/login', $data);
         }
 
         $this->redirect('');
