@@ -24,7 +24,7 @@ class AccountController extends Controller {
             }
         }
 
-        $this->renderView('users/login', $data);
+        $this->redirect('');
     }
 
     // Update user\'s information
@@ -116,10 +116,12 @@ class AccountController extends Controller {
                 if ($data['email']) {
                     $data = $this->addMessage(true, 'You can change your password', $data);
                     $this->renderView('users/resetPassword', $data);
+                } else {
+                    $data = $this->addMessage(false, 'Your token is invalid!', $data);
+                    $this->renderView('users/resetPassword', $data);
                 }
             }
-            $data = $this->addMessage(false, 'Your token is invalid!', $data);
-            $this->renderView('users/resetPassword', $data);
+            $this->renderView('');
         }
     }
 

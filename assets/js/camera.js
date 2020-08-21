@@ -153,13 +153,13 @@ const toggleUploadImage = function () {
     } else {
         document.getElementById('upload_photo').click();
         document.getElementById('upload_photo').onchange = function () {
-            imageUploaded = true;
             toggleStream(false);
             const img = document.getElementById('upload_photo').files[0];
             const reader = new FileReader();
             reader.onload = function () {
                 const img = new Image();
                 img.onload = function () {
+                    imageUploaded = true;
                     const img = document.createElement('img');
                     uploadImageButton.value = "Delete photo";
                     takePhotoButton.disabled = false;
