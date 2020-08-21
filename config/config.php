@@ -8,6 +8,7 @@ session_start();
 
 // set expare time of user's session
 $_SESSION['expire_time'] = 60 * 30;
+date_default_timezone_set('Europe/Helsinki');
 
 require_once('database.php');
 

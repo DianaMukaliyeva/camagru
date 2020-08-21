@@ -6,12 +6,6 @@ try {
     // Connect to mysql
     Db::connect($DB_DSN, $DB_USER, $DB_PASSWORD);
 
-    // Set time zone
-    Db::query("SET time_zone = \"+03:00\"");
-
-    // Drop database if it already exists
-    // Db::query("DROP DATABASE IF EXISTS $DB_NAME;");
-
     // Create database
     Db::query("CREATE DATABASE IF NOT EXISTS $DB_NAME");
 

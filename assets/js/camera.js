@@ -75,6 +75,7 @@ const startStream = function () {
 // Stop/start webcam stream
 const toggleStream = function (confirmStart = true) {
     let stream = video.srcObject;
+    takePhotoButton.disabled = appliedFilters.length == 0 && !imageUploaded ? true : false;
     if (stream) {
         let tracks = stream.getTracks();
         for (let i = 0; i < tracks.length; i++) {
@@ -83,6 +84,7 @@ const toggleStream = function (confirmStart = true) {
         }
         video.srcObject = null;
         streaming = false;
+        takePhotoButton.disabled = true;
         videoStreamButton.innerHTML = "Start video";
     } else if (video.srcObject === null && confirmStart) {
         // Check if we have uploaded image, delete it if have
@@ -92,7 +94,6 @@ const toggleStream = function (confirmStart = true) {
         startStream();
         videoStreamButton.innerHTML = "Stop video";
     }
-    takePhotoButton.disabled = appliedFilters.length == 0 && !imageUploaded ? true : false;
 }
 
 // Sends taken photo with filters on server, receives combined image
