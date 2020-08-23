@@ -27,12 +27,17 @@ This is a small web application allowing you to make basic photo editing using y
     * Register / Login (including activating account and reseting password through a unique link send by email)
     * User profile page
     * User data management: modify user data (username, email, password), delete and create images, set notification preferences.
+    * User changing profile picture
 * Gallery features:
     * All images are public and likeable and commentable by logged in users.
     * Once image is commented or liked the author is notified by email.
-    * Infinite scroll gallery
+    * Infinite scroll gallery with pagination
 * Editing features:
     * Create custom images using webcam or images downloaded from computer combined with filters
+
+## Tech stack
+* <strong>Frontend: HTML, CSS/Bootstrap 4, Javascript, AJAX</strong>
+* <strong>Backend: PHP, MySQL</strong>
 
 ## Authors
 
