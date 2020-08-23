@@ -16,7 +16,7 @@ class UsersController extends Controller {
             if (isset($json['user'])) {
                 // set user's last activity
                 $_SESSION['user-' . $json['user']['id']]['last_activity'] = time();
-                unset($$json['user']['password']);
+                unset($json['user']['password']);
                 $_SESSION[APPNAME]['user'] = $json['user'];
                 $this->redirect('');
             }
