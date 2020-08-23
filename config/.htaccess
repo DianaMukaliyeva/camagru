@@ -1,4 +1,0 @@
-deny from all
-<FilesMatch "setup.php">
-Allow From All
-</FilesMatch>
