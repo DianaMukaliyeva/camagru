@@ -14,8 +14,8 @@
                     <button id="forgetPasswordButton" type="submit" class="btn btn-success btn-block">Send reset password email</button>
                 </div>
             </div>
+        </form>
     </div>
 </div>
-</form>
 
 <?php require 'views/include/footer.php' ?>
