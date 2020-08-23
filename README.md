@@ -2,6 +2,8 @@
 
 Project at [Hive Helsinki](https://www.hive.fi/) coding school.
 
+You can take a look at it [here](https://peaceful-everglades-46332.herokuapp.com/)
+
 This is a small web application allowing you to make basic photo editing using your webcam and some predefined images. The goal of this project was to have practice with:
 
  * Create responsive layouts and page design
