@@ -55,11 +55,10 @@ class CommentsController extends Controller {
             $data = json_decode($_POST['data'], true);
             if ($image = $this->imageModel->isImageExists($data['image_id'])) {
                 $imageOwner = $this->userModel->findUser(['id' => $image['user_id']]);
-                if ($imageOwner['notify'] && $imageOwner['login'] != $user['login']) {
-                    $message = "<p>" . $user['login'] . " recently commented your photo:</p>";
-                    $message .= "<p>\"<q>" . $data['comment'] . "</q>\"</p>";
-                    if (!$this->sendEmail($imageOwner['email'], $imageOwner['login'], $message))
-                        $json['message'] = 'Could not sent an email';
+                $message = "<p>" . $user['login'] . " recently commented your photo:</p>";
+                $message .= "<p>\"<q>" . $data['comment'] . "</q>\"</p>";
+                if (!$this->sendEmail($imageOwner['email'], $imageOwner['login'], $message)) {
+                    $json['message'] = 'Could not sent an email';
                 }
             } else {
                 $json['message'] = 'Image does not exists';
