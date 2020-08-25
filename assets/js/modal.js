@@ -92,7 +92,7 @@ const fillModalProfile = function () {
             form.first_name.value = result['first_name'];
             form.last_name.value = result['last_name'];
             form.email.value = result['email'];
-            form.notifications.checked = result['notify'] ? true : false;
+            form.notifications.checked = result['notify'] == 1 ? true : false;
             form.old_pswd.value = '';
             form.new_pswd.value = '';
             form.new_pswd_confirm.value = '';
