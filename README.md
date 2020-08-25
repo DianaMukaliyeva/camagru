@@ -88,6 +88,10 @@ The goal of this project was to have practice with:
  * ### Profile settings view<br>
 ![Profile settings](../images/profile-settings.png?raw=true)
 
+## ✌ Found a bug? Missing a specific feature?
+
+Feel free to file a new issue with a respective title and description on the repository.
+
 ## 🙋‍♀️ Authors
 
 [Diana Mukaliyeva](https://github.com/DianaMukaliyeva)
