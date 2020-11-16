@@ -99,3 +99,5 @@ Feel free to file a new issue with a respective title and description on the rep
 ## 📘License
 
 MIT
+
+[![Visits Badge](https://badges.pufler.dev/visits/DianaMukaliyeva/camagru)](https://badges.pufler.dev)
