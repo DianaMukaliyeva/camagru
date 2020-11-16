@@ -3,7 +3,7 @@
 
 This is a small web application allowing you to make basic photo editing using your webcam and some predefined images.
 
-Have a look at the example [website](https://camagru-hive.herokuapp.com/). (Sendgrid stopped working for this account, so for now activating an account via email is impossible)
+Have a look at the example [website](https://camagru-hive.herokuapp.com/). (You can sing in with credentials: email `example@gmail.com` password `Example1`)
 
 ## Goal
 
