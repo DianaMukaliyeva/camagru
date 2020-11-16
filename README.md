@@ -75,7 +75,8 @@ The goal of this project was to have practice with:
 * Change config/database.php file with your credentials.
 * Start your server and open http://localhost/your_name_of_folder in the Chrome or Firefox.
 
-## 📸 Webapp showcase
+<details open>
+    <summary> <b> :link: 📸 Webapp showcase</b></summary>
 
  * ### Gallery main view<br>
 ![Gallery](../images/gallery.png?raw=true)
@@ -87,6 +88,7 @@ The goal of this project was to have practice with:
 ![Photomaker](../images/photomaker.png?raw=true)
  * ### Profile settings view<br>
 ![Profile settings](../images/profile-settings.png?raw=true)
+</details>
 
 ## ✌ Found a bug? Missing a specific feature?
 
@@ -100,4 +102,6 @@ Feel free to file a new issue with a respective title and description on the rep
 
 MIT
 
-[![Visits Badge](https://badges.pufler.dev/visits/DianaMukaliyeva/camagru)](https://badges.pufler.dev)
+************
+
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FDianaMukaliyeva%2Fcamagru&count_bg=%2379C83D&title_bg=%2323E7E7E7&icon=&icon_color=%23E7E7E7&title=visits&edge_flat=false)](https://hits.seeyoufarm.com)
